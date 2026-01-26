@@ -551,11 +551,11 @@
         }
 
         .booking-container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 0;
             background: white;
             border-radius: 20px;
             overflow: hidden;
@@ -563,10 +563,9 @@
         }
 
         .booking-panel {
-            padding: 25px;
+            padding: 30px;
             background: #fafafa;
-            max-height: 600px;
-            overflow-y: auto;
+            min-height: 650px;
         }
 
         /* Direction Toggle */
@@ -2299,60 +2298,72 @@
         }
 
         // Payment
-        async function processPayment() {
-            if (!document.getElementById('cardNumber').value || !document.getElementById('cardCvv').value) { alert('Fill card details'); return; }
+        function processPayment() {
+            if (!document.getElementById('cardNumber').value || !document.getElementById('cardCvv').value) { 
+                alert('Please fill in card details'); 
+                return; 
+            }
 
-            const overlay = document.getElementById('processingOverlay');
-            const steps = ['procStep1', 'procStep2', 'procStep3', 'procStep4'];
+            var overlay = document.getElementById('processingOverlay');
+            var steps = ['procStep1', 'procStep2', 'procStep3', 'procStep4'];
+            var currentStep = 0;
+            
             overlay.classList.add('visible');
 
-            for (let i = 0; i < steps.length; i++) {
-                await new Promise(r => setTimeout(r, 700));
-                steps.forEach((s, j) => {
-                    document.getElementById(s).classList.remove('active', 'done');
-                    if (j < i) document.getElementById(s).classList.add('done');
-                    if (j === i) document.getElementById(s).classList.add('active');
-                });
+            function runStep() {
+                if (currentStep < steps.length) {
+                    for (var j = 0; j < steps.length; j++) {
+                        document.getElementById(steps[j]).classList.remove('active', 'done');
+                        if (j < currentStep) document.getElementById(steps[j]).classList.add('done');
+                        if (j === currentStep) document.getElementById(steps[j]).classList.add('active');
+                    }
+                    currentStep++;
+                    setTimeout(runStep, 700);
+                } else {
+                    document.getElementById(steps[3]).classList.add('done');
+                    setTimeout(function() {
+                        overlay.classList.remove('visible');
+                        for (var k = 0; k < steps.length; k++) {
+                            document.getElementById(steps[k]).classList.remove('active', 'done');
+                        }
+                        showTicket();
+                    }, 500);
+                }
             }
-            await new Promise(r => setTimeout(r, 500));
-            document.getElementById(steps[3]).classList.add('done');
             
-            overlay.classList.remove('visible');
-            steps.forEach(s => document.getElementById(s).classList.remove('active', 'done'));
-            
-            showTicket();
+            runStep();
         }
 
         function showTicket() {
-            try {
-                const ref = 'VE-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-                
-                // Update ticket
-                document.getElementById('ticketDogName').textContent = document.getElementById('dogName').value || 'Your Dog';
-                const breedSelect = document.getElementById('dogBreed');
-                const sizeSelect = document.getElementById('dogSize');
-                const breedText = breedSelect.selectedIndex > 0 ? breedSelect.options[breedSelect.selectedIndex].text : 'Mixed';
-                const sizeText = sizeSelect.selectedIndex > 0 ? sizeSelect.options[sizeSelect.selectedIndex].text : 'Medium';
-                document.getElementById('ticketBreed').textContent = `${breedText} • ${sizeText}`;
-                document.getElementById('ticketEmail').textContent = document.getElementById('email').value || 'your@email.com';
-                document.getElementById('ticketRef').textContent = ref;
-                document.getElementById('ticketVan').textContent = vanNames[Math.floor(Math.random() * vanNames.length)];
-                document.getElementById('ticketDate').textContent = routeData.travelDate ? routeData.travelDate.split(',')[0] : 'TBC';
-                document.getElementById('ticketTotal').textContent = `£${Math.round(routeData.total || 699)}`;
-                document.getElementById('ticketDogImage').src = dogImages[Math.floor(Math.random() * dogImages.length)];
+            const ref = 'VE-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+            
+            // Update ticket with safe fallbacks
+            const dogNameEl = document.getElementById('dogName');
+            const emailEl = document.getElementById('email');
+            const breedSelect = document.getElementById('dogBreed');
+            const sizeSelect = document.getElementById('dogSize');
+            
+            document.getElementById('ticketDogName').textContent = dogNameEl?.value || 'Your Dog';
+            document.getElementById('ticketBreed').textContent = (breedSelect?.selectedIndex > 0 ? breedSelect.options[breedSelect.selectedIndex].text : 'Mixed') + ' • ' + (sizeSelect?.selectedIndex > 0 ? sizeSelect.options[sizeSelect.selectedIndex].text : 'Medium');
+            document.getElementById('ticketEmail').textContent = emailEl?.value || 'your@email.com';
+            document.getElementById('ticketRef').textContent = ref;
+            document.getElementById('ticketVan').textContent = vanNames[Math.floor(Math.random() * vanNames.length)];
+            document.getElementById('ticketDate').textContent = routeData.travelDate ? routeData.travelDate.split(',')[0] : 'TBC';
+            document.getElementById('ticketTotal').textContent = '£' + Math.round(routeData.total || 699);
+            document.getElementById('ticketDogImage').src = dogImages[Math.floor(Math.random() * dogImages.length)];
 
-                const city = routeData.destination ? routeData.destination.name.split(',')[0] : 'Your Location';
-                if (currentDirection === 'spain-to-uk') {
-                    document.getElementById('ticketFromFlag').textContent = '🇪🇸';
-                    document.getElementById('ticketFromCity').textContent = 'Spain';
-                    document.getElementById('ticketToFlag').textContent = '🇬🇧';
-                    document.getElementById('ticketToCity').textContent = city;
-                } else {
-                    document.getElementById('ticketFromFlag').textContent = '🇬🇧';
-                    document.getElementById('ticketFromCity').textContent = city;
-                    document.getElementById('ticketToFlag').textContent = '🇪🇸';
-                    document.getElementById('ticketToCity').textContent = 'Spain';
-                }
+            const city = routeData.destination?.name?.split(',')[0] || 'Your Destination';
+            if (currentDirection === 'spain-to-uk') {
+                document.getElementById('ticketFromFlag').textContent = '🇪🇸';
+                document.getElementById('ticketFromCity').textContent = 'Spain';
+                document.getElementById('ticketToFlag').textContent = '🇬🇧';
+                document.getElementById('ticketToCity').textContent = city;
+            } else {
+                document.getElementById('ticketFromFlag').textContent = '🇬🇧';
+                document.getElementById('ticketFromCity').textContent = city;
+                document.getElementById('ticketToFlag').textContent = '🇪🇸';
+                document.getElementById('ticketToCity').textContent = 'Spain';
+            }
 
             // Show overlay
             document.getElementById('ticketOverlay').classList.add('visible');
@@ -2361,11 +2372,11 @@
             createConfetti();
 
             // Animate sequence
-            setTimeout(() => {
+            setTimeout(function() {
                 document.getElementById('successMessage').classList.add('visible');
             }, 300);
 
-            setTimeout(() => {
+            setTimeout(function() {
                 document.getElementById('animatedTicket').classList.add('revealed');
                 
                 // Animate barcode
@@ -2374,20 +2385,16 @@
                 for (let i = 0; i < 35; i++) {
                     const line = document.createElement('div');
                     line.className = 'barcode-line';
-                    line.style.height = `${25 + Math.random() * 25}px`;
-                    line.style.animationDelay = `${0.8 + i * 0.02}s`;
+                    line.style.height = (25 + Math.random() * 25) + 'px';
+                    line.style.animationDelay = (0.8 + i * 0.02) + 's';
                     barcode.appendChild(line);
                 }
             }, 800);
 
-            setTimeout(() => {
+            setTimeout(function() {
                 document.getElementById('ticketActions').style.opacity = '1';
                 document.getElementById('ticketActions').style.transition = 'opacity 0.5s';
             }, 1600);
-            } catch (error) {
-                console.error('Error showing ticket:', error);
-                alert('Booking confirmed! Reference: VE-' + Math.random().toString(36).substring(2, 8).toUpperCase());
-            }
         }
 
         function createConfetti() {
