@@ -628,6 +628,106 @@
             font-weight: 700;
         }
 
+        /* Date Selection */
+        .date-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .date-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .date-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(200, 75, 49, 0.15);
+        }
+
+        .date-card.selected {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(200, 75, 49, 0.1), rgba(255, 179, 25, 0.1));
+        }
+
+        .date-card.selected::before {
+            content: '✓';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--primary);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .date-card {
+            position: relative;
+        }
+
+        .date-month {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .date-range {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .date-year {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .date-spots {
+            margin-top: 8px;
+            font-size: 11px;
+            padding: 4px 8px;
+            background: #e8f5e9;
+            color: var(--accent);
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .date-spots.limited {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .date-intro {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .date-intro h3 {
+            font-size: 18px;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .date-intro p {
+            font-size: 13px;
+            color: #666;
+        }
+
         /* Card Preview */
         .card-preview {
             background: linear-gradient(135deg, #1a1a2e, #16213e);
@@ -1458,8 +1558,8 @@
                     </div>
                     <div class="ticket-details">
                         <div class="ticket-detail">
-                            <div class="label">Distance</div>
-                            <div class="value" id="ticketDistance">265mi</div>
+                            <div class="label">Travel Date</div>
+                            <div class="value" id="ticketDate" style="font-size:14px;">Feb 8-14</div>
                         </div>
                         <div class="ticket-detail">
                             <div class="label">Van</div>
@@ -1608,14 +1708,27 @@
                 </div>
 
                 <div class="step-indicator">
-                    <div class="step active" data-step="1"><div class="step-num">1</div><div class="step-label">Route</div></div>
-                    <div class="step" data-step="2"><div class="step-num">2</div><div class="step-label">Details</div></div>
-                    <div class="step" data-step="3"><div class="step-num">3</div><div class="step-label">Review</div></div>
-                    <div class="step" data-step="4"><div class="step-num">4</div><div class="step-label">Pay</div></div>
+                    <div class="step active" data-step="1"><div class="step-num">1</div><div class="step-label">Date</div></div>
+                    <div class="step" data-step="2"><div class="step-num">2</div><div class="step-label">Route</div></div>
+                    <div class="step" data-step="3"><div class="step-num">3</div><div class="step-label">Details</div></div>
+                    <div class="step" data-step="4"><div class="step-num">4</div><div class="step-label">Review</div></div>
+                    <div class="step" data-step="5"><div class="step-num">5</div><div class="step-label">Pay</div></div>
                 </div>
 
-                <!-- Step 1 -->
+                <!-- Step 1: Date Selection -->
                 <div class="booking-step active" id="step1">
+                    <div class="date-intro">
+                        <h3>🚐 When should we travel?</h3>
+                        <p>We depart during the second week of each month</p>
+                    </div>
+                    <div class="date-grid" id="dateGrid">
+                        <!-- Dates populated by JS -->
+                    </div>
+                    <button class="btn btn-primary" id="dateNextBtn" onclick="goToStep(2)" disabled>Select a Travel Date</button>
+                </div>
+
+                <!-- Step 2: Route -->
+                <div class="booking-step" id="step2">
                     <div class="form-group">
                         <label id="addressLabel">Your UK Delivery Address</label>
                         <input type="text" id="destination" placeholder="e.g., Manchester, SW1A 1AA">
@@ -1626,12 +1739,15 @@
                         <div class="price-line"><span>Spain to Dover</span><span>£699.00</span></div>
                         <div class="price-line"><span>UK Delivery (<span id="deliveryMiles">0</span> mi)</span><span id="deliveryCost">£0.00</span></div>
                         <div class="price-line total"><span>Total</span><span class="value" id="totalPrice">£699.00</span></div>
-                        <div class="btn-row"><button class="btn btn-primary" onclick="goToStep(2)">Continue</button></div>
+                        <div class="btn-row">
+                            <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
+                            <button class="btn btn-primary" onclick="goToStep(3)">Continue</button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Step 2 -->
-                <div class="booking-step" id="step2">
+                <!-- Step 3: Details -->
+                <div class="booking-step" id="step3">
                     <div class="form-row">
                         <div class="form-group"><label>First Name</label><input type="text" id="firstName" placeholder="John"></div>
                         <div class="form-group"><label>Last Name</label><input type="text" id="lastName" placeholder="Smith"></div>
@@ -1662,14 +1778,15 @@
                         </select>
                     </div>
                     <div class="btn-row">
-                        <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
-                        <button class="btn btn-primary" onclick="goToStep(3)">Review</button>
+                        <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
+                        <button class="btn btn-primary" onclick="goToStep(4)">Review</button>
                     </div>
                 </div>
 
-                <!-- Step 3 -->
-                <div class="booking-step" id="step3">
+                <!-- Step 4: Review -->
+                <div class="booking-step" id="step4">
                     <div style="background:#f8f9fa;padding:15px;border-radius:12px;margin-bottom:15px;">
+                        <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:14px;"><span style="color:#666;">Travel Date</span><span id="summaryDate">-</span></div>
                         <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:14px;"><span style="color:#666;">Customer</span><span id="summaryName">-</span></div>
                         <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:14px;"><span style="color:#666;">Dog</span><span id="summaryDog">-</span></div>
                         <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:14px;"><span style="color:#666;">Destination</span><span id="summaryDest">-</span></div>
@@ -1678,13 +1795,13 @@
                         <div class="price-line total" style="border:none;margin:0;padding:0;"><span>Total</span><span class="value" id="summaryTotal">£699</span></div>
                     </div>
                     <div class="btn-row">
-                        <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
-                        <button class="btn btn-primary" onclick="goToStep(4)">Payment</button>
+                        <button class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
+                        <button class="btn btn-primary" onclick="goToStep(5)">Payment</button>
                     </div>
                 </div>
 
-                <!-- Step 4 -->
-                <div class="booking-step" id="step4">
+                <!-- Step 5: Payment -->
+                <div class="booking-step" id="step5">
                     <div class="card-preview">
                         <div class="card-chip"></div>
                         <div class="card-number-display" id="cardDisplay">•••• •••• •••• ••••</div>
@@ -1705,7 +1822,7 @@
                         <div class="price-line total" style="border:none;margin:0;padding:0;"><span>Pay Now</span><span class="value" id="payTotal">£699</span></div>
                     </div>
                     <div class="btn-row">
-                        <button class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
+                        <button class="btn btn-secondary" onclick="goToStep(4)">← Back</button>
                         <button class="btn btn-primary" onclick="processPayment()">🔒 Pay Now</button>
                     </div>
                     <p style="font-size:11px;color:#999;text-align:center;margin-top:10px;">TEST MODE - No real payment</p>
@@ -1784,7 +1901,7 @@
         const ORS_API_KEY = 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjMzYTM4NmFmMTc2YjQ1YjRiZTFlNjM4ZGU5ZGQ1MWRmIiwiaCI6Im11cm11cjY0In0=';
         const DOVER = { lat: 51.1279, lng: 1.3134 };
         let currentDirection = 'spain-to-uk';
-        let routeData = { destination: null, miles: 0, total: 699 };
+        let routeData = { destination: null, miles: 0, total: 699, travelDate: null };
         const vanNames = ['Luna 🌙', 'Sol ☀️', 'Estrella ⭐', 'Mar 🌊', 'Cielo 🌤️'];
         const dogImages = [
             'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&q=80',
@@ -1792,6 +1909,65 @@
             'https://images.unsplash.com/photo-1552053831-71594a27632d?w=200&q=80',
             'https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=200&q=80'
         ];
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const monthsFull = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        // Generate travel dates (second week of each month = days 8-14)
+        function generateTravelDates() {
+            const dates = [];
+            const now = new Date();
+            let month = now.getMonth();
+            let year = now.getFullYear();
+            
+            // If we're past the 14th, start from next month
+            if (now.getDate() > 14) {
+                month++;
+                if (month > 11) { month = 0; year++; }
+            }
+            
+            // Generate 6 upcoming travel dates
+            for (let i = 0; i < 6; i++) {
+                const startDay = 8;
+                const endDay = 14;
+                const spots = Math.floor(Math.random() * 5) + 2; // 2-6 spots
+                
+                dates.push({
+                    month: months[month],
+                    monthFull: monthsFull[month],
+                    startDay,
+                    endDay,
+                    year,
+                    spots,
+                    id: `${year}-${String(month + 1).padStart(2, '0')}`
+                });
+                
+                month++;
+                if (month > 11) { month = 0; year++; }
+            }
+            return dates;
+        }
+
+        function renderDateCards() {
+            const grid = document.getElementById('dateGrid');
+            const dates = generateTravelDates();
+            
+            grid.innerHTML = dates.map(d => `
+                <div class="date-card" data-date-id="${d.id}" data-date-display="${d.monthFull} ${d.startDay}-${d.endDay}" onclick="selectDate(this, '${d.id}', '${d.monthFull} ${d.startDay}-${d.endDay}, ${d.year}')">
+                    <div class="date-month">${d.month}</div>
+                    <div class="date-range">${d.startDay}-${d.endDay}</div>
+                    <div class="date-year">${d.year}</div>
+                    <div class="date-spots ${d.spots <= 3 ? 'limited' : ''}">${d.spots} spots left</div>
+                </div>
+            `).join('');
+        }
+
+        function selectDate(el, id, display) {
+            document.querySelectorAll('.date-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            routeData.travelDate = display;
+            document.getElementById('dateNextBtn').disabled = false;
+            document.getElementById('dateNextBtn').textContent = 'Continue →';
+        }
 
         // Map
         const map = L.map('map').setView([48, -2], 5);
@@ -1804,6 +1980,7 @@
             L.marker([DOVER.lat, DOVER.lng]).addTo(routeLayer).bindPopup('Dover');
         }
         initMap();
+        renderDateCards();
 
         // Mobile menu
         function toggleMobileMenu() {
@@ -1874,16 +2051,19 @@
         }
 
         function goToStep(step) {
-            if (step === 2 && !routeData.miles) { showError('Calculate price first'); return; }
-            if (step === 3) {
+            // Validation for each step
+            if (step === 2 && !routeData.travelDate) { alert('Please select a travel date'); return; }
+            if (step === 3 && !routeData.miles) { showError('Calculate price first'); return; }
+            if (step === 4) {
                 const fields = ['firstName', 'lastName', 'email', 'phone', 'dogName', 'dogBreed', 'dogSize'];
                 if (fields.some(f => !document.getElementById(f).value.trim())) { alert('Fill all fields'); return; }
+                document.getElementById('summaryDate').textContent = routeData.travelDate;
                 document.getElementById('summaryName').textContent = `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`;
                 document.getElementById('summaryDog').textContent = `${document.getElementById('dogName').value} (${document.getElementById('dogBreed').options[document.getElementById('dogBreed').selectedIndex].text})`;
                 document.getElementById('summaryDest').textContent = routeData.destination.name.split(',')[0];
                 document.getElementById('summaryTotal').textContent = `£${routeData.total.toFixed(2)}`;
             }
-            if (step === 4) {
+            if (step === 5) {
                 document.getElementById('payTotal').textContent = `£${routeData.total.toFixed(2)}`;
                 document.getElementById('cardName').value = `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`;
             }
@@ -1952,7 +2132,7 @@
             document.getElementById('ticketEmail').textContent = document.getElementById('email').value;
             document.getElementById('ticketRef').textContent = ref;
             document.getElementById('ticketVan').textContent = vanNames[Math.floor(Math.random() * vanNames.length)];
-            document.getElementById('ticketDistance').textContent = `${Math.round(routeData.miles)}mi`;
+            document.getElementById('ticketDate').textContent = routeData.travelDate.split(',')[0]; // Just "February 8-14"
             document.getElementById('ticketTotal').textContent = `£${Math.round(routeData.total)}`;
             document.getElementById('ticketDogImage').src = dogImages[Math.floor(Math.random() * dogImages.length)];
 
@@ -2029,7 +2209,10 @@
             // Reset form
             ['destination', 'firstName', 'lastName', 'email', 'phone', 'dogName', 'dogBreed', 'dogSize', 'cardName', 'cardNumber', 'cardExpiry', 'cardCvv'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('priceBreakdown').style.display = 'none';
-            routeData = { destination: null, miles: 0, total: 699 };
+            document.querySelectorAll('.date-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('dateNextBtn').disabled = true;
+            document.getElementById('dateNextBtn').textContent = 'Select a Travel Date';
+            routeData = { destination: null, miles: 0, total: 699, travelDate: null };
             initMap();
             goToStep(1);
         }
