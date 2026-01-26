@@ -2324,30 +2324,35 @@
         }
 
         function showTicket() {
-            const ref = 'VE-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-            
-            // Update ticket
-            document.getElementById('ticketDogName').textContent = document.getElementById('dogName').value;
-            document.getElementById('ticketBreed').textContent = `${document.getElementById('dogBreed').options[document.getElementById('dogBreed').selectedIndex].text} • ${document.getElementById('dogSize').options[document.getElementById('dogSize').selectedIndex].text}`;
-            document.getElementById('ticketEmail').textContent = document.getElementById('email').value;
-            document.getElementById('ticketRef').textContent = ref;
-            document.getElementById('ticketVan').textContent = vanNames[Math.floor(Math.random() * vanNames.length)];
-            document.getElementById('ticketDate').textContent = routeData.travelDate.split(',')[0]; // Just "February 8-14"
-            document.getElementById('ticketTotal').textContent = `£${Math.round(routeData.total)}`;
-            document.getElementById('ticketDogImage').src = dogImages[Math.floor(Math.random() * dogImages.length)];
+            try {
+                const ref = 'VE-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+                
+                // Update ticket
+                document.getElementById('ticketDogName').textContent = document.getElementById('dogName').value || 'Your Dog';
+                const breedSelect = document.getElementById('dogBreed');
+                const sizeSelect = document.getElementById('dogSize');
+                const breedText = breedSelect.selectedIndex > 0 ? breedSelect.options[breedSelect.selectedIndex].text : 'Mixed';
+                const sizeText = sizeSelect.selectedIndex > 0 ? sizeSelect.options[sizeSelect.selectedIndex].text : 'Medium';
+                document.getElementById('ticketBreed').textContent = `${breedText} • ${sizeText}`;
+                document.getElementById('ticketEmail').textContent = document.getElementById('email').value || 'your@email.com';
+                document.getElementById('ticketRef').textContent = ref;
+                document.getElementById('ticketVan').textContent = vanNames[Math.floor(Math.random() * vanNames.length)];
+                document.getElementById('ticketDate').textContent = routeData.travelDate ? routeData.travelDate.split(',')[0] : 'TBC';
+                document.getElementById('ticketTotal').textContent = `£${Math.round(routeData.total || 699)}`;
+                document.getElementById('ticketDogImage').src = dogImages[Math.floor(Math.random() * dogImages.length)];
 
-            const city = routeData.destination.name.split(',')[0];
-            if (currentDirection === 'spain-to-uk') {
-                document.getElementById('ticketFromFlag').textContent = '🇪🇸';
-                document.getElementById('ticketFromCity').textContent = 'Spain';
-                document.getElementById('ticketToFlag').textContent = '🇬🇧';
-                document.getElementById('ticketToCity').textContent = city;
-            } else {
-                document.getElementById('ticketFromFlag').textContent = '🇬🇧';
-                document.getElementById('ticketFromCity').textContent = city;
-                document.getElementById('ticketToFlag').textContent = '🇪🇸';
-                document.getElementById('ticketToCity').textContent = 'Spain';
-            }
+                const city = routeData.destination ? routeData.destination.name.split(',')[0] : 'Your Location';
+                if (currentDirection === 'spain-to-uk') {
+                    document.getElementById('ticketFromFlag').textContent = '🇪🇸';
+                    document.getElementById('ticketFromCity').textContent = 'Spain';
+                    document.getElementById('ticketToFlag').textContent = '🇬🇧';
+                    document.getElementById('ticketToCity').textContent = city;
+                } else {
+                    document.getElementById('ticketFromFlag').textContent = '🇬🇧';
+                    document.getElementById('ticketFromCity').textContent = city;
+                    document.getElementById('ticketToFlag').textContent = '🇪🇸';
+                    document.getElementById('ticketToCity').textContent = 'Spain';
+                }
 
             // Show overlay
             document.getElementById('ticketOverlay').classList.add('visible');
@@ -2379,6 +2384,10 @@
                 document.getElementById('ticketActions').style.opacity = '1';
                 document.getElementById('ticketActions').style.transition = 'opacity 0.5s';
             }, 1600);
+            } catch (error) {
+                console.error('Error showing ticket:', error);
+                alert('Booking confirmed! Reference: VE-' + Math.random().toString(36).substring(2, 8).toUpperCase());
+            }
         }
 
         function createConfetti() {
