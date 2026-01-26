@@ -557,6 +557,8 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
         }
 
         .booking-panel {
@@ -939,11 +941,13 @@
         /* Map */
         .map-panel {
             border-top: 1px solid #eee;
+            height: 350px;
+            position: relative;
         }
 
         #map {
             width: 100%;
-            height: 350px;
+            height: 100%;
         }
 
         .loading {
