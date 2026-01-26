@@ -26,6 +26,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             color: #333;
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
         /* Navigation */
@@ -35,7 +36,7 @@
             left: 0;
             right: 0;
             background: rgba(255,255,255,0.98);
-            padding: 15px 40px;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -45,22 +46,18 @@
         }
 
         .nav-logo {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
             color: var(--primary);
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-
-        .nav-logo span {
-            font-size: 28px;
+            gap: 8px;
         }
 
         .nav-links {
             display: flex;
-            gap: 30px;
+            gap: 25px;
             list-style: none;
         }
 
@@ -68,6 +65,7 @@
             text-decoration: none;
             color: #555;
             font-weight: 500;
+            font-size: 14px;
             transition: color 0.2s;
         }
 
@@ -78,16 +76,67 @@
         .nav-cta {
             background: var(--primary);
             color: white;
-            padding: 10px 24px;
+            padding: 10px 20px;
             border-radius: 25px;
             text-decoration: none;
             font-weight: 600;
-            transition: background 0.2s, transform 0.2s;
+            font-size: 14px;
+            transition: all 0.3s;
         }
 
         .nav-cta:hover {
             background: var(--primary-dark);
-            transform: translateY(-2px);
+            transform: scale(1.05);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            z-index: 999;
+        }
+
+        .mobile-menu.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 15px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .mobile-menu a:last-child {
+            border-bottom: none;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+            margin-top: 10px;
         }
 
         /* Hero Section */
@@ -97,8 +146,7 @@
                         url('https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1920&q=80') center/cover;
             display: flex;
             align-items: center;
-            padding: 100px 40px 60px;
-            position: relative;
+            padding: 100px 20px 60px;
         }
 
         .hero-content {
@@ -106,7 +154,7 @@
             margin: 0 auto;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 60px;
+            gap: 40px;
             align-items: center;
         }
 
@@ -119,30 +167,28 @@
             background: rgba(255,255,255,0.2);
             padding: 8px 16px;
             border-radius: 20px;
-            font-size: 14px;
+            font-size: 13px;
             margin-bottom: 20px;
             backdrop-filter: blur(10px);
         }
 
         .hero h1 {
-            font-size: 56px;
+            font-size: clamp(32px, 5vw, 56px);
             font-weight: 700;
             line-height: 1.1;
             margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
         .hero p {
-            font-size: 20px;
+            font-size: clamp(16px, 2vw, 20px);
             opacity: 0.95;
             margin-bottom: 30px;
-            line-height: 1.6;
         }
 
         .hero-stats {
             display: flex;
-            gap: 40px;
-            margin-top: 40px;
+            gap: 30px;
+            flex-wrap: wrap;
         }
 
         .stat {
@@ -150,12 +196,12 @@
         }
 
         .stat-number {
-            font-size: 36px;
+            font-size: clamp(28px, 4vw, 36px);
             font-weight: 700;
         }
 
         .stat-label {
-            font-size: 14px;
+            font-size: 13px;
             opacity: 0.9;
         }
 
@@ -165,95 +211,106 @@
 
         .hero-image {
             width: 100%;
-            height: 450px;
+            height: 400px;
             object-fit: cover;
             border-radius: 20px;
             box-shadow: 0 30px 60px rgba(0,0,0,0.3);
         }
 
-        .hero-badge-floating {
+        .hero-notification {
             position: absolute;
             bottom: -20px;
             left: 50%;
             transform: translateX(-50%);
             background: white;
-            padding: 15px 30px;
+            padding: 12px 20px;
             border-radius: 50px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+            white-space: nowrap;
+            animation: float 3s ease-in-out infinite;
         }
 
-        .hero-badge-floating img {
-            width: 50px;
-            height: 50px;
+        @keyframes float {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+
+        .hero-notification img {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             object-fit: cover;
         }
 
-        .hero-badge-floating .text {
-            font-size: 14px;
+        .hero-notification .text {
+            font-size: 13px;
         }
 
-        .hero-badge-floating .text strong {
+        .hero-notification strong {
             display: block;
             color: var(--dark);
         }
 
-        .hero-badge-floating .text span {
+        .hero-notification span {
             color: #666;
+            font-size: 11px;
         }
 
-        /* Trust Section */
-        .trust-section {
-            padding: 100px 40px;
-            background: var(--light);
+        /* Sections */
+        .section {
+            padding: 80px 20px;
         }
 
         .section-header {
             text-align: center;
-            max-width: 700px;
-            margin: 0 auto 60px;
+            max-width: 600px;
+            margin: 0 auto 50px;
         }
 
         .section-header h2 {
-            font-size: 40px;
+            font-size: clamp(28px, 4vw, 40px);
             color: var(--dark);
             margin-bottom: 15px;
         }
 
         .section-header p {
-            font-size: 18px;
+            font-size: 16px;
             color: #666;
+        }
+
+        /* Trust Grid */
+        .trust-section {
+            background: var(--light);
         }
 
         .trust-grid {
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
         }
 
         .trust-card {
             background: white;
-            padding: 30px;
+            padding: 25px;
             border-radius: 16px;
             text-align: center;
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: transform 0.3s;
         }
 
         .trust-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
         }
 
         .trust-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 20px;
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 15px;
             border-radius: 50%;
             overflow: hidden;
         }
@@ -265,29 +322,22 @@
         }
 
         .trust-card h3 {
-            font-size: 20px;
-            color: var(--dark);
-            margin-bottom: 10px;
+            font-size: 18px;
+            margin-bottom: 8px;
         }
 
         .trust-card p {
             font-size: 14px;
             color: #666;
-            line-height: 1.6;
         }
 
-        /* Gallery Section */
-        .gallery-section {
-            padding: 80px 40px;
-            background: white;
-        }
-
+        /* Gallery */
         .gallery-grid {
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
         }
 
         .gallery-item {
@@ -310,94 +360,32 @@
         }
 
         .gallery-item:hover img {
-            transform: scale(1.05);
+            transform: scale(1.1);
         }
 
-        .gallery-item .overlay {
+        .gallery-overlay {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 20px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            padding: 15px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
             color: white;
         }
 
-        .gallery-item .overlay h4 {
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-
-        .gallery-item .overlay p {
-            font-size: 13px;
-            opacity: 0.9;
-        }
-
-        /* How It Works */
-        .how-section {
-            padding: 100px 40px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        }
-
-        .journey-steps {
-            max-width: 1000px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            position: relative;
-        }
-
-        .journey-steps::before {
-            content: '';
-            position: absolute;
-            top: 50px;
-            left: 100px;
-            right: 100px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 2px;
-        }
-
-        .journey-step {
-            text-align: center;
-            position: relative;
-            z-index: 1;
-            flex: 1;
-        }
-
-        .step-image {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 20px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 4px solid white;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-
-        .step-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .journey-step h3 {
-            font-size: 18px;
-            color: var(--dark);
-            margin-bottom: 10px;
-        }
-
-        .journey-step p {
+        .gallery-overlay h4 {
             font-size: 14px;
-            color: #666;
-            max-width: 200px;
-            margin: 0 auto;
+        }
+
+        .gallery-overlay p {
+            font-size: 11px;
+            opacity: 0.9;
         }
 
         /* Booking Section */
         .booking-section {
-            padding: 100px 40px;
             background: linear-gradient(135deg, var(--dark) 0%, #16213e 100%);
+            padding: 80px 20px;
         }
 
         .booking-section .section-header h2,
@@ -406,11 +394,11 @@
         }
 
         .booking-container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 450px 1fr;
-            gap: 30px;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
             background: white;
             border-radius: 20px;
             overflow: hidden;
@@ -418,19 +406,10 @@
         }
 
         .booking-panel {
-            padding: 30px;
+            padding: 25px;
             background: #fafafa;
-            max-height: 750px;
+            max-height: 600px;
             overflow-y: auto;
-        }
-
-        .booking-panel h2 {
-            font-size: 24px;
-            color: var(--dark);
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
         /* Direction Toggle */
@@ -439,16 +418,16 @@
             background: #e0e0e0;
             border-radius: 10px;
             padding: 4px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .direction-btn {
             flex: 1;
-            padding: 12px;
+            padding: 12px 8px;
             border: none;
             background: transparent;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -473,11 +452,10 @@
             content: '';
             position: absolute;
             top: 15px;
-            left: 20px;
-            right: 20px;
+            left: 15px;
+            right: 15px;
             height: 2px;
             background: #e0e0e0;
-            z-index: 0;
         }
 
         .step {
@@ -499,11 +477,13 @@
             font-weight: 600;
             font-size: 14px;
             margin-bottom: 5px;
+            transition: all 0.3s;
         }
 
         .step.active .step-num {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
+            transform: scale(1.1);
         }
 
         .step.completed .step-num {
@@ -514,269 +494,74 @@
         .step-label {
             font-size: 10px;
             color: #999;
-            font-weight: 500;
         }
 
         .step.active .step-label,
         .step.completed .step-label {
             color: var(--dark);
+            font-weight: 600;
         }
 
-        /* Booking Steps */
+        /* Form Elements */
         .booking-step {
             display: none;
+            animation: fadeIn 0.4s ease;
         }
 
         .booking-step.active {
             display: block;
-            animation: fadeIn 0.3s ease;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Origin Info */
-        .origin-info {
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
-            border: 2px solid #f59e0b;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .origin-info.uk-origin {
-            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-            border-color: #3b82f6;
-        }
-
-        .origin-info h3 {
-            font-size: 14px;
-            color: #92400e;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .origin-info.uk-origin h3 {
-            color: #1e40af;
-        }
-
-        .origin-info p {
-            font-size: 13px;
-            color: #78350f;
-            line-height: 1.5;
-        }
-
-        .origin-info.uk-origin p {
-            color: #1e3a8a;
-        }
-
-        /* Form Styles */
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 15px;
         }
 
         .form-group label {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: #555;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .form-group input,
-        .form-group textarea,
-        .form-group select {
+        .form-group select,
+        .form-group textarea {
             width: 100%;
-            padding: 12px 14px;
+            padding: 12px;
             border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 15px;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: all 0.3s;
         }
 
         .form-group input:focus,
-        .form-group textarea:focus,
         .form-group select:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(200, 75, 49, 0.1);
+            box-shadow: 0 0 0 4px rgba(200, 75, 49, 0.1);
         }
 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .form-row-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 12px;
-        }
-
-        /* Breed Tips */
-        .breed-tips {
-            background: #f0fdf4;
-            border: 1px solid #86efac;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 15px;
-            display: none;
-        }
-
-        .breed-tips.visible {
-            display: block;
-        }
-
-        .breed-tips h4 {
-            font-size: 14px;
-            color: var(--accent);
-            margin-bottom: 8px;
-        }
-
-        .breed-tips p {
-            font-size: 13px;
-            color: #166534;
-        }
-
-        /* Payment Section */
-        .payment-section {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .payment-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .payment-header h4 {
-            font-size: 16px;
-            color: var(--dark);
-        }
-
-        .card-icons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .card-icon {
-            width: 40px;
-            height: 25px;
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: 600;
-            color: #666;
-            transition: all 0.2s;
-        }
-
-        .card-icon.active {
-            border-color: var(--primary);
-            background: #fff5f3;
-        }
-
-        .card-icon.visa { color: #1a1f71; }
-        .card-icon.mastercard { color: #eb001b; }
-        .card-icon.amex { color: #006fcf; }
-
-        .card-preview {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card-preview::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-        }
-
-        .card-chip {
-            width: 40px;
-            height: 30px;
-            background: linear-gradient(135deg, #ffd700, #ffb319);
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-
-        .card-number-display {
-            font-size: 20px;
-            letter-spacing: 3px;
-            font-family: monospace;
-            margin-bottom: 20px;
-        }
-
-        .card-details-display {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .card-detail-item label {
-            font-size: 10px;
-            opacity: 0.7;
-            text-transform: uppercase;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .card-detail-item span {
-            font-size: 14px;
-            font-family: monospace;
-        }
-
-        .card-type-display {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 24px;
-            font-weight: 700;
-        }
-
-        .secure-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #e8f5e9;
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-        }
-
-        .secure-badge span {
-            font-size: 13px;
-            color: var(--accent);
+            gap: 10px;
         }
 
         /* Buttons */
         .btn {
             padding: 14px 24px;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 10px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
         }
 
         .btn-primary {
@@ -787,12 +572,11 @@
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(200, 75, 49, 0.4);
+            box-shadow: 0 10px 30px rgba(200, 75, 49, 0.4);
         }
 
         .btn-primary:disabled {
             background: #ccc;
-            cursor: not-allowed;
             transform: none;
             box-shadow: none;
         }
@@ -810,7 +594,6 @@
 
         .btn-row .btn-secondary {
             flex: 0 0 auto;
-            padding: 14px 20px;
         }
 
         .btn-row .btn-primary {
@@ -822,16 +605,8 @@
             background: white;
             border: 2px solid #e0e0e0;
             border-radius: 12px;
-            padding: 18px;
-            margin-top: 20px;
-        }
-
-        .price-breakdown h3 {
-            font-size: 16px;
-            color: var(--dark);
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #f0f0f0;
+            padding: 15px;
+            margin-top: 15px;
         }
 
         .price-line {
@@ -841,36 +616,85 @@
             font-size: 14px;
         }
 
-        .price-line .label { color: #666; }
-        .price-line .value { font-weight: 600; color: #333; }
-
         .price-line.total {
             border-top: 2px solid #e0e0e0;
             margin-top: 10px;
             padding-top: 15px;
         }
 
-        .price-line.total .label {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
         .price-line.total .value {
             font-size: 24px;
             color: var(--primary);
+            font-weight: 700;
         }
 
-        /* Map Panel */
+        /* Card Preview */
+        .card-preview {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 12px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-preview::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
+        }
+
+        .card-chip {
+            width: 40px;
+            height: 28px;
+            background: linear-gradient(135deg, #ffd700, #ffb319);
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .card-number-display {
+            font-size: 18px;
+            letter-spacing: 2px;
+            font-family: monospace;
+            margin-bottom: 15px;
+        }
+
+        .card-icons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .card-icon {
+            padding: 5px 10px;
+            background: white;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            opacity: 0.5;
+            transition: all 0.3s;
+        }
+
+        .card-icon.active {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        /* Map */
         .map-panel {
             position: relative;
-            min-height: 500px;
+            min-height: 400px;
         }
 
         #map {
             width: 100%;
             height: 100%;
-            min-height: 650px;
+            min-height: 500px;
         }
 
         .loading {
@@ -879,9 +703,9 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: white;
-            padding: 20px 30px;
+            padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             display: none;
             z-index: 1000;
         }
@@ -889,7 +713,7 @@
         .loading.visible {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .spinner {
@@ -906,146 +730,129 @@
         }
 
         .error-message {
-            margin-top: 15px;
-            padding: 12px;
             background: #fee;
-            border: 1px solid #fcc;
-            border-radius: 8px;
             color: #c00;
-            font-size: 14px;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 13px;
             display: none;
         }
 
-        .error-message.visible { display: block; }
+        .error-message.visible {
+            display: block;
+        }
 
-        /* Processing Overlay */
-        .processing-overlay {
+        /* Full Screen Ticket Overlay */
+        .ticket-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.8);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            z-index: 10000;
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 2000;
-        }
-
-        .processing-overlay.visible {
-            display: flex;
-        }
-
-        .processing-card {
-            background: white;
-            border-radius: 20px;
-            padding: 40px 60px;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .processing-spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid #f0f0f0;
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        .processing-card h3 {
-            font-size: 20px;
-            color: var(--dark);
-            margin-bottom: 10px;
-        }
-
-        .processing-card p {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .processing-steps {
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .processing-step {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 0;
-            font-size: 14px;
-            color: #999;
-        }
-
-        .processing-step.active {
-            color: var(--dark);
-        }
-
-        .processing-step.done {
-            color: var(--accent);
-        }
-
-        .processing-step .check {
-            width: 20px;
-            height: 20px;
-            border: 2px solid currentColor;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-        }
-
-        .processing-step.done .check {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: white;
-        }
-
-        /* Boarding Pass */
-        .ticket-container {
-            display: none;
-            padding: 20px;
-        }
-
-        .ticket-container.visible {
-            display: block;
-        }
-
-        .boarding-pass {
-            background: white;
-            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-            max-width: 500px;
-            margin: 0 auto;
+        }
+
+        .ticket-overlay.visible {
+            display: flex;
+        }
+
+        /* Confetti */
+        .confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Ticket Animation Container */
+        .ticket-animation-container {
+            perspective: 1000px;
+            max-width: 450px;
+            width: 90%;
+        }
+
+        .animated-ticket {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+            transform: scale(0) rotateY(180deg);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .animated-ticket.revealed {
+            transform: scale(1) rotateY(0deg);
+            opacity: 1;
+        }
+
+        .ticket-shine {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shine 2s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            50%, 100% { left: 100%; }
         }
 
         .ticket-header {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: 20px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 25px;
+            text-align: center;
+            position: relative;
         }
 
-        .ticket-logo {
-            font-size: 20px;
-            font-weight: 700;
+        .ticket-header h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 10px;
         }
 
         .ticket-class {
+            display: inline-block;
             background: rgba(255,255,255,0.2);
-            padding: 6px 14px;
+            padding: 5px 15px;
             border-radius: 20px;
             font-size: 12px;
-            font-weight: 600;
+            margin-top: 10px;
         }
 
         .ticket-body {
@@ -1056,9 +863,9 @@
             display: flex;
             align-items: center;
             gap: 20px;
-            margin-bottom: 25px;
             padding-bottom: 20px;
             border-bottom: 2px dashed #e0e0e0;
+            margin-bottom: 20px;
         }
 
         .passenger-avatar {
@@ -1066,6 +873,13 @@
             height: 80px;
             border-radius: 50%;
             overflow: hidden;
+            border: 4px solid var(--secondary);
+            animation: pulse-border 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { border-color: var(--secondary); }
+            50% { border-color: var(--primary); }
         }
 
         .passenger-avatar img {
@@ -1075,14 +889,14 @@
         }
 
         .passenger-info h3 {
-            font-size: 24px;
+            font-size: 26px;
             color: var(--dark);
             margin-bottom: 5px;
         }
 
         .passenger-info p {
-            font-size: 14px;
             color: #666;
+            font-size: 14px;
         }
 
         .ticket-route {
@@ -1090,6 +904,9 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
         }
 
         .route-point {
@@ -1097,27 +914,33 @@
         }
 
         .route-point .flag {
-            font-size: 32px;
+            font-size: 40px;
             margin-bottom: 5px;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        .route-point:last-child .flag {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
 
         .route-point .city {
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 16px;
+            font-weight: 700;
             color: var(--dark);
-        }
-
-        .route-point .detail {
-            font-size: 12px;
-            color: #666;
         }
 
         .route-line {
             flex: 1;
-            height: 2px;
+            height: 3px;
             background: linear-gradient(90deg, var(--primary), var(--secondary));
-            margin: 0 20px;
+            margin: 0 15px;
             position: relative;
+            border-radius: 2px;
         }
 
         .route-line::before {
@@ -1126,23 +949,29 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 24px;
+            font-size: 28px;
             background: white;
             padding: 0 10px;
+            animation: van-move 2s ease-in-out infinite;
+        }
+
+        @keyframes van-move {
+            0%, 100% { transform: translate(-50%, -50%) translateX(-10px); }
+            50% { transform: translate(-50%, -50%) translateX(10px); }
         }
 
         .ticket-details {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+            gap: 10px;
             margin-bottom: 20px;
         }
 
         .ticket-detail {
-            text-align: center;
-            padding: 12px;
             background: #f8f9fa;
-            border-radius: 10px;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
         }
 
         .ticket-detail .label {
@@ -1150,19 +979,19 @@
             color: #666;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 5px;
         }
 
         .ticket-detail .value {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--dark);
+            margin-top: 5px;
         }
 
         .ticket-barcode {
             background: var(--dark);
-            padding: 15px;
-            border-radius: 10px;
+            padding: 20px;
+            border-radius: 12px;
             text-align: center;
         }
 
@@ -1171,47 +1000,190 @@
             justify-content: center;
             gap: 2px;
             margin-bottom: 10px;
+            height: 50px;
         }
 
         .barcode-line {
             width: 3px;
             background: white;
-            border-radius: 1px;
+            border-radius: 2px;
+            animation: barcode-grow 0.5s ease forwards;
+            transform-origin: bottom;
+            transform: scaleY(0);
+        }
+
+        @keyframes barcode-grow {
+            to { transform: scaleY(1); }
         }
 
         .ticket-ref {
             color: white;
             font-family: monospace;
-            font-size: 18px;
+            font-size: 20px;
             letter-spacing: 4px;
         }
 
         .ticket-footer {
-            background: #f8f9fa;
-            padding: 15px 25px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 20px;
             text-align: center;
         }
 
         .ticket-footer p {
-            font-size: 12px;
+            font-size: 14px;
             color: #666;
+            margin-bottom: 5px;
+        }
+
+        .ticket-footer strong {
+            color: var(--primary);
         }
 
         .ticket-actions {
             display: flex;
             gap: 10px;
             justify-content: center;
-            margin-top: 20px;
+            margin-top: 25px;
         }
 
         .ticket-actions .btn {
-            padding: 12px 24px;
-            font-size: 14px;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 50px;
+        }
+
+        .ticket-actions .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .ticket-actions .btn-primary {
+            background: white;
+            color: var(--primary);
+        }
+
+        /* Success Message */
+        .success-message {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .success-message.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .success-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+            animation: success-pop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes success-pop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .success-message h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .success-message p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Processing Overlay */
+        .processing-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .processing-overlay.visible {
+            display: flex;
+        }
+
+        .processing-content {
+            text-align: center;
+            color: white;
+        }
+
+        .processing-spinner {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(255,255,255,0.2);
+            border-top-color: var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 25px;
+        }
+
+        .processing-content h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .processing-content p {
+            opacity: 0.7;
+        }
+
+        .processing-steps {
+            margin-top: 30px;
+            text-align: left;
+            display: inline-block;
+        }
+
+        .proc-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            opacity: 0.4;
+            transition: all 0.3s;
+        }
+
+        .proc-step.active {
+            opacity: 1;
+        }
+
+        .proc-step.done {
+            opacity: 1;
+            color: #4ade80;
+        }
+
+        .proc-step .check {
+            width: 24px;
+            height: 24px;
+            border: 2px solid currentColor;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .proc-step.done .check {
+            background: #4ade80;
+            border-color: #4ade80;
         }
 
         /* Testimonials */
         .testimonials-section {
-            padding: 100px 40px;
             background: var(--light);
         }
 
@@ -1219,13 +1191,13 @@
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
         }
 
         .testimonial-card {
             background: white;
-            padding: 30px;
+            padding: 25px;
             border-radius: 16px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
         }
@@ -1233,13 +1205,13 @@
         .testimonial-header {
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 15px;
         }
 
         .testimonial-avatar {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             overflow: hidden;
         }
@@ -1251,122 +1223,64 @@
         }
 
         .testimonial-author h4 {
-            font-size: 16px;
-            color: var(--dark);
+            font-size: 15px;
         }
 
         .testimonial-author p {
-            font-size: 13px;
+            font-size: 12px;
             color: #666;
         }
 
         .testimonial-stars {
             color: var(--secondary);
-            font-size: 18px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .testimonial-text {
-            font-size: 15px;
+            font-size: 14px;
             color: #555;
             line-height: 1.7;
             font-style: italic;
         }
 
-        .testimonial-dog {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #f0f0f0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .testimonial-dog img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .testimonial-dog span {
-            font-size: 13px;
-            color: #666;
-        }
-
-        /* Summary Cards */
-        .summary-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-
-        .summary-card h4 {
-            font-size: 14px;
-            color: var(--dark);
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            padding: 4px 0;
-        }
-
-        .summary-row .label { color: #666; }
-        .summary-row .value { color: #333; font-weight: 500; }
-
         /* Footer */
         footer {
             background: var(--dark);
             color: white;
-            padding: 60px 40px 30px;
+            padding: 50px 20px 25px;
         }
 
         .footer-content {
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
         }
 
         .footer-brand h3 {
-            font-size: 24px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .footer-brand p {
-            color: #aaa;
-            font-size: 14px;
-            line-height: 1.7;
-        }
-
-        .footer-column h4 {
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
-
-        .footer-column ul {
-            list-style: none;
-        }
-
-        .footer-column li {
+            font-size: 20px;
             margin-bottom: 10px;
         }
 
+        .footer-brand p {
+            font-size: 13px;
+            color: #aaa;
+            line-height: 1.6;
+        }
+
+        .footer-column h4 {
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
         .footer-column a {
+            display: block;
             color: #aaa;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
+            padding: 5px 0;
             transition: color 0.2s;
         }
 
@@ -1376,112 +1290,240 @@
 
         .footer-bottom {
             text-align: center;
-            padding-top: 30px;
+            padding-top: 25px;
             border-top: 1px solid #333;
             color: #666;
-            font-size: 14px;
+            font-size: 12px;
         }
 
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .hero-content,
+        /* Mobile Styles */
+        @media (max-width: 900px) {
+            .nav-links, .nav-cta {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-stats {
+                justify-content: center;
+            }
+
+            .hero-visual {
+                order: -1;
+            }
+
+            .hero-image {
+                height: 300px;
+            }
+
+            .hero-notification {
+                position: relative;
+                bottom: auto;
+                left: auto;
+                transform: none;
+                margin-top: 20px;
+                justify-content: center;
+            }
+
             .booking-container {
                 grid-template-columns: 1fr;
             }
 
-            .trust-grid,
-            .gallery-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .map-panel {
+                display: none;
             }
 
-            .testimonials-grid {
+            .booking-panel {
+                max-height: none;
+            }
+
+            .gallery-item:first-child {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+
+            .ticket-details {
                 grid-template-columns: 1fr;
             }
 
-            .footer-content {
-                grid-template-columns: 1fr 1fr;
+            .ticket-route {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .route-line {
+                width: 3px;
+                height: 40px;
+                margin: 0;
+            }
+
+            .route-line::before {
+                animation: van-move-vertical 2s ease-in-out infinite;
+            }
+
+            @keyframes van-move-vertical {
+                0%, 100% { transform: translate(-50%, -50%) translateY(-5px); }
+                50% { transform: translate(-50%, -50%) translateY(5px); }
             }
         }
 
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .hero h1 { font-size: 36px; }
-            .trust-grid, .gallery-grid { grid-template-columns: 1fr; }
-            .journey-steps { flex-direction: column; gap: 30px; }
-            .journey-steps::before { display: none; }
-            .footer-content { grid-template-columns: 1fr; }
-            .ticket-details { grid-template-columns: 1fr; }
+        @media (max-width: 480px) {
+            .section {
+                padding: 50px 15px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+            .ticket-animation-container {
+                width: 95%;
+            }
+
+            .ticket-actions {
+                flex-direction: column;
+            }
+
+            .ticket-actions .btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Processing Overlay -->
     <div class="processing-overlay" id="processingOverlay">
-        <div class="processing-card">
+        <div class="processing-content">
             <div class="processing-spinner"></div>
             <h3>Processing Payment</h3>
             <p>Please wait while we secure your booking...</p>
             <div class="processing-steps">
-                <div class="processing-step" id="procStep1">
-                    <div class="check">✓</div>
-                    <span>Validating card details</span>
+                <div class="proc-step" id="procStep1"><div class="check">✓</div><span>Validating card</span></div>
+                <div class="proc-step" id="procStep2"><div class="check">✓</div><span>Processing payment</span></div>
+                <div class="proc-step" id="procStep3"><div class="check">✓</div><span>Confirming booking</span></div>
+                <div class="proc-step" id="procStep4"><div class="check">✓</div><span>Generating ticket</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full Screen Ticket Overlay -->
+    <div class="ticket-overlay" id="ticketOverlay">
+        <div class="confetti-container" id="confettiContainer"></div>
+        
+        <div class="ticket-animation-container">
+            <div class="success-message" id="successMessage">
+                <div class="success-icon">🎉</div>
+                <h2>Payment Successful!</h2>
+                <p>Your furry friend is booked and ready to travel</p>
+            </div>
+
+            <div class="animated-ticket" id="animatedTicket">
+                <div class="ticket-shine"></div>
+                <div class="ticket-header">
+                    <h2>🐕 Viva Españiel</h2>
+                    <div class="ticket-class">✨ First Class Woof ✨</div>
                 </div>
-                <div class="processing-step" id="procStep2">
-                    <div class="check">✓</div>
-                    <span>Processing payment</span>
+                <div class="ticket-body">
+                    <div class="ticket-passenger">
+                        <div class="passenger-avatar">
+                            <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&q=80" alt="Dog" id="ticketDogImage">
+                        </div>
+                        <div class="passenger-info">
+                            <h3 id="ticketDogName">Buddy</h3>
+                            <p id="ticketBreed">Spanish Galgo • Medium</p>
+                        </div>
+                    </div>
+                    <div class="ticket-route">
+                        <div class="route-point">
+                            <div class="flag" id="ticketFromFlag">🇪🇸</div>
+                            <div class="city" id="ticketFromCity">Spain</div>
+                        </div>
+                        <div class="route-line"></div>
+                        <div class="route-point">
+                            <div class="flag" id="ticketToFlag">🇬🇧</div>
+                            <div class="city" id="ticketToCity">Manchester</div>
+                        </div>
+                    </div>
+                    <div class="ticket-details">
+                        <div class="ticket-detail">
+                            <div class="label">Distance</div>
+                            <div class="value" id="ticketDistance">265mi</div>
+                        </div>
+                        <div class="ticket-detail">
+                            <div class="label">Van</div>
+                            <div class="value" id="ticketVan">Luna 🌙</div>
+                        </div>
+                        <div class="ticket-detail">
+                            <div class="label">Total Paid</div>
+                            <div class="value" id="ticketTotal">£831</div>
+                        </div>
+                    </div>
+                    <div class="ticket-barcode">
+                        <div class="barcode-lines" id="barcodeLines"></div>
+                        <div class="ticket-ref" id="ticketRef">VE-XXXXXX</div>
+                    </div>
                 </div>
-                <div class="processing-step" id="procStep3">
-                    <div class="check">✓</div>
-                    <span>Confirming booking</span>
+                <div class="ticket-footer">
+                    <p>🐾 We'll be in touch to arrange collection!</p>
+                    <p>Confirmation sent to <strong id="ticketEmail">email@example.com</strong></p>
                 </div>
-                <div class="processing-step" id="procStep4">
-                    <div class="check">✓</div>
-                    <span>Generating ticket</span>
-                </div>
+            </div>
+
+            <div class="ticket-actions" id="ticketActions" style="opacity: 0;">
+                <button class="btn btn-secondary" onclick="window.print()">🖨️ Print</button>
+                <button class="btn btn-primary" onclick="closeTicket()">Book Another</button>
             </div>
         </div>
     </div>
 
     <!-- Navigation -->
     <nav>
-        <a href="#" class="nav-logo">
-            <span>🐕</span> Viva Españiel
-        </a>
+        <a href="#" class="nav-logo">🐕 Viva Españiel</a>
         <ul class="nav-links">
             <li><a href="#trust">Why Us</a></li>
             <li><a href="#gallery">Happy Dogs</a></li>
-            <li><a href="#how">How It Works</a></li>
             <li><a href="#booking">Book Now</a></li>
             <li><a href="#testimonials">Stories</a></li>
         </ul>
         <a href="#booking" class="nav-cta">Book Transport</a>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
     </nav>
 
-    <!-- Hero Section -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#trust" onclick="toggleMobileMenu()">Why Us</a>
+        <a href="#gallery" onclick="toggleMobileMenu()">Happy Dogs</a>
+        <a href="#testimonials" onclick="toggleMobileMenu()">Stories</a>
+        <a href="#booking" onclick="toggleMobileMenu()">Book Now</a>
+    </div>
+
+    <!-- Hero -->
     <section class="hero">
         <div class="hero-content">
             <div class="hero-text">
                 <div class="hero-badge">🇪🇸 Spain ↔ UK 🇬🇧 Trusted Pet Transport</div>
                 <h1>Safe Journeys for Your Furry Family</h1>
-                <p>Viva Españiel specialises in reuniting dogs with their families between Spain and the UK. With love, care, and years of experience, we ensure every paw-senger travels in comfort and safety.</p>
+                <p>Reuniting dogs with their families between Spain and the UK. Every paw-senger travels in comfort and safety.</p>
                 <div class="hero-stats">
-                    <div class="stat">
-                        <div class="stat-number">2,500+</div>
-                        <div class="stat-label">Happy Dogs</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">5 Years</div>
-                        <div class="stat-label">Experience</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">100%</div>
-                        <div class="stat-label">Safe Arrivals</div>
-                    </div>
+                    <div class="stat"><div class="stat-number">2,500+</div><div class="stat-label">Happy Dogs</div></div>
+                    <div class="stat"><div class="stat-number">5 Years</div><div class="stat-label">Experience</div></div>
+                    <div class="stat"><div class="stat-number">100%</div><div class="stat-label">Safe Arrivals</div></div>
                 </div>
             </div>
             <div class="hero-visual">
                 <img src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=800&q=80" alt="Happy dog" class="hero-image">
-                <div class="hero-badge-floating">
+                <div class="hero-notification">
                     <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=100&q=80" alt="Dog">
                     <div class="text">
                         <strong>Luna arrived safely! 🎉</strong>
@@ -1492,553 +1534,220 @@
         </div>
     </section>
 
-    <!-- Trust Section -->
-    <section class="trust-section" id="trust">
+    <!-- Trust -->
+    <section class="section trust-section" id="trust">
         <div class="section-header">
             <h2>Why Families Trust Us</h2>
-            <p>Every dog is a VIP (Very Important Pup) to us. Here's how we ensure a safe, comfortable journey.</p>
+            <p>Every dog is a VIP (Very Important Pup) to us</p>
         </div>
         <div class="trust-grid">
             <div class="trust-card">
-                <div class="trust-icon">
-                    <img src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=200&q=80" alt="Vet">
-                </div>
+                <div class="trust-icon"><img src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=200&q=80" alt="Vet"></div>
                 <h3>Vet Approved</h3>
-                <p>Partnership with vets at both ends. Health checks before and after every journey.</p>
+                <p>Health checks before and after every journey</p>
             </div>
             <div class="trust-card">
-                <div class="trust-icon">
-                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=80" alt="Van">
-                </div>
+                <div class="trust-icon"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=80" alt="Van"></div>
                 <h3>Climate Controlled</h3>
-                <p>Our vans have AC and heating to keep your pup comfortable whatever the weather.</p>
+                <p>AC and heating for maximum comfort</p>
             </div>
             <div class="trust-card">
-                <div class="trust-icon">
-                    <img src="https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=200&q=80" alt="GPS">
-                </div>
+                <div class="trust-icon"><img src="https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=200&q=80" alt="GPS"></div>
                 <h3>Live Tracking</h3>
-                <p>Know where your furry friend is at all times with journey updates and photos.</p>
+                <p>Real-time updates and photos</p>
             </div>
             <div class="trust-card">
-                <div class="trust-icon">
-                    <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=200&q=80" alt="Walk">
-                </div>
+                <div class="trust-icon"><img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=200&q=80" alt="Walk"></div>
                 <h3>Regular Stops</h3>
-                <p>Comfort breaks every 2-3 hours for walks, water, and tail-wagging time.</p>
+                <p>Comfort breaks every 2-3 hours</p>
             </div>
         </div>
     </section>
 
-    <!-- Gallery Section -->
-    <section class="gallery-section" id="gallery">
+    <!-- Gallery -->
+    <section class="section" id="gallery">
         <div class="section-header">
             <h2>Happy Arrivals 🐾</h2>
-            <p>Some of our wonderful paw-sengers who've made the journey.</p>
+            <p>Some of our wonderful paw-sengers</p>
         </div>
         <div class="gallery-grid">
             <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=800&q=80" alt="Dog">
-                <div class="overlay">
-                    <h4>Luna</h4>
-                    <p>Spanish Galgo • Murcia → Manchester</p>
-                </div>
+                <img src="https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=800&q=80" alt="Luna">
+                <div class="gallery-overlay"><h4>Luna</h4><p>Galgo • Murcia → Manchester</p></div>
             </div>
             <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&q=80" alt="Dog">
-                <div class="overlay">
-                    <h4>Max</h4>
-                    <p>Podenco • Valencia → London</p>
-                </div>
+                <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&q=80" alt="Max">
+                <div class="gallery-overlay"><h4>Max</h4><p>Podenco • Valencia → London</p></div>
             </div>
             <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?w=400&q=80" alt="Dog">
-                <div class="overlay">
-                    <h4>Bella</h4>
-                    <p>Mixed Breed • Seville → Bristol</p>
-                </div>
+                <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?w=400&q=80" alt="Bella">
+                <div class="gallery-overlay"><h4>Bella</h4><p>Mixed • Seville → Bristol</p></div>
             </div>
             <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&q=80" alt="Dog">
-                <div class="overlay">
-                    <h4>Charlie</h4>
-                    <p>Golden Retriever • Madrid → Edinburgh</p>
-                </div>
+                <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&q=80" alt="Charlie">
+                <div class="gallery-overlay"><h4>Charlie</h4><p>Golden • Madrid → Edinburgh</p></div>
             </div>
             <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400&q=80" alt="Dog">
-                <div class="overlay">
-                    <h4>Rocky</h4>
-                    <p>Bulldog • Barcelona → Birmingham</p>
-                </div>
+                <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400&q=80" alt="Rocky">
+                <div class="gallery-overlay"><h4>Rocky</h4><p>Bulldog • Barcelona → Birmingham</p></div>
             </div>
         </div>
     </section>
 
-    <!-- How It Works -->
-    <section class="how-section" id="how">
-        <div class="section-header">
-            <h2>How It Works</h2>
-            <p>From booking to belly rubs at home - here's the journey.</p>
-        </div>
-        <div class="journey-steps">
-            <div class="journey-step">
-                <div class="step-image">
-                    <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=200&q=80" alt="Book">
-                </div>
-                <h3>Book Online</h3>
-                <p>Tell us about your dog and choose your pickup/delivery location.</p>
-            </div>
-            <div class="journey-step">
-                <div class="step-image">
-                    <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=200&q=80" alt="Paperwork">
-                </div>
-                <h3>Paperwork</h3>
-                <p>We guide you through pet passports and travel requirements.</p>
-            </div>
-            <div class="journey-step">
-                <div class="step-image">
-                    <img src="https://images.unsplash.com/photo-1544568100-847a948585b9?w=200&q=80" alt="Collect">
-                </div>
-                <h3>We Collect</h3>
-                <p>Our caring team picks up your pup from your door.</p>
-            </div>
-            <div class="journey-step">
-                <div class="step-image">
-                    <img src="https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?w=200&q=80" alt="Home">
-                </div>
-                <h3>Home Safe</h3>
-                <p>Delivered to your doorstep with photos and updates throughout.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Booking Section -->
+    <!-- Booking -->
     <section class="booking-section" id="booking">
         <div class="section-header">
             <h2>🎫 Book Your Dog's Journey</h2>
-            <p>Get an instant quote and book in minutes.</p>
+            <p>Get an instant quote and book in minutes</p>
         </div>
         <div class="booking-container">
             <div class="booking-panel">
-                <!-- Direction Toggle -->
                 <div class="direction-toggle">
-                    <button class="direction-btn active" data-direction="spain-to-uk" onclick="setDirection('spain-to-uk')">
-                        🇪🇸 Spain → UK 🇬🇧
-                    </button>
-                    <button class="direction-btn" data-direction="uk-to-spain" onclick="setDirection('uk-to-spain')">
-                        🇬🇧 UK → Spain 🇪🇸
-                    </button>
+                    <button class="direction-btn active" data-direction="spain-to-uk" onclick="setDirection('spain-to-uk')">🇪🇸 Spain → UK 🇬🇧</button>
+                    <button class="direction-btn" data-direction="uk-to-spain" onclick="setDirection('uk-to-spain')">🇬🇧 UK → Spain 🇪🇸</button>
                 </div>
 
-                <!-- Step Indicator -->
                 <div class="step-indicator">
-                    <div class="step active" data-step="1">
-                        <div class="step-num">1</div>
-                        <div class="step-label">Route</div>
-                    </div>
-                    <div class="step" data-step="2">
-                        <div class="step-num">2</div>
-                        <div class="step-label">Details</div>
-                    </div>
-                    <div class="step" data-step="3">
-                        <div class="step-num">3</div>
-                        <div class="step-label">Review</div>
-                    </div>
-                    <div class="step" data-step="4">
-                        <div class="step-num">4</div>
-                        <div class="step-label">Payment</div>
-                    </div>
+                    <div class="step active" data-step="1"><div class="step-num">1</div><div class="step-label">Route</div></div>
+                    <div class="step" data-step="2"><div class="step-num">2</div><div class="step-label">Details</div></div>
+                    <div class="step" data-step="3"><div class="step-num">3</div><div class="step-label">Review</div></div>
+                    <div class="step" data-step="4"><div class="step-num">4</div><div class="step-label">Pay</div></div>
                 </div>
 
-                <!-- Step 1: Route -->
+                <!-- Step 1 -->
                 <div class="booking-step active" id="step1">
-                    <div class="origin-info" id="originInfo">
-                        <h3>🇪🇸 Your Dog's Journey</h3>
-                        <p>We collect your dog from Spain and transport them safely to Dover, then deliver directly to your UK address.</p>
-                    </div>
-
                     <div class="form-group">
-                        <label for="destination" id="addressLabel">Your UK Delivery Address</label>
-                        <input type="text" id="destination" placeholder="e.g., Manchester, B1 1AA, 10 High Street">
+                        <label id="addressLabel">Your UK Delivery Address</label>
+                        <input type="text" id="destination" placeholder="e.g., Manchester, SW1A 1AA">
                     </div>
-
-                    <button class="btn btn-primary" id="calculateBtn" onclick="calculateRoute()">
-                        Calculate Price
-                    </button>
-
+                    <button class="btn btn-primary" onclick="calculateRoute()">Calculate Price</button>
                     <div class="error-message" id="errorMessage"></div>
-
-                    <div class="price-breakdown" id="priceBreakdown" style="display: none;">
-                        <h3>💰 Price Breakdown</h3>
-                        <div class="price-line" id="priceLine1">
-                            <span class="label">Spain to Dover</span>
-                            <span class="value">£699.00</span>
-                        </div>
-                        <div class="price-line" id="priceLine2">
-                            <span class="label">Dover to <span id="destName">your address</span></span>
-                            <span class="value"><span id="deliveryMiles">0</span> miles × 50p</span>
-                        </div>
-                        <div class="price-line">
-                            <span class="label" id="deliveryLabel">UK Delivery Cost</span>
-                            <span class="value" id="deliveryCost">£0.00</span>
-                        </div>
-                        <div class="price-line total">
-                            <span class="label">Total Price</span>
-                            <span class="value" id="totalPrice">£699.00</span>
-                        </div>
-                        <div class="btn-row">
-                            <button class="btn btn-primary" onclick="goToStep(2)">Continue to Details</button>
-                        </div>
+                    <div class="price-breakdown" id="priceBreakdown" style="display:none;">
+                        <div class="price-line"><span>Spain to Dover</span><span>£699.00</span></div>
+                        <div class="price-line"><span>UK Delivery (<span id="deliveryMiles">0</span> mi)</span><span id="deliveryCost">£0.00</span></div>
+                        <div class="price-line total"><span>Total</span><span class="value" id="totalPrice">£699.00</span></div>
+                        <div class="btn-row"><button class="btn btn-primary" onclick="goToStep(2)">Continue</button></div>
                     </div>
                 </div>
 
-                <!-- Step 2: Details -->
+                <!-- Step 2 -->
                 <div class="booking-step" id="step2">
-                    <h3 style="font-size: 16px; margin-bottom: 20px; color: var(--dark);">📋 Your Details</h3>
-                    
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="firstName">First Name</label>
-                            <input type="text" id="firstName" placeholder="John">
-                        </div>
-                        <div class="form-group">
-                            <label for="lastName">Last Name</label>
-                            <input type="text" id="lastName" placeholder="Smith">
-                        </div>
+                        <div class="form-group"><label>First Name</label><input type="text" id="firstName" placeholder="John"></div>
+                        <div class="form-group"><label>Last Name</label><input type="text" id="lastName" placeholder="Smith"></div>
                     </div>
-
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" placeholder="john@example.com">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" placeholder="07700 900123">
-                    </div>
-
-                    <h3 style="font-size: 16px; margin: 25px 0 20px; color: var(--dark);">🐕 Dog Details</h3>
-
+                    <div class="form-group"><label>Email</label><input type="email" id="email" placeholder="john@example.com"></div>
+                    <div class="form-group"><label>Phone</label><input type="tel" id="phone" placeholder="07700 900123"></div>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="dogName">Dog's Name</label>
-                            <input type="text" id="dogName" placeholder="Buddy">
-                        </div>
-                        <div class="form-group">
-                            <label for="dogBreed">Breed</label>
-                            <select id="dogBreed" onchange="showBreedTips()">
-                                <option value="">Select breed...</option>
-                                <optgroup label="Popular Spanish Rescues">
-                                    <option value="galgo">Spanish Galgo</option>
-                                    <option value="podenco">Podenco</option>
-                                    <option value="mastin">Spanish Mastín</option>
-                                    <option value="bodeguero">Ratonero Bodeguero</option>
-                                </optgroup>
-                                <optgroup label="Common Breeds">
-                                    <option value="labrador">Labrador Retriever</option>
-                                    <option value="german-shepherd">German Shepherd</option>
-                                    <option value="golden">Golden Retriever</option>
-                                    <option value="bulldog">Bulldog</option>
-                                    <option value="french-bulldog">French Bulldog</option>
-                                    <option value="husky">Siberian Husky</option>
-                                    <option value="staffie">Staffordshire Bull Terrier</option>
-                                </optgroup>
+                        <div class="form-group"><label>Dog's Name</label><input type="text" id="dogName" placeholder="Buddy"></div>
+                        <div class="form-group"><label>Breed</label>
+                            <select id="dogBreed">
+                                <option value="">Select...</option>
+                                <option value="galgo">Spanish Galgo</option>
+                                <option value="podenco">Podenco</option>
+                                <option value="labrador">Labrador</option>
+                                <option value="bulldog">Bulldog</option>
                                 <option value="mixed">Mixed Breed</option>
                                 <option value="other">Other</option>
                             </select>
                         </div>
                     </div>
-
-                    <div class="breed-tips" id="breedTips">
-                        <h4>💡 Travel Tips for <span id="breedTipName">your dog</span></h4>
-                        <p id="breedTipText"></p>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="dogSize">Size</label>
+                    <div class="form-group"><label>Size</label>
                         <select id="dogSize">
-                            <option value="">Select size...</option>
+                            <option value="">Select...</option>
                             <option value="small">Small (under 10kg)</option>
                             <option value="medium">Medium (10-25kg)</option>
                             <option value="large">Large (25-40kg)</option>
-                            <option value="xlarge">Extra Large (over 40kg)</option>
+                            <option value="xlarge">Extra Large (40kg+)</option>
                         </select>
                     </div>
-
                     <div class="btn-row">
                         <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
-                        <button class="btn btn-primary" onclick="goToStep(3)">Review Booking</button>
+                        <button class="btn btn-primary" onclick="goToStep(3)">Review</button>
                     </div>
                 </div>
 
-                <!-- Step 3: Review -->
+                <!-- Step 3 -->
                 <div class="booking-step" id="step3">
-                    <h3 style="font-size: 16px; margin-bottom: 20px; color: var(--dark);">✅ Review Your Booking</h3>
-
-                    <div class="summary-card">
-                        <h4>Journey</h4>
-                        <div class="summary-row">
-                            <span class="label">Direction</span>
-                            <span class="value" id="summaryDirection">Spain → UK</span>
-                        </div>
-                        <div class="summary-row">
-                            <span class="label">Address</span>
-                            <span class="value" id="summaryDest">-</span>
-                        </div>
-                        <div class="summary-row">
-                            <span class="label">UK Distance</span>
-                            <span class="value" id="summaryDistance">-</span>
-                        </div>
+                    <div style="background:#f8f9fa;padding:15px;border-radius:12px;margin-bottom:15px;">
+                        <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:14px;"><span style="color:#666;">Customer</span><span id="summaryName">-</span></div>
+                        <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:14px;"><span style="color:#666;">Dog</span><span id="summaryDog">-</span></div>
+                        <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:14px;"><span style="color:#666;">Destination</span><span id="summaryDest">-</span></div>
                     </div>
-
-                    <div class="summary-card">
-                        <h4>Customer</h4>
-                        <div class="summary-row">
-                            <span class="label">Name</span>
-                            <span class="value" id="summaryName">-</span>
-                        </div>
-                        <div class="summary-row">
-                            <span class="label">Email</span>
-                            <span class="value" id="summaryEmail">-</span>
-                        </div>
-                    </div>
-
-                    <div class="summary-card">
-                        <h4>Dog</h4>
-                        <div class="summary-row">
-                            <span class="label">Name</span>
-                            <span class="value" id="summaryDogName">-</span>
-                        </div>
-                        <div class="summary-row">
-                            <span class="label">Breed</span>
-                            <span class="value" id="summaryDogBreed">-</span>
-                        </div>
-                    </div>
-
                     <div class="price-breakdown">
-                        <h3>💰 Total to Pay</h3>
-                        <div class="price-line total" style="border: none; margin: 0; padding: 0;">
-                            <span class="label">Total</span>
-                            <span class="value" id="summaryTotal">£699.00</span>
-                        </div>
+                        <div class="price-line total" style="border:none;margin:0;padding:0;"><span>Total</span><span class="value" id="summaryTotal">£699</span></div>
                     </div>
-
                     <div class="btn-row">
                         <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
-                        <button class="btn btn-primary" onclick="goToStep(4)">Continue to Payment</button>
+                        <button class="btn btn-primary" onclick="goToStep(4)">Payment</button>
                     </div>
                 </div>
 
-                <!-- Step 4: Payment -->
+                <!-- Step 4 -->
                 <div class="booking-step" id="step4">
-                    <h3 style="font-size: 16px; margin-bottom: 20px; color: var(--dark);">💳 Payment Details</h3>
-
-                    <div class="payment-section">
-                        <div class="payment-header">
-                            <h4>Card Information</h4>
-                            <div class="card-icons">
-                                <div class="card-icon visa" id="cardVisa">VISA</div>
-                                <div class="card-icon mastercard" id="cardMC">MC</div>
-                                <div class="card-icon amex" id="cardAmex">AMEX</div>
-                            </div>
-                        </div>
-
-                        <div class="card-preview">
-                            <div class="card-type-display" id="cardTypeDisplay">💳</div>
-                            <div class="card-chip"></div>
-                            <div class="card-number-display" id="cardNumberDisplay">•••• •••• •••• ••••</div>
-                            <div class="card-details-display">
-                                <div class="card-detail-item">
-                                    <label>Card Holder</label>
-                                    <span id="cardHolderDisplay">YOUR NAME</span>
-                                </div>
-                                <div class="card-detail-item">
-                                    <label>Expires</label>
-                                    <span id="cardExpiryDisplay">MM/YY</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="cardName">Name on Card</label>
-                            <input type="text" id="cardName" placeholder="John Smith" oninput="updateCardPreview()">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="cardNumber">Card Number</label>
-                            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCardNumber(this); updateCardPreview()">
-                        </div>
-
-                        <div class="form-row-3">
-                            <div class="form-group">
-                                <label for="cardExpiry">Expiry</label>
-                                <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this); updateCardPreview()">
-                            </div>
-                            <div class="form-group">
-                                <label for="cardCvv">CVV</label>
-                                <input type="text" id="cardCvv" placeholder="123" maxlength="4">
-                            </div>
-                            <div class="form-group">
-                                <label for="cardZip">Postcode</label>
-                                <input type="text" id="cardZip" placeholder="SW1A 1AA">
-                            </div>
-                        </div>
-
-                        <div class="secure-badge">
-                            <span>🔒</span>
-                            <span>Your payment is secured with 256-bit SSL encryption</span>
+                    <div class="card-preview">
+                        <div class="card-chip"></div>
+                        <div class="card-number-display" id="cardDisplay">•••• •••• •••• ••••</div>
+                        <div class="card-icons">
+                            <span class="card-icon" id="iconVisa">VISA</span>
+                            <span class="card-icon" id="iconMC">MC</span>
+                            <span class="card-icon" id="iconAmex">AMEX</span>
                         </div>
                     </div>
-
+                    <div class="form-group"><label>Name on Card</label><input type="text" id="cardName" placeholder="John Smith" oninput="updateCard()"></div>
+                    <div class="form-group"><label>Card Number</label><input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this);updateCard()"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Expiry</label><input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)"></div>
+                        <div class="form-group"><label>CVV</label><input type="text" id="cardCvv" placeholder="123" maxlength="4"></div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;background:#e8f5e9;padding:10px;border-radius:8px;font-size:13px;color:#2d6a4f;margin-bottom:15px;">🔒 256-bit SSL encrypted</div>
                     <div class="price-breakdown">
-                        <div class="price-line total" style="border: none; margin: 0; padding: 0;">
-                            <span class="label">Amount to Pay</span>
-                            <span class="value" id="paymentTotal">£699.00</span>
-                        </div>
+                        <div class="price-line total" style="border:none;margin:0;padding:0;"><span>Pay Now</span><span class="value" id="payTotal">£699</span></div>
                     </div>
-
                     <div class="btn-row">
                         <button class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
                         <button class="btn btn-primary" onclick="processPayment()">🔒 Pay Now</button>
                     </div>
-
-                    <p style="font-size: 11px; color: #999; text-align: center; margin-top: 15px;">
-                        By clicking Pay Now, you agree to our Terms of Service and Privacy Policy.<br>
-                        <strong>TEST MODE</strong> - No real payment will be processed.
-                    </p>
-                </div>
-
-                <!-- Step 5: Ticket -->
-                <div class="booking-step" id="step5">
-                    <div class="ticket-container visible">
-                        <div class="boarding-pass">
-                            <div class="ticket-header">
-                                <div class="ticket-logo">🐕 Viva Españiel</div>
-                                <div class="ticket-class">✨ First Class Woof</div>
-                            </div>
-                            <div class="ticket-body">
-                                <div class="ticket-passenger">
-                                    <div class="passenger-avatar">
-                                        <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&q=80" alt="Dog" id="ticketDogImage">
-                                    </div>
-                                    <div class="passenger-info">
-                                        <h3 id="ticketDogName">Buddy</h3>
-                                        <p id="ticketBreed">Spanish Galgo</p>
-                                    </div>
-                                </div>
-                                <div class="ticket-route">
-                                    <div class="route-point">
-                                        <div class="flag" id="ticketFromFlag">🇪🇸</div>
-                                        <div class="city" id="ticketFromCity">Spain</div>
-                                        <div class="detail" id="ticketFromDetail">Pickup</div>
-                                    </div>
-                                    <div class="route-line"></div>
-                                    <div class="route-point">
-                                        <div class="flag" id="ticketToFlag">🇬🇧</div>
-                                        <div class="city" id="ticketToCity">Manchester</div>
-                                        <div class="detail" id="ticketToDetail">Delivery</div>
-                                    </div>
-                                </div>
-                                <div class="ticket-details">
-                                    <div class="ticket-detail">
-                                        <div class="label">Distance</div>
-                                        <div class="value" id="ticketDistance">265 mi</div>
-                                    </div>
-                                    <div class="ticket-detail">
-                                        <div class="label">Van</div>
-                                        <div class="value" id="ticketVan">Luna 🌙</div>
-                                    </div>
-                                    <div class="ticket-detail">
-                                        <div class="label">Paid</div>
-                                        <div class="value" id="ticketTotal">£831</div>
-                                    </div>
-                                </div>
-                                <div class="ticket-barcode">
-                                    <div class="barcode-lines" id="barcodeLines"></div>
-                                    <div class="ticket-ref" id="ticketRef">VE-XXXXXX</div>
-                                </div>
-                            </div>
-                            <div class="ticket-footer">
-                                <p>🐾 Payment successful! We'll be in touch to arrange collection. 🐾</p>
-                                <p style="margin-top: 5px;">Receipt sent to <strong id="ticketEmail">email@example.com</strong></p>
-                            </div>
-                        </div>
-                        <div class="ticket-actions">
-                            <button class="btn btn-secondary" onclick="window.print()">🖨️ Print Ticket</button>
-                            <button class="btn btn-primary" onclick="resetBooking()">Book Another Journey</button>
-                        </div>
-                    </div>
+                    <p style="font-size:11px;color:#999;text-align:center;margin-top:10px;">TEST MODE - No real payment</p>
                 </div>
             </div>
-
             <div class="map-panel">
                 <div id="map"></div>
-                <div class="loading" id="loading">
-                    <div class="spinner"></div>
-                    <span>Calculating route...</span>
-                </div>
+                <div class="loading" id="loading"><div class="spinner"></div><span>Calculating...</span></div>
             </div>
         </div>
     </section>
 
     <!-- Testimonials -->
-    <section class="testimonials-section" id="testimonials">
+    <section class="section testimonials-section" id="testimonials">
         <div class="section-header">
             <h2>Happy Tails 🐾</h2>
-            <p>Stories from families we've helped reunite.</p>
+            <p>Stories from families we've helped reunite</p>
         </div>
         <div class="testimonials-grid">
             <div class="testimonial-card">
                 <div class="testimonial-header">
-                    <div class="testimonial-avatar">
-                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80" alt="Sarah">
-                    </div>
-                    <div class="testimonial-author">
-                        <h4>Sarah Mitchell</h4>
-                        <p>Manchester</p>
-                    </div>
+                    <div class="testimonial-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80" alt="Sarah"></div>
+                    <div class="testimonial-author"><h4>Sarah Mitchell</h4><p>Manchester</p></div>
                 </div>
                 <div class="testimonial-stars">★★★★★</div>
-                <p class="testimonial-text">"Luna arrived safe and sound after her journey from Murcia. The team sent photos every few hours and she was so happy when she got home!"</p>
-                <div class="testimonial-dog">
-                    <img src="https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=100&q=80" alt="Luna">
-                    <span>Luna, Spanish Galgo</span>
-                </div>
+                <p class="testimonial-text">"Luna arrived safe and sound! The team sent photos every few hours. Can't recommend enough!"</p>
             </div>
             <div class="testimonial-card">
                 <div class="testimonial-header">
-                    <div class="testimonial-avatar">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80" alt="James">
-                    </div>
-                    <div class="testimonial-author">
-                        <h4>James Thompson</h4>
-                        <p>Bristol</p>
-                    </div>
+                    <div class="testimonial-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80" alt="James"></div>
+                    <div class="testimonial-author"><h4>James Thompson</h4><p>Bristol</p></div>
                 </div>
                 <div class="testimonial-stars">★★★★★</div>
-                <p class="testimonial-text">"We rescued Pablo from Valencia. Viva Españiel handled everything - the paperwork, the journey, everything. He's now living his best life!"</p>
-                <div class="testimonial-dog">
-                    <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=100&q=80" alt="Pablo">
-                    <span>Pablo, Podenco Mix</span>
-                </div>
+                <p class="testimonial-text">"We rescued Pablo from Valencia. They handled everything - paperwork, journey, everything. 10/10!"</p>
             </div>
             <div class="testimonial-card">
                 <div class="testimonial-header">
-                    <div class="testimonial-avatar">
-                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80" alt="Emma">
-                    </div>
-                    <div class="testimonial-author">
-                        <h4>Emma Watson</h4>
-                        <p>Edinburgh</p>
-                    </div>
+                    <div class="testimonial-avatar"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80" alt="Emma"></div>
+                    <div class="testimonial-author"><h4>Emma Watson</h4><p>Edinburgh</p></div>
                 </div>
                 <div class="testimonial-stars">★★★★★</div>
-                <p class="testimonial-text">"Moving back to the UK from Marbella, we were worried about Churro. The team treated him like royalty - climate controlled van, regular stops, 10/10!"</p>
-                <div class="testimonial-dog">
-                    <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=100&q=80" alt="Churro">
-                    <span>Churro, French Bulldog</span>
-                </div>
+                <p class="testimonial-text">"Churro was treated like royalty - climate controlled van, regular stops, constant updates!"</p>
             </div>
         </div>
     </section>
@@ -2048,59 +1757,34 @@
         <div class="footer-content">
             <div class="footer-brand">
                 <h3>🐕 Viva Españiel</h3>
-                <p>Reuniting dogs with their families between Spain and the UK since 2019. Every journey is made with love, care, and plenty of treats.</p>
+                <p>Reuniting dogs with their families since 2019. Made with love and plenty of treats.</p>
             </div>
             <div class="footer-column">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="#trust">Why Us</a></li>
-                    <li><a href="#how">How It Works</a></li>
-                    <li><a href="#booking">Book Now</a></li>
-                </ul>
+                <h4>Links</h4>
+                <a href="#trust">Why Us</a>
+                <a href="#booking">Book Now</a>
+                <a href="#testimonials">Stories</a>
             </div>
             <div class="footer-column">
                 <h4>Support</h4>
-                <ul>
-                    <li><a href="#">Pet Passport Guide</a></li>
-                    <li><a href="#">Travel Requirements</a></li>
-                    <li><a href="#">FAQ</a></li>
-                </ul>
+                <a href="#">Pet Passport Guide</a>
+                <a href="#">FAQ</a>
+                <a href="#">Contact</a>
             </div>
             <div class="footer-column">
                 <h4>Contact</h4>
-                <ul>
-                    <li><a href="#">hello@vivaespaniel.com</a></li>
-                    <li><a href="#">+44 (0) 800 123 4567</a></li>
-                </ul>
+                <a href="#">hello@vivaespaniel.com</a>
+                <a href="#">+44 800 123 4567</a>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>© 2026 Viva Españiel • Made with 🐾 for dog lovers • TEST APPLICATION - No real payments processed</p>
-        </div>
+        <div class="footer-bottom">© 2026 Viva Españiel • TEST APPLICATION</div>
     </footer>
 
     <script>
-        // OpenRouteService API Key
         const ORS_API_KEY = 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjMzYTM4NmFmMTc2YjQ1YjRiZTFlNjM4ZGU5ZGQ1MWRmIiwiaCI6Im11cm11cjY0In0=';
-
-        const SPAIN_DOVER_PRICE = 699;
-        const PRICE_PER_MILE = 0.50;
-        const DOVER_PORT = { lat: 51.1279, lng: 1.3134, name: 'Dover' };
-
+        const DOVER = { lat: 51.1279, lng: 1.3134 };
         let currentDirection = 'spain-to-uk';
-        let routeData = { destination: null, distanceMiles: 0, deliveryCost: 0, totalPrice: SPAIN_DOVER_PRICE };
-
-        const breedTips = {
-            'galgo': { name: 'Spanish Galgo', tip: 'Galgos love cozy spaces! We provide extra soft bedding and blankets for these gentle souls.' },
-            'podenco': { name: 'Podenco', tip: 'Active and curious! Podencos enjoy their comfort breaks with plenty of sniffing time.' },
-            'mastin': { name: 'Spanish Mastín', tip: 'Our gentle giants get extra space in the van and plenty of water breaks.' },
-            'labrador': { name: 'Labrador', tip: 'Labs are great travelers! We keep them busy with safe chew toys.' },
-            'bulldog': { name: 'Bulldog', tip: 'Temperature control is crucial! Our vans are kept cool for flat-faced breeds.' },
-            'french-bulldog': { name: 'French Bulldog', tip: 'Frenchies need special care! Climate control and frequent monitoring throughout.' },
-            'husky': { name: 'Siberian Husky', tip: 'These fluffy friends need it cool! Extra AC and shaded rest stops.' },
-            'mixed': { name: 'Mixed Breed', tip: 'Every mixed breed is unique! Tell us about your dog\'s needs.' }
-        };
-
+        let routeData = { destination: null, miles: 0, total: 699 };
         const vanNames = ['Luna 🌙', 'Sol ☀️', 'Estrella ⭐', 'Mar 🌊', 'Cielo 🌤️'];
         const dogImages = [
             'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&q=80',
@@ -2109,41 +1793,32 @@
             'https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=200&q=80'
         ];
 
-        // Map setup
+        // Map
         const map = L.map('map').setView([48, -2], 5);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OSM' }).addTo(map);
         let routeLayer = L.layerGroup().addTo(map);
-
-        const spainIcon = L.divIcon({ className: 'marker', html: '<div style="background:#c84b31;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 3px 10px rgba(0,0,0,0.3);border:3px solid white;">🇪🇸</div>', iconSize: [40,40], iconAnchor: [20,20] });
-        const doverIcon = L.divIcon({ className: 'marker', html: '<div style="background:#0ea5e9;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 10px rgba(0,0,0,0.3);border:3px solid white;">🚢</div>', iconSize: [36,36], iconAnchor: [18,18] });
-        const homeIcon = L.divIcon({ className: 'marker', html: '<div style="background:#22c55e;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 2px 10px rgba(0,0,0,0.3);border:3px solid white;">🏠</div>', iconSize: [36,36], iconAnchor: [18,18] });
 
         function initMap() {
             routeLayer.clearLayers();
-            L.marker([40.4168, -3.7038], { icon: spainIcon }).addTo(routeLayer);
-            L.marker([DOVER_PORT.lat, DOVER_PORT.lng], { icon: doverIcon }).addTo(routeLayer);
+            L.marker([40.4168, -3.7038]).addTo(routeLayer).bindPopup('Spain');
+            L.marker([DOVER.lat, DOVER.lng]).addTo(routeLayer).bindPopup('Dover');
         }
         initMap();
 
+        // Mobile menu
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('active');
+        }
+
+        // Direction
         function setDirection(dir) {
             currentDirection = dir;
             document.querySelectorAll('.direction-btn').forEach(b => b.classList.toggle('active', b.dataset.direction === dir));
-            const info = document.getElementById('originInfo');
-            const label = document.getElementById('addressLabel');
-            if (dir === 'spain-to-uk') {
-                info.className = 'origin-info';
-                info.innerHTML = '<h3>🇪🇸 Your Dog\'s Journey</h3><p>We collect your dog from Spain and transport them safely to Dover, then deliver directly to your UK address.</p>';
-                label.textContent = 'Your UK Delivery Address';
-            } else {
-                info.className = 'origin-info uk-origin';
-                info.innerHTML = '<h3>🇬🇧 Your Dog\'s Journey</h3><p>We collect your dog from your UK address, transport them to Dover, then onward to Spain.</p>';
-                label.textContent = 'Your UK Pickup Address';
-            }
+            document.getElementById('addressLabel').textContent = dir === 'spain-to-uk' ? 'Your UK Delivery Address' : 'Your UK Pickup Address';
             document.getElementById('priceBreakdown').style.display = 'none';
-            document.getElementById('destination').value = '';
-            initMap();
         }
 
+        // Geocode
         async function geocode(loc) {
             const res = await fetch(`https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(loc)}&boundary.country=GB&size=1`);
             const data = await res.json();
@@ -2151,49 +1826,45 @@
             throw new Error('Location not found');
         }
 
+        // Route
         async function getRoute(start, end) {
             const res = await fetch(`https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}&start=${start.lng},${start.lat}&end=${end.lng},${end.lat}`);
             const data = await res.json();
-            if (data.features?.length) return { distance: data.features[0].properties.summary.distance, coordinates: data.features[0].geometry.coordinates };
+            if (data.features?.length) return { distance: data.features[0].properties.summary.distance, coords: data.features[0].geometry.coordinates };
             throw new Error('Route not found');
         }
 
         async function calculateRoute() {
             const dest = document.getElementById('destination').value.trim();
-            if (!dest) return showError('Please enter your UK address');
+            if (!dest) { showError('Please enter address'); return; }
             
             document.getElementById('errorMessage').classList.remove('visible');
-            document.getElementById('priceBreakdown').style.display = 'none';
             document.getElementById('loading').classList.add('visible');
-            document.getElementById('calculateBtn').disabled = true;
 
             try {
                 const destCoords = await geocode(dest);
-                const route = await getRoute(DOVER_PORT, destCoords);
+                const route = await getRoute(DOVER, destCoords);
                 
                 routeLayer.clearLayers();
-                L.marker([40.4168, -3.7038], { icon: spainIcon }).addTo(routeLayer);
-                L.marker([DOVER_PORT.lat, DOVER_PORT.lng], { icon: doverIcon }).addTo(routeLayer);
-                L.marker([destCoords.lat, destCoords.lng], { icon: homeIcon }).addTo(routeLayer);
-                L.polyline(route.coordinates.map(c => [c[1], c[0]]), { color: '#c84b31', weight: 5 }).addTo(routeLayer);
-                map.fitBounds([[40.4168, -3.7038], [DOVER_PORT.lat, DOVER_PORT.lng], [destCoords.lat, destCoords.lng]], { padding: [50, 50] });
+                L.marker([40.4168, -3.7038]).addTo(routeLayer);
+                L.marker([DOVER.lat, DOVER.lng]).addTo(routeLayer);
+                L.marker([destCoords.lat, destCoords.lng]).addTo(routeLayer);
+                L.polyline(route.coords.map(c => [c[1], c[0]]), { color: '#c84b31', weight: 4 }).addTo(routeLayer);
+                map.fitBounds([[40.4168, -3.7038], [DOVER.lat, DOVER.lng], [destCoords.lat, destCoords.lng]], { padding: [30, 30] });
 
                 const miles = route.distance / 1609.34;
-                const deliveryCost = miles * PRICE_PER_MILE;
-                const total = SPAIN_DOVER_PRICE + deliveryCost;
-                routeData = { destination: destCoords, distanceMiles: miles, deliveryCost, totalPrice: total };
+                const delivery = miles * 0.5;
+                const total = 699 + delivery;
+                routeData = { destination: destCoords, miles, total };
 
-                document.getElementById('destName').textContent = destCoords.name.split(',')[0];
-                document.getElementById('deliveryMiles').textContent = miles.toFixed(1);
-                document.getElementById('deliveryCost').textContent = `£${deliveryCost.toFixed(2)}`;
+                document.getElementById('deliveryMiles').textContent = miles.toFixed(0);
+                document.getElementById('deliveryCost').textContent = `£${delivery.toFixed(2)}`;
                 document.getElementById('totalPrice').textContent = `£${total.toFixed(2)}`;
                 document.getElementById('priceBreakdown').style.display = 'block';
             } catch (e) {
                 showError(e.message);
-            } finally {
-                document.getElementById('loading').classList.remove('visible');
-                document.getElementById('calculateBtn').disabled = false;
             }
+            document.getElementById('loading').classList.remove('visible');
         }
 
         function showError(msg) {
@@ -2202,35 +1873,21 @@
             el.classList.add('visible');
         }
 
-        function showBreedTips() {
-            const breed = document.getElementById('dogBreed').value;
-            const el = document.getElementById('breedTips');
-            if (breed && breedTips[breed]) {
-                document.getElementById('breedTipName').textContent = breedTips[breed].name;
-                document.getElementById('breedTipText').textContent = breedTips[breed].tip;
-                el.classList.add('visible');
-            } else el.classList.remove('visible');
-        }
-
         function goToStep(step) {
-            if (step === 2 && !routeData.distanceMiles) return showError('Calculate price first');
+            if (step === 2 && !routeData.miles) { showError('Calculate price first'); return; }
             if (step === 3) {
-                const f = ['firstName', 'lastName', 'email', 'phone', 'dogName', 'dogBreed', 'dogSize'];
-                if (f.some(id => !document.getElementById(id).value.trim())) return alert('Please fill all fields');
-                document.getElementById('summaryDirection').textContent = currentDirection === 'spain-to-uk' ? 'Spain → UK' : 'UK → Spain';
-                document.getElementById('summaryDest').textContent = routeData.destination.name.split(',').slice(0,2).join(',');
-                document.getElementById('summaryDistance').textContent = `${routeData.distanceMiles.toFixed(1)} miles`;
+                const fields = ['firstName', 'lastName', 'email', 'phone', 'dogName', 'dogBreed', 'dogSize'];
+                if (fields.some(f => !document.getElementById(f).value.trim())) { alert('Fill all fields'); return; }
                 document.getElementById('summaryName').textContent = `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`;
-                document.getElementById('summaryEmail').textContent = document.getElementById('email').value;
-                document.getElementById('summaryDogName').textContent = document.getElementById('dogName').value;
-                document.getElementById('summaryDogBreed').textContent = document.getElementById('dogBreed').options[document.getElementById('dogBreed').selectedIndex].text;
-                document.getElementById('summaryTotal').textContent = `£${routeData.totalPrice.toFixed(2)}`;
+                document.getElementById('summaryDog').textContent = `${document.getElementById('dogName').value} (${document.getElementById('dogBreed').options[document.getElementById('dogBreed').selectedIndex].text})`;
+                document.getElementById('summaryDest').textContent = routeData.destination.name.split(',')[0];
+                document.getElementById('summaryTotal').textContent = `£${routeData.total.toFixed(2)}`;
             }
             if (step === 4) {
-                document.getElementById('paymentTotal').textContent = `£${routeData.totalPrice.toFixed(2)}`;
+                document.getElementById('payTotal').textContent = `£${routeData.total.toFixed(2)}`;
                 document.getElementById('cardName').value = `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`;
-                updateCardPreview();
             }
+
             document.querySelectorAll('.booking-step').forEach(s => s.classList.remove('active'));
             document.getElementById(`step${step}`).classList.add('active');
             document.querySelectorAll('.step').forEach(s => {
@@ -2242,10 +1899,13 @@
         }
 
         // Card formatting
-        function formatCardNumber(input) {
+        function formatCard(input) {
             let v = input.value.replace(/\D/g, '').substring(0, 16);
             input.value = v.replace(/(.{4})/g, '$1 ').trim();
-            detectCardType(v);
+            document.querySelectorAll('.card-icon').forEach(i => i.classList.remove('active'));
+            if (/^4/.test(v)) document.getElementById('iconVisa').classList.add('active');
+            else if (/^5[1-5]/.test(v)) document.getElementById('iconMC').classList.add('active');
+            else if (/^3[47]/.test(v)) document.getElementById('iconAmex').classList.add('active');
         }
 
         function formatExpiry(input) {
@@ -2254,57 +1914,46 @@
             input.value = v;
         }
 
-        function detectCardType(num) {
-            document.querySelectorAll('.card-icon').forEach(i => i.classList.remove('active'));
-            const display = document.getElementById('cardTypeDisplay');
-            if (/^4/.test(num)) { document.getElementById('cardVisa').classList.add('active'); display.textContent = 'VISA'; }
-            else if (/^5[1-5]/.test(num)) { document.getElementById('cardMC').classList.add('active'); display.textContent = 'MC'; }
-            else if (/^3[47]/.test(num)) { document.getElementById('cardAmex').classList.add('active'); display.textContent = 'AMEX'; }
-            else display.textContent = '💳';
+        function updateCard() {
+            document.getElementById('cardDisplay').textContent = document.getElementById('cardNumber').value || '•••• •••• •••• ••••';
         }
 
-        function updateCardPreview() {
-            const num = document.getElementById('cardNumber').value || '•••• •••• •••• ••••';
-            const name = document.getElementById('cardName').value || 'YOUR NAME';
-            const exp = document.getElementById('cardExpiry').value || 'MM/YY';
-            document.getElementById('cardNumberDisplay').textContent = num || '•••• •••• •••• ••••';
-            document.getElementById('cardHolderDisplay').textContent = name.toUpperCase();
-            document.getElementById('cardExpiryDisplay').textContent = exp;
-        }
-
-        // Payment processing
+        // Payment
         async function processPayment() {
-            const fields = ['cardName', 'cardNumber', 'cardExpiry', 'cardCvv'];
-            if (fields.some(id => !document.getElementById(id).value.trim())) return alert('Please fill all card details');
+            if (!document.getElementById('cardNumber').value || !document.getElementById('cardCvv').value) { alert('Fill card details'); return; }
 
             const overlay = document.getElementById('processingOverlay');
             const steps = ['procStep1', 'procStep2', 'procStep3', 'procStep4'];
             overlay.classList.add('visible');
-            
+
             for (let i = 0; i < steps.length; i++) {
-                await new Promise(r => setTimeout(r, 800));
-                if (i > 0) document.getElementById(steps[i-1]).classList.remove('active');
-                document.getElementById(steps[i-1] || steps[i]).classList.add('done');
-                document.getElementById(steps[i]).classList.add('active');
+                await new Promise(r => setTimeout(r, 700));
+                steps.forEach((s, j) => {
+                    document.getElementById(s).classList.remove('active', 'done');
+                    if (j < i) document.getElementById(s).classList.add('done');
+                    if (j === i) document.getElementById(s).classList.add('active');
+                });
             }
-            await new Promise(r => setTimeout(r, 600));
+            await new Promise(r => setTimeout(r, 500));
             document.getElementById(steps[3]).classList.add('done');
             
             overlay.classList.remove('visible');
-            steps.forEach(s => { document.getElementById(s).classList.remove('active', 'done'); });
+            steps.forEach(s => document.getElementById(s).classList.remove('active', 'done'));
             
             showTicket();
         }
 
         function showTicket() {
             const ref = 'VE-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+            
+            // Update ticket
             document.getElementById('ticketDogName').textContent = document.getElementById('dogName').value;
-            document.getElementById('ticketBreed').textContent = document.getElementById('dogBreed').options[document.getElementById('dogBreed').selectedIndex].text;
+            document.getElementById('ticketBreed').textContent = `${document.getElementById('dogBreed').options[document.getElementById('dogBreed').selectedIndex].text} • ${document.getElementById('dogSize').options[document.getElementById('dogSize').selectedIndex].text}`;
             document.getElementById('ticketEmail').textContent = document.getElementById('email').value;
             document.getElementById('ticketRef').textContent = ref;
             document.getElementById('ticketVan').textContent = vanNames[Math.floor(Math.random() * vanNames.length)];
-            document.getElementById('ticketDistance').textContent = `${Math.round(routeData.distanceMiles)} mi`;
-            document.getElementById('ticketTotal').textContent = `£${Math.round(routeData.totalPrice)}`;
+            document.getElementById('ticketDistance').textContent = `${Math.round(routeData.miles)}mi`;
+            document.getElementById('ticketTotal').textContent = `£${Math.round(routeData.total)}`;
             document.getElementById('ticketDogImage').src = dogImages[Math.floor(Math.random() * dogImages.length)];
 
             const city = routeData.destination.name.split(',')[0];
@@ -2320,31 +1969,75 @@
                 document.getElementById('ticketToCity').textContent = 'Spain';
             }
 
-            const barcode = document.getElementById('barcodeLines');
-            barcode.innerHTML = '';
-            for (let i = 0; i < 40; i++) {
-                const line = document.createElement('div');
-                line.className = 'barcode-line';
-                line.style.height = `${20 + Math.random() * 20}px`;
-                barcode.appendChild(line);
-            }
+            // Show overlay
+            document.getElementById('ticketOverlay').classList.add('visible');
+            
+            // Create confetti
+            createConfetti();
 
-            document.querySelectorAll('.booking-step').forEach(s => s.classList.remove('active'));
-            document.getElementById('step5').classList.add('active');
-            document.querySelectorAll('.step').forEach(s => { s.classList.remove('active'); s.classList.add('completed'); });
+            // Animate sequence
+            setTimeout(() => {
+                document.getElementById('successMessage').classList.add('visible');
+            }, 300);
+
+            setTimeout(() => {
+                document.getElementById('animatedTicket').classList.add('revealed');
+                
+                // Animate barcode
+                const barcode = document.getElementById('barcodeLines');
+                barcode.innerHTML = '';
+                for (let i = 0; i < 35; i++) {
+                    const line = document.createElement('div');
+                    line.className = 'barcode-line';
+                    line.style.height = `${25 + Math.random() * 25}px`;
+                    line.style.animationDelay = `${0.8 + i * 0.02}s`;
+                    barcode.appendChild(line);
+                }
+            }, 800);
+
+            setTimeout(() => {
+                document.getElementById('ticketActions').style.opacity = '1';
+                document.getElementById('ticketActions').style.transition = 'opacity 0.5s';
+            }, 1600);
         }
 
-        function resetBooking() {
-            ['destination', 'firstName', 'lastName', 'email', 'phone', 'dogName', 'dogBreed', 'dogSize', 'cardName', 'cardNumber', 'cardExpiry', 'cardCvv', 'cardZip'].forEach(id => document.getElementById(id).value = '');
+        function createConfetti() {
+            const container = document.getElementById('confettiContainer');
+            container.innerHTML = '';
+            const colors = ['#c84b31', '#ffb319', '#2d6a4f', '#3b82f6', '#ec4899', '#f59e0b'];
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = `${5 + Math.random() * 10}px`;
+                confetti.style.height = `${5 + Math.random() * 10}px`;
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                confetti.style.animation = `confetti-fall ${2 + Math.random() * 3}s linear forwards`;
+                confetti.style.animationDelay = `${Math.random() * 2}s`;
+                container.appendChild(confetti);
+            }
+        }
+
+        function closeTicket() {
+            document.getElementById('ticketOverlay').classList.remove('visible');
+            document.getElementById('animatedTicket').classList.remove('revealed');
+            document.getElementById('successMessage').classList.remove('visible');
+            document.getElementById('ticketActions').style.opacity = '0';
+            
+            // Reset form
+            ['destination', 'firstName', 'lastName', 'email', 'phone', 'dogName', 'dogBreed', 'dogSize', 'cardName', 'cardNumber', 'cardExpiry', 'cardCvv'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('priceBreakdown').style.display = 'none';
-            document.getElementById('breedTips').classList.remove('visible');
-            routeData = { destination: null, distanceMiles: 0, deliveryCost: 0, totalPrice: SPAIN_DOVER_PRICE };
+            routeData = { destination: null, miles: 0, total: 699 };
             initMap();
-            setDirection('spain-to-uk');
             goToStep(1);
         }
 
+        // Keyboard
         document.getElementById('destination').addEventListener('keypress', e => { if (e.key === 'Enter') calculateRoute(); });
+        
+        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
             e.preventDefault();
             document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
