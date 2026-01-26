@@ -542,12 +542,14 @@
         /* Booking Section - Full Width */
         .booking-section {
             padding: 0;
+            display: block;
         }
 
         .booking-section .section-header {
             background: linear-gradient(135deg, var(--dark) 0%, #16213e 100%);
             padding: 60px 20px 40px;
             margin: 0;
+            width: 100%;
         }
 
         .booking-section .section-header h2,
@@ -558,7 +560,7 @@
         .booking-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            min-height: 80vh;
+            min-height: 700px;
         }
 
         .booking-panel {
@@ -941,9 +943,7 @@
 
         /* Map */
         .map-panel {
-            position: sticky;
-            top: 80px;
-            height: calc(100vh - 80px);
+            position: relative;
             background: #e8f4f8;
         }
 
