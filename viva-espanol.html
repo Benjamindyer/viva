@@ -2033,29 +2033,7 @@
                     </div>
                     <div class="form-group"><label>Email</label><input type="email" id="email" placeholder="john@example.com"></div>
                     <div class="form-group"><label>Phone</label><input type="tel" id="phone" placeholder="07700 900123"></div>
-                    <div class="form-row">
-                        <div class="form-group"><label>Dog's Name</label><input type="text" id="dogName" placeholder="Buddy"></div>
-                        <div class="form-group"><label>Breed</label>
-                            <select id="dogBreed">
-                                <option value="">Select...</option>
-                                <option value="galgo">Spanish Galgo</option>
-                                <option value="podenco">Podenco</option>
-                                <option value="labrador">Labrador</option>
-                                <option value="bulldog">Bulldog</option>
-                                <option value="mixed">Mixed Breed</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group"><label>Size</label>
-                        <select id="dogSize">
-                            <option value="">Select...</option>
-                            <option value="small">Small (under 10kg)</option>
-                            <option value="medium">Medium (10-25kg)</option>
-                            <option value="large">Large (25-40kg)</option>
-                            <option value="xlarge">Extra Large (40kg+)</option>
-                        </select>
-                    </div>
+                    <div class="form-group"><label>Dog's Name</label><input type="text" id="dogName" placeholder="Buddy"></div>
                     <div class="btn-row">
                         <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
                         <button class="btn btn-primary" onclick="goToStep(4)">Review</button>
@@ -2454,12 +2432,11 @@
             if (step === 2 && !routeData.travelDate)  { alert('Please select a travel date'); return; }
             if (step === 3 && !routeData.miles)        { showError('Calculate price first'); return; }
             if (step === 4) {
-                const fields = ['firstName','lastName','email','phone','dogName','dogBreed','dogSize'];
+                const fields = ['firstName','lastName','email','phone','dogName'];
                 if (fields.some(f => !document.getElementById(f).value.trim())) { alert('Please fill in all fields'); return; }
                 document.getElementById('summaryDate').textContent    = routeData.travelDate;
                 document.getElementById('summaryName').textContent    = `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`;
-                const breedSel = document.getElementById('dogBreed');
-                document.getElementById('summaryDog').textContent     = `${document.getElementById('dogName').value} (${breedSel.options[breedSel.selectedIndex].text})`;
+                document.getElementById('summaryDog').textContent     = document.getElementById('dogName').value;
                 document.getElementById('summarySpain').textContent  = routeData.spainDestination?.name?.split(',')[0] || '—';
                 document.getElementById('summaryDest').textContent    = routeData.destination?.name?.split(',')[0] || '—';
                 document.getElementById('summaryTotal').textContent   = `£${routeData.total.toFixed(2)}`;
@@ -2509,8 +2486,6 @@
             const btn = document.getElementById('submitBtn');
             btn.disabled    = true;
             btn.textContent = 'Submitting…';
-            const breedSel = document.getElementById('dogBreed');
-            const sizeSel  = document.getElementById('dogSize');
             try {
                 const res = await fetch(`${EDGE_BASE_URL}/submit-booking`, {
                     method: 'POST',
@@ -2524,9 +2499,6 @@
                         email:              document.getElementById('email').value.trim(),
                         phone:              document.getElementById('phone').value.trim(),
                         dogName:            document.getElementById('dogName').value.trim(),
-                        breed:              breedSel.value,
-                        breedDisplay:       breedSel.options[breedSel.selectedIndex].text,
-                        size:               sizeSel.value,
                         spainAddress:        document.getElementById('spainAddress').value.trim(),
                         spainAddressDisplay: routeData.spainDestination?.name || document.getElementById('spainAddress').value.trim(),
                         ukAddress:          document.getElementById('destination').value.trim(),
@@ -2561,9 +2533,6 @@
             document.getElementById('confirmOverlay').classList.remove('visible');
             ['spainAddress','destination','firstName','lastName','email','phone','dogName'].forEach(id => {
                 const el = document.getElementById(id); if (el) el.value = '';
-            });
-            ['dogBreed','dogSize'].forEach(id => {
-                const el = document.getElementById(id); if (el) el.selectedIndex = 0;
             });
             document.getElementById('priceBreakdown').style.display = 'none';
             document.querySelectorAll('.date-card').forEach(c => c.classList.remove('selected'));
