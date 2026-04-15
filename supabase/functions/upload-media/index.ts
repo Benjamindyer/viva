@@ -58,18 +58,17 @@ serve(async (req) => {
   try {
     const formData = await req.formData()
     const file = formData.get('file') as File | null
-    if (!file) throw new Error('No file provided')
+    if (!file || typeof file === 'string') throw new Error('No file provided')
 
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      throw new Error('File type not allowed. Use JPEG, PNG, WebP or GIF.')
+    if (file.type && !ALLOWED_TYPES.includes(file.type)) {
+      throw new Error(`File type not allowed: ${file.type}. Use JPEG, PNG, WebP or GIF.`)
     }
     if (file.size > MAX_SIZE) {
-      throw new Error('File too large. Maximum size is 5 MB.')
+      throw new Error(`File too large (${Math.round(file.size/1024)}KB). Maximum size is 5 MB.`)
     }
 
-    // Create bucket if it doesn't exist yet
-    await supabase.storage.createBucket(BUCKET, { public: true })
-    // (error is ignored — it just means bucket already exists)
+    // Ensure bucket exists (no-op if already there)
+    await supabase.storage.createBucket(BUCKET, { public: true }).catch(() => null)
 
     const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg'
     const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
@@ -79,7 +78,7 @@ serve(async (req) => {
       .from(BUCKET)
       .upload(fileName, arrayBuffer, { contentType: file.type, upsert: false })
 
-    if (uploadError) throw uploadError
+    if (uploadError) throw new Error(`Storage upload failed: ${uploadError.message}`)
 
     const { data: { publicUrl } } = supabase.storage.from(BUCKET).getPublicUrl(fileName)
 
