@@ -3,29 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viva Españiel - Safe Dog Transport Between Spain & UK</title>
-    <meta name="description" content="Viva Españiel offers caring road transport for dogs between Spain and the UK. Clear guidance on travel paperwork, comfortable journeys with regular stops, and updates along the route.">
-    <link rel="canonical" href="https://benjamindyer.github.io/ben-dyer-projects/viva-espanol.html">
+    <meta name="robots" content="index, follow">
+    <title>Viva Españiel — Dog Transport Spain ↔ UK</title>
+    <meta name="description" content="Professional dog transport between Spain and the UK. Door-to-door service, climate-controlled vans, live updates and regular stops. Book your dog's journey today.">
+    <link rel="canonical" href="https://vivaespaniel.com/">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://benjamindyer.github.io/ben-dyer-projects/viva-espanol.html">
-    <meta property="og:title" content="Viva Españiel - Safe Dog Transport Between Spain & UK">
-    <meta property="og:description" content="Caring road transport for dogs between Spain and the UK. Comfortable journeys, regular stops, and help understanding pet travel paperwork.">
-    <meta property="og:image" content="https://benjamindyer.github.io/ben-dyer-projects/jon-brown.png">
+    <meta property="og:url" content="https://vivaespaniel.com/">
+    <meta property="og:title" content="Viva Españiel — Dog Transport Spain ↔ UK">
+    <meta property="og:description" content="Professional dog transport between Spain and the UK. Door-to-door service, climate-controlled vans, live updates and regular stops.">
+    <meta property="og:image" content="https://vivaespaniel.com/jon-brown.png">
     <meta property="og:locale" content="en_GB">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Viva Españiel - Safe Dog Transport Between Spain & UK">
-    <meta name="twitter:description" content="Caring road transport for dogs between Spain and the UK. Comfortable journeys, regular stops, and help understanding pet travel paperwork.">
-    <meta name="twitter:image" content="https://benjamindyer.github.io/ben-dyer-projects/jon-brown.png">
+    <meta name="twitter:title" content="Viva Españiel — Dog Transport Spain ↔ UK">
+    <meta name="twitter:description" content="Professional dog transport between Spain and the UK. Door-to-door service, climate-controlled vans, live updates and regular stops.">
+    <meta name="twitter:image" content="https://vivaespaniel.com/jon-brown.png">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "ProfessionalService",
-      "name": "Viva Españiel",
-      "description": "Road transport service for dogs between Spain and the United Kingdom, with emphasis on animal welfare and travel planning support.",
-      "url": "https://benjamindyer.github.io/ben-dyer-projects/viva-espanol.html",
-      "areaServed": [
-        { "@type": "Country", "name": "United Kingdom" },
-        { "@type": "Country", "name": "Spain" }
+      "@graph": [
+        {
+          "@type": "LocalBusiness",
+          "@id": "https://vivaespaniel.com/#business",
+          "name": "Viva Españiel",
+          "description": "Professional dog transport service between Spain and the UK. Door-to-door collection and delivery with climate-controlled vans, live GPS tracking, and regular comfort stops.",
+          "url": "https://vivaespaniel.com/",
+          "telephone": "+44-800-123-4567",
+          "email": "hello@vivaespaniel.com",
+          "founder": { "@type": "Person", "name": "Jon Brown" },
+          "foundingDate": "2019",
+          "areaServed": [
+            { "@type": "Country", "name": "United Kingdom" },
+            { "@type": "Country", "name": "Spain" }
+          ],
+          "serviceType": "Pet Transport",
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "reviewCount": "186",
+            "bestRating": "5"
+          }
+        },
+        {
+          "@type": "Service",
+          "@id": "https://vivaespaniel.com/#service",
+          "name": "Dog Transport Spain ↔ UK",
+          "provider": { "@id": "https://vivaespaniel.com/#business" },
+          "description": "Door-to-door dog transport between Spain and the United Kingdom by road. Climate-controlled vehicles, DEFRA approved, regular rest stops, live updates.",
+          "areaServed": [
+            { "@type": "Country", "name": "United Kingdom" },
+            { "@type": "Country", "name": "Spain" }
+          ]
+        }
       ]
     }
     </script>
@@ -1835,9 +1863,9 @@
     <section class="hero">
         <div class="hero-content">
             <div class="hero-text">
-                <div class="hero-badge">🇬🇧 UK ↔ Spain ↔ UK 🇪🇸 British Dog Transport</div>
-                <h1>Safe Journeys for Your Furry Family</h1>
-                <p>A British company reuniting dogs with their families between the UK and Spain — in both directions. Every paw-senger travels in comfort and safety.</p>
+                <div class="hero-badge" id="heroBadge">🇬🇧 UK ↔ Spain ↔ UK 🇪🇸 British Dog Transport</div>
+                <h1 id="heroHeadline">Safe Journeys for Your Furry Family</h1>
+                <p id="heroTagline">A British company reuniting dogs with their families between the UK and Spain — in both directions. Every paw-senger travels in comfort and safety.</p>
                 <div class="hero-badges">
                     <div class="trust-badge">
                         <div class="trust-badge-icon">
@@ -1859,7 +1887,7 @@
                 </div>
             </div>
             <div class="hero-visual">
-                <img src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=800&q=80" alt="Happy dog" class="hero-image">
+                <img src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=800&q=80" alt="Happy dog" class="hero-image" id="heroImage">
                 <div class="hero-notification">
                     <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=100&q=80" alt="Dog">
                     <div class="text">
@@ -1878,25 +1906,25 @@
             <p>Every dog is a VIP (Very Important Pup) to us</p>
         </div>
         <div class="trust-grid">
-            <div class="trust-card">
-                <div class="trust-icon"><img src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=200&q=80" alt="Vet" loading="lazy" decoding="async"></div>
-                <h3>Vet Approved</h3>
-                <p>Health checks before and after every journey</p>
+            <div class="trust-card" id="trust1Card">
+                <div class="trust-icon"><img id="trust1Img" src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=200&q=80" alt="Vet" loading="lazy" decoding="async"></div>
+                <h3 id="trust1Title">Vet Approved</h3>
+                <p id="trust1Desc">Health checks before and after every journey</p>
             </div>
-            <div class="trust-card">
-                <div class="trust-icon"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=80" alt="Van" loading="lazy" decoding="async"></div>
-                <h3>Climate Controlled</h3>
-                <p>AC and heating for maximum comfort</p>
+            <div class="trust-card" id="trust2Card">
+                <div class="trust-icon"><img id="trust2Img" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=80" alt="Van" loading="lazy" decoding="async"></div>
+                <h3 id="trust2Title">Climate Controlled</h3>
+                <p id="trust2Desc">AC and heating for maximum comfort</p>
             </div>
-            <div class="trust-card">
-                <div class="trust-icon"><img src="https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=200&q=80" alt="GPS" loading="lazy" decoding="async"></div>
-                <h3>Live Tracking</h3>
-                <p>Real-time updates and photos</p>
+            <div class="trust-card" id="trust3Card">
+                <div class="trust-icon"><img id="trust3Img" src="https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=200&q=80" alt="GPS" loading="lazy" decoding="async"></div>
+                <h3 id="trust3Title">Live Tracking</h3>
+                <p id="trust3Desc">Real-time updates and photos</p>
             </div>
-            <div class="trust-card">
-                <div class="trust-icon"><img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=200&q=80" alt="Walk" loading="lazy" decoding="async"></div>
-                <h3>Regular Stops</h3>
-                <p>Comfort breaks every 2-3 hours</p>
+            <div class="trust-card" id="trust4Card">
+                <div class="trust-icon"><img id="trust4Img" src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=200&q=80" alt="Walk" loading="lazy" decoding="async"></div>
+                <h3 id="trust4Title">Regular Stops</h3>
+                <p id="trust4Desc">Comfort breaks every 2-3 hours</p>
             </div>
         </div>
     </section>
@@ -1905,21 +1933,21 @@
     <section class="section about-section" id="about">
         <div class="about-container">
             <div class="about-image">
-                <img src="jon-brown.png" alt="Jon Brown with two happy dogs he recently transported" loading="lazy" decoding="async">
+                <img id="aboutPhoto" src="jon-brown.png" alt="Jon Brown with two happy dogs he recently transported" loading="lazy" decoding="async">
                 <div class="about-image-badge">
-                    <span>16+</span>
+                    <span id="aboutYears">16+</span>
                     <small>Years Experience</small>
                 </div>
             </div>
             <div class="about-content">
-                <div class="subtitle">Meet The Founder</div>
-                <h2>Jon Brown</h2>
-                <p>With over 16 years in the transport industry, Jon has dedicated his career to reuniting families with their four-legged loved ones. What started as a passion project has grown into a trusted service that's helped thousands of dogs make the journey between Spain and the UK safely.</p>
+                <div class="subtitle" id="aboutSubtitle">Meet The Founder</div>
+                <h2 id="aboutName">Jon Brown</h2>
+                <p id="aboutBio1">With over 16 years in the transport industry, Jon has dedicated his career to reuniting families with their four-legged loved ones. What started as a passion project has grown into a trusted service that's helped thousands of dogs make the journey between Spain and the UK safely.</p>
                 <blockquote class="about-quote">
-                    <p>Every dog that travels with us becomes part of our family for the journey. I understand how much trust people place in us, and I take that responsibility seriously. These aren't just pets – they're family members, and they deserve to travel in comfort and safety.</p>
+                    <p id="aboutQuote">Every dog that travels with us becomes part of our family for the journey. I understand how much trust people place in us, and I take that responsibility seriously. These aren't just pets – they're family members, and they deserve to travel in comfort and safety.</p>
                     <cite>— Jon Brown, Viva Españiel</cite>
                 </blockquote>
-                <p>Jon personally oversees every transport, ensuring the highest standards of care from pickup to delivery. His hands-on approach and genuine love for animals is what sets Viva Españiel apart.</p>
+                <p id="aboutBio2">Jon personally oversees every transport, ensuring the highest standards of care from pickup to delivery. His hands-on approach and genuine love for animals is what sets Viva Españiel apart.</p>
                 <div class="about-highlights">
                     <div class="about-highlight">
                         <div class="about-highlight-icon">🚐</div>
@@ -1944,7 +1972,7 @@
             <h2>Happy Arrivals 🐾</h2>
             <p>Some of our wonderful paw-sengers</p>
         </div>
-        <div class="gallery-grid">
+        <div class="gallery-grid" id="galleryGrid">
             <div class="gallery-item">
                 <img src="https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=800&q=80" alt="Luna" loading="lazy" decoding="async">
                 <div class="gallery-overlay"><h4>Luna</h4><p>Galgo • Murcia → Manchester</p></div>
@@ -2127,7 +2155,7 @@
             <h2>Happy Tails 🐾</h2>
             <p>Stories from families we've helped reunite</p>
         </div>
-        <div class="testimonials-grid">
+        <div class="testimonials-grid" id="testimonialsGrid">
             <div class="testimonial-card">
                 <div class="testimonial-header">
                     <div class="testimonial-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80" alt="Sarah" loading="lazy" decoding="async"></div>
@@ -2162,7 +2190,7 @@
         <div class="footer-content">
             <div class="footer-brand">
                 <h3>🐕 Viva Españiel</h3>
-                <p>Reuniting dogs with their families since 2019. Made with love and plenty of treats.</p>
+                <p id="footerTagline">Reuniting dogs with their families since 2019. Made with love and plenty of treats.</p>
             </div>
             <div class="footer-column">
                 <h4>Links</h4>
@@ -2239,6 +2267,81 @@
                 window._allDates = [];
             }
             renderDateCards();
+            loadSiteContent();
+        }
+
+        async function loadSiteContent() {
+            try {
+                const h = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY };
+                const [cr, tr, gr] = await Promise.all([
+                    fetch(`${SUPABASE_URL}/rest/v1/content?select=key,value`, { headers: h }),
+                    fetch(`${SUPABASE_URL}/rest/v1/testimonials?active=eq.true&order=sort_order`, { headers: h }),
+                    fetch(`${SUPABASE_URL}/rest/v1/gallery_items?active=eq.true&order=sort_order`, { headers: h }),
+                ]);
+                const content      = cr.ok ? await cr.json() : [];
+                const testimonials = tr.ok ? await tr.json() : [];
+                const gallery      = gr.ok ? await gr.json() : [];
+
+                // Build content lookup
+                const c = {};
+                content.forEach(r => c[r.key] = r.value);
+
+                const setText = (id, val) => { const el = document.getElementById(id); if (el && val) el.textContent = val; };
+                const setImg  = (id, src) => { const el = document.getElementById(id); if (el && src) el.src = src; };
+
+                setText('heroBadge',    c.hero_badge);
+                setText('heroHeadline', c.hero_headline);
+                setText('heroTagline',  c.hero_tagline);
+                setImg('heroImage',     c.hero_image_url);
+
+                setImg('aboutPhoto',    c.about_photo_url);
+                setText('aboutYears',   c.about_years);
+                setText('aboutSubtitle', c.about_subtitle);
+                setText('aboutName',    c.about_name);
+                setText('aboutBio1',    c.about_bio1);
+                setText('aboutBio2',    c.about_bio2);
+                setText('aboutQuote',   c.about_quote);
+
+                for (let i = 1; i <= 4; i++) {
+                    setText(`trust${i}Title`, c[`trust_${i}_title`]);
+                    setText(`trust${i}Desc`,  c[`trust_${i}_desc`]);
+                    setImg(`trust${i}Img`,    c[`trust_${i}_image`]);
+                }
+
+                setText('footerTagline', c.footer_tagline);
+
+                if (c.meta_title) document.title = c.meta_title;
+                if (c.meta_description) {
+                    const m = document.querySelector('meta[name="description"]');
+                    if (m) m.setAttribute('content', c.meta_description);
+                }
+
+                // Re-render testimonials
+                if (testimonials.length > 0) {
+                    document.getElementById('testimonialsGrid').innerHTML = testimonials.map(t =>
+                        `<div class="testimonial-card">
+                            <div class="testimonial-header">
+                                <div class="testimonial-avatar"><img src="${t.avatar_url}" alt="${t.name}" loading="lazy" decoding="async"></div>
+                                <div class="testimonial-author"><h4>${t.name}</h4><p>${t.location}</p></div>
+                            </div>
+                            <div class="testimonial-stars">${'★'.repeat(t.stars)}${'☆'.repeat(5 - t.stars)}</div>
+                            <p class="testimonial-text">"${t.quote}"</p>
+                        </div>`
+                    ).join('');
+                }
+
+                // Re-render gallery
+                if (gallery.length > 0) {
+                    document.getElementById('galleryGrid').innerHTML = gallery.map(g =>
+                        `<div class="gallery-item">
+                            <img src="${g.image_url}" alt="${g.dog_name}" loading="lazy" decoding="async">
+                            <div class="gallery-overlay"><h4>${g.dog_name}</h4><p>${g.route}</p></div>
+                        </div>`
+                    ).join('');
+                }
+            } catch (e) {
+                console.warn('Could not load CMS content — using defaults');
+            }
         }
 
         function renderDateCards() {

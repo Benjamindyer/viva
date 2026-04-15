@@ -204,6 +204,48 @@
         .save-btn:hover { background: var(--primary-d); }
         .save-msg { font-size: 13px; color: #22c55e; margin-left: 12px; display: none; }
 
+        /* ── Content page ── */
+        .content-card { background: var(--card); border-radius: 12px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 20px; }
+        .content-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 18px; color: var(--dark); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .content-field { margin-bottom: 14px; }
+        .content-field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.4px; }
+        .content-input { width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; transition: border-color 0.2s; font-family: inherit; }
+        .content-input:focus { outline: none; border-color: var(--primary); }
+        .content-textarea { width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; resize: vertical; min-height: 80px; font-family: inherit; transition: border-color 0.2s; }
+        .content-textarea:focus { outline: none; border-color: var(--primary); }
+        .img-upload-row { display: flex; align-items: center; gap: 14px; }
+        .img-preview { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1.5px solid var(--border); background: #f3f4f6; flex-shrink: 0; }
+        .img-preview-round { border-radius: 50%; }
+        .upload-btn { padding: 7px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; cursor: pointer; background: white; color: var(--text); transition: all 0.15s; }
+        .upload-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .trust-grid-edit { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .trust-card-edit { border: 1.5px solid var(--border); border-radius: 10px; padding: 14px; }
+        .trust-card-edit .card-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 10px; }
+        .items-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+        .item-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #f9fafb; border-radius: 8px; border: 1px solid var(--border); }
+        .item-row img { width: 44px; height: 44px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+        .item-row-info { flex: 1; min-width: 0; }
+        .item-row-info strong { font-size: 13px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .item-row-info span { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+        .item-row-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        .btn-edit-item { padding: 5px 12px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 12px; cursor: pointer; background: white; color: var(--text); }
+        .btn-edit-item:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-del-item { padding: 5px 10px; border: 1.5px solid #fee2e2; border-radius: 6px; font-size: 12px; cursor: pointer; background: white; color: #991b1b; }
+        .btn-del-item:hover { background: #fee2e2; }
+        .btn-add-item { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 1.5px dashed var(--border); border-radius: 8px; font-size: 13px; cursor: pointer; background: white; color: var(--muted); transition: all 0.15s; }
+        .btn-add-item:hover { border-color: var(--primary); color: var(--primary); }
+        /* Item edit modal */
+        .item-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 600; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .item-modal-overlay.open { display: flex; }
+        .item-modal { background: white; border-radius: 16px; padding: 28px; width: 100%; max-width: 460px; max-height: 88vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.25); }
+        .item-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .item-modal-header h3 { font-size: 16px; font-weight: 700; }
+        .item-modal-footer { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-modal-cancel { flex: 1; padding: 10px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; cursor: pointer; background: white; }
+        .star-select { display: flex; gap: 4px; }
+        .star-select button { background: none; border: none; font-size: 22px; cursor: pointer; padding: 0 2px; color: #d1d5db; transition: color 0.1s; }
+        .star-select button.active { color: #f59e0b; }
+
         /* ── Dates page ── */
         .dates-table { background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 20px; }
         .add-date-form { background: var(--card); border-radius: 12px; padding: 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
@@ -268,6 +310,9 @@
         <div class="nav-item" data-page="dates" onclick="showPage('dates',this)">
             <span class="icon">📅</span><span>Travel Dates</span>
         </div>
+        <div class="nav-item" data-page="content" onclick="showPage('content',this)">
+            <span class="icon">🖼️</span><span>Site Content</span>
+        </div>
         <div class="nav-item" data-page="settings" onclick="showPage('settings',this)">
             <span class="icon">⚙️</span><span>Settings</span>
         </div>
@@ -331,6 +376,111 @@
                     <button class="save-btn" onclick="addDate()">+ Add Date</button>
                 </div>
                 <p id="addDateMsg" style="margin-top:10px;font-size:13px;color:#22c55e;display:none;">Date added.</p>
+            </div>
+        </div>
+
+        <!-- ── Content page ── -->
+        <div id="page-content" class="page">
+            <div class="page-header">
+                <h1>Site Content</h1>
+                <p>Edit text and photos shown on the public website — changes appear live immediately</p>
+            </div>
+
+            <!-- Hero -->
+            <div class="content-card">
+                <h3>🦸 Hero Section</h3>
+                <div class="content-field"><label>Badge text</label><input type="text" id="cHeroBadge" class="content-input" placeholder="🇬🇧 UK ↔ Spain ↔ UK 🇪🇸"></div>
+                <div class="content-field"><label>Headline</label><input type="text" id="cHeroHeadline" class="content-input" placeholder="Safe Journeys for Your Furry Family"></div>
+                <div class="content-field"><label>Tagline</label><textarea id="cHeroTagline" class="content-textarea" rows="2"></textarea></div>
+                <div class="content-field">
+                    <label>Hero image</label>
+                    <div class="img-upload-row">
+                        <img id="prevHeroImage" src="" class="img-preview" alt="Hero">
+                        <div>
+                            <input type="file" id="fileHeroImage" accept="image/*" style="display:none" onchange="handleUpload(this,'prevHeroImage','hero_image_url')">
+                            <button class="upload-btn" onclick="document.getElementById('fileHeroImage').click()">Upload new image</button>
+                            <div style="font-size:11px;color:var(--muted);margin-top:4px;">Recommended: landscape, 800px wide</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="save-btn" onclick="saveContent({hero_badge:v('cHeroBadge'),hero_headline:v('cHeroHeadline'),hero_tagline:v('cHeroTagline')},'heroMsg')">Save Hero</button>
+                <span class="save-msg" id="heroMsg"></span>
+            </div>
+
+            <!-- About -->
+            <div class="content-card">
+                <h3>👤 About Jon</h3>
+                <div class="content-field">
+                    <label>Jon's photo</label>
+                    <div class="img-upload-row">
+                        <img id="prevAboutPhoto" src="" class="img-preview img-preview-round" alt="Jon">
+                        <div>
+                            <input type="file" id="fileAboutPhoto" accept="image/*" style="display:none" onchange="handleUpload(this,'prevAboutPhoto','about_photo_url')">
+                            <button class="upload-btn" onclick="document.getElementById('fileAboutPhoto').click()">Upload new photo</button>
+                            <div style="font-size:11px;color:var(--muted);margin-top:4px;">Square crop works best</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="content-field"><label>Subtitle</label><input type="text" id="cAboutSubtitle" class="content-input" placeholder="Meet The Founder"></div>
+                    <div class="content-field"><label>Name</label><input type="text" id="cAboutName" class="content-input" placeholder="Jon Brown"></div>
+                </div>
+                <div class="content-field"><label>Years experience badge</label><input type="text" id="cAboutYears" class="content-input" style="width:120px;" placeholder="16+"></div>
+                <div class="content-field"><label>Bio paragraph 1</label><textarea id="cAboutBio1" class="content-textarea" rows="3"></textarea></div>
+                <div class="content-field"><label>Bio paragraph 2</label><textarea id="cAboutBio2" class="content-textarea" rows="3"></textarea></div>
+                <div class="content-field"><label>Pull quote (shown in box)</label><textarea id="cAboutQuote" class="content-textarea" rows="3"></textarea></div>
+                <button class="save-btn" onclick="saveContent({about_subtitle:v('cAboutSubtitle'),about_name:v('cAboutName'),about_years:v('cAboutYears'),about_bio1:v('cAboutBio1'),about_bio2:v('cAboutBio2'),about_quote:v('cAboutQuote')},'aboutMsg')">Save About</button>
+                <span class="save-msg" id="aboutMsg"></span>
+            </div>
+
+            <!-- Trust cards -->
+            <div class="content-card">
+                <h3>✅ Trust Cards</h3>
+                <div class="trust-grid-edit" id="trustCardsEdit"></div>
+                <div style="margin-top:16px;">
+                    <button class="save-btn" onclick="saveTrustCards()">Save Trust Cards</button>
+                    <span class="save-msg" id="trustMsg"></span>
+                </div>
+            </div>
+
+            <!-- Testimonials -->
+            <div class="content-card">
+                <h3>💬 Testimonials</h3>
+                <div class="items-list" id="testimonialsList"></div>
+                <button class="btn-add-item" onclick="openItemModal('testimonial',null)">+ Add testimonial</button>
+            </div>
+
+            <!-- Gallery -->
+            <div class="content-card">
+                <h3>📸 Happy Arrivals Gallery</h3>
+                <div class="items-list" id="galleryList"></div>
+                <button class="btn-add-item" onclick="openItemModal('gallery',null)">+ Add dog photo</button>
+            </div>
+
+            <!-- Footer & Meta -->
+            <div class="content-card">
+                <h3>🔍 Footer & SEO</h3>
+                <div class="content-field"><label>Footer tagline</label><input type="text" id="cFooterTagline" class="content-input"></div>
+                <div class="content-field"><label>Page title (browser tab / Google result)</label><input type="text" id="cMetaTitle" class="content-input" placeholder="Viva Españiel — Dog Transport Spain ↔ UK"></div>
+                <div class="content-field"><label>Meta description (shown in Google search results — 150-160 chars)</label><textarea id="cMetaDesc" class="content-textarea" rows="2" maxlength="160"></textarea></div>
+                <button class="save-btn" onclick="saveContent({footer_tagline:v('cFooterTagline'),meta_title:v('cMetaTitle'),meta_description:v('cMetaDesc')},'footerMsg')">Save</button>
+                <span class="save-msg" id="footerMsg"></span>
+            </div>
+        </div>
+
+        <!-- Item edit modal (testimonial / gallery) -->
+        <div class="item-modal-overlay" id="itemModalOverlay" onclick="if(event.target===this)closeItemModal()">
+            <div class="item-modal">
+                <div class="item-modal-header">
+                    <h3 id="itemModalTitle">Edit</h3>
+                    <button class="close-btn" onclick="closeItemModal()">✕</button>
+                </div>
+                <div id="itemModalBody"></div>
+                <div class="item-modal-footer">
+                    <button class="save-btn" style="flex:1;" onclick="saveItemModal()">Save</button>
+                    <button class="btn-modal-cancel" onclick="closeItemModal()">Cancel</button>
+                </div>
+                <p id="itemModalMsg" style="font-size:13px;margin-top:8px;display:none;"></p>
             </div>
         </div>
 
@@ -498,6 +648,7 @@ function showPage(page, el) {
     if (page === 'bookings') loadBookings();
     if (page === 'dates')    loadDates();
     if (page === 'settings') loadSettings();
+    if (page === 'content')  loadContent();
 }
 
 // ── Bookings ─────────────────────────────────────────────────────────────────
@@ -887,6 +1038,320 @@ async function toggleFeePaid(id, currentlyPaid) {
     await loadBookings();
     openDetail(id);
 }
+
+// ── Content management ────────────────────────────────────────────────────────
+let cmsContent = {};       // key → value
+let cmsTestimonials = [];
+let cmsGallery = [];
+let editingItem = null;    // { type, id } or { type, id: null } for new
+
+const v = id => document.getElementById(id)?.value || '';
+
+async function loadContent() {
+    const [cr, tr, gr] = await Promise.all([
+        adminFetch('/content'),
+        adminFetch('/testimonials'),
+        adminFetch('/gallery'),
+    ]);
+    cmsContent      = Object.fromEntries((await cr.json()).map(r => [r.key, r.value]));
+    cmsTestimonials = await tr.json();
+    cmsGallery      = await gr.json();
+
+    const get = k => cmsContent[k] || '';
+
+    // Hero
+    document.getElementById('cHeroBadge').value    = get('hero_badge');
+    document.getElementById('cHeroHeadline').value = get('hero_headline');
+    document.getElementById('cHeroTagline').value  = get('hero_tagline');
+    setPreview('prevHeroImage', get('hero_image_url'));
+
+    // About
+    setPreview('prevAboutPhoto', get('about_photo_url'));
+    document.getElementById('cAboutSubtitle').value = get('about_subtitle');
+    document.getElementById('cAboutName').value     = get('about_name');
+    document.getElementById('cAboutYears').value    = get('about_years');
+    document.getElementById('cAboutBio1').value     = get('about_bio1');
+    document.getElementById('cAboutBio2').value     = get('about_bio2');
+    document.getElementById('cAboutQuote').value    = get('about_quote');
+
+    // Trust cards
+    renderTrustCards();
+
+    // Testimonials + gallery
+    renderTestimonialsList();
+    renderGalleryList();
+
+    // Footer / meta
+    document.getElementById('cFooterTagline').value = get('footer_tagline');
+    document.getElementById('cMetaTitle').value     = get('meta_title');
+    document.getElementById('cMetaDesc').value      = get('meta_description');
+}
+
+function setPreview(id, url) {
+    const el = document.getElementById(id);
+    if (el && url) el.src = url;
+}
+
+async function saveContent(body, msgId) {
+    const msg = document.getElementById(msgId);
+    try {
+        const res  = await adminFetch('/content', { method: 'PATCH', body });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+        // Update local cache
+        Object.entries(body).forEach(([k, val]) => { cmsContent[k] = val; });
+        msg.textContent = 'Saved!'; msg.style.color = '#22c55e'; msg.style.display = 'inline';
+        setTimeout(() => { msg.style.display = 'none'; }, 3000);
+    } catch (err) {
+        msg.textContent = 'Error: ' + err.message; msg.style.color = 'var(--primary)'; msg.style.display = 'inline';
+    }
+}
+
+async function adminUpload(file) {
+    const form = new FormData();
+    form.append('file', file);
+    const res = await fetch(`${EDGE_BASE_URL}/upload-media`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${adminToken}` },
+        body: form,
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Upload failed');
+    return data.url;
+}
+
+async function handleUpload(input, previewId, contentKey) {
+    const file = input.files[0];
+    if (!file) return;
+    const btn = input.nextElementSibling;
+    if (btn) { btn.textContent = 'Uploading…'; btn.disabled = true; }
+    try {
+        const url = await adminUpload(file);
+        document.getElementById(previewId).src = url;
+        await saveContent({ [contentKey]: url }, previewId + 'Msg');
+        // Show inline confirmation near preview
+        cmsContent[contentKey] = url;
+    } catch (err) {
+        alert('Upload failed: ' + err.message);
+    } finally {
+        if (btn) { btn.textContent = 'Upload new ' + (previewId.includes('Photo') ? 'photo' : 'image'); btn.disabled = false; }
+        input.value = '';
+    }
+}
+
+// Trust cards
+function renderTrustCards() {
+    const get = k => cmsContent[k] || '';
+    const el = document.getElementById('trustCardsEdit');
+    el.innerHTML = [1,2,3,4].map(i => `
+        <div class="trust-card-edit">
+            <div class="card-label">Card ${i}</div>
+            <div class="img-upload-row" style="margin-bottom:10px;">
+                <img id="prevTrust${i}" src="${escAttr(get('trust_'+i+'_image'))}" class="img-preview" style="width:56px;height:56px;" alt="">
+                <div>
+                    <input type="file" id="fileTrust${i}" accept="image/*" style="display:none" onchange="handleUpload(this,'prevTrust${i}','trust_${i}_image')">
+                    <button class="upload-btn" style="font-size:12px;padding:5px 10px;" onclick="document.getElementById('fileTrust${i}').click()">Change</button>
+                </div>
+            </div>
+            <input type="text" id="cTrust${i}Title" class="content-input" style="margin-bottom:6px;" placeholder="Title" value="${escAttr(get('trust_'+i+'_title'))}">
+            <input type="text" id="cTrust${i}Desc"  class="content-input" placeholder="Description" value="${escAttr(get('trust_'+i+'_desc'))}">
+        </div>
+    `).join('');
+}
+
+function saveTrustCards() {
+    const body = {};
+    [1,2,3,4].forEach(i => {
+        body[`trust_${i}_title`] = v(`cTrust${i}Title`);
+        body[`trust_${i}_desc`]  = v(`cTrust${i}Desc`);
+    });
+    saveContent(body, 'trustMsg');
+}
+
+// Testimonials list
+function renderTestimonialsList() {
+    const el = document.getElementById('testimonialsList');
+    if (!cmsTestimonials.length) { el.innerHTML = '<p style="font-size:13px;color:var(--muted);">No testimonials yet.</p>'; return; }
+    el.innerHTML = cmsTestimonials.map(t => `
+        <div class="item-row">
+            <img src="${escAttr(t.avatar_url) || 'data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'44\' height=\'44\'><rect width=\'44\' height=\'44\' rx=\'6\' fill=\'%23e5e7eb\'/></svg>'}" alt="">
+            <div class="item-row-info">
+                <strong>${escHtml(t.name)}</strong>
+                <span>${escHtml(t.location)} · ${'★'.repeat(t.stars)}</span>
+            </div>
+            <div class="item-row-actions">
+                <button class="btn-edit-item" onclick="openItemModal('testimonial','${t.id}')">Edit</button>
+                <button class="btn-del-item"  onclick="deleteContentItem('testimonials','${t.id}')">✕</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Gallery list
+function renderGalleryList() {
+    const el = document.getElementById('galleryList');
+    if (!cmsGallery.length) { el.innerHTML = '<p style="font-size:13px;color:var(--muted);">No gallery items yet.</p>'; return; }
+    el.innerHTML = cmsGallery.map(g => `
+        <div class="item-row">
+            <img src="${escAttr(g.image_url)}" alt="${escHtml(g.dog_name)}">
+            <div class="item-row-info">
+                <strong>${escHtml(g.dog_name)}</strong>
+                <span>${escHtml(g.route)}</span>
+            </div>
+            <div class="item-row-actions">
+                <button class="btn-edit-item" onclick="openItemModal('gallery','${g.id}')">Edit</button>
+                <button class="btn-del-item"  onclick="deleteContentItem('gallery','${g.id}')">✕</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Item modal
+function openItemModal(type, id) {
+    editingItem = { type, id };
+    const overlay = document.getElementById('itemModalOverlay');
+    const title   = document.getElementById('itemModalTitle');
+    const body    = document.getElementById('itemModalBody');
+    document.getElementById('itemModalMsg').style.display = 'none';
+
+    if (type === 'testimonial') {
+        const t = id ? cmsTestimonials.find(x => x.id === id) : {};
+        title.textContent = id ? 'Edit Testimonial' : 'Add Testimonial';
+        body.innerHTML = `
+            <div class="content-field"><label>Name</label><input type="text" id="miName" class="content-input" value="${escAttr(t?.name||'')}"></div>
+            <div class="content-field"><label>Location</label><input type="text" id="miLocation" class="content-input" placeholder="e.g. Manchester" value="${escAttr(t?.location||'')}"></div>
+            <div class="content-field"><label>Quote</label><textarea id="miQuote" class="content-textarea" rows="3">${escHtml(t?.quote||'')}</textarea></div>
+            <div class="content-field">
+                <label>Stars</label>
+                <div class="star-select" id="starSelect">
+                    ${[1,2,3,4,5].map(n => `<button type="button" data-star="${n}" class="${(t?.stars||5)>=n?'active':''}" onclick="setStar(${n})">★</button>`).join('')}
+                </div>
+                <input type="hidden" id="miStars" value="${t?.stars||5}">
+            </div>
+            <div class="content-field">
+                <label>Avatar photo</label>
+                <div class="img-upload-row">
+                    <img id="miAvatarPreview" src="${escAttr(t?.avatar_url||'')}" class="img-preview img-preview-round" alt="">
+                    <div>
+                        <input type="file" id="miAvatarFile" accept="image/*" style="display:none" onchange="handleModalUpload(this,'miAvatarPreview')">
+                        <button class="upload-btn" onclick="document.getElementById('miAvatarFile').click()">Upload photo</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else {
+        const g = id ? cmsGallery.find(x => x.id === id) : {};
+        title.textContent = id ? 'Edit Gallery Item' : 'Add Gallery Item';
+        body.innerHTML = `
+            <div class="content-field"><label>Dog's name</label><input type="text" id="miDogName" class="content-input" value="${escAttr(g?.dog_name||'')}"></div>
+            <div class="content-field"><label>Route / caption</label><input type="text" id="miRoute" class="content-input" placeholder="e.g. Galgo • Murcia → Manchester" value="${escAttr(g?.route||'')}"></div>
+            <div class="content-field">
+                <label>Photo</label>
+                <div class="img-upload-row">
+                    <img id="miGalleryPreview" src="${escAttr(g?.image_url||'')}" class="img-preview" style="width:100px;height:70px;" alt="">
+                    <div>
+                        <input type="file" id="miGalleryFile" accept="image/*" style="display:none" onchange="handleModalUpload(this,'miGalleryPreview')">
+                        <button class="upload-btn" onclick="document.getElementById('miGalleryFile').click()">Upload photo</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    overlay.classList.add('open');
+}
+
+let modalUploadedUrl = null;
+
+async function handleModalUpload(input, previewId) {
+    const file = input.files[0]; if (!file) return;
+    const btn = input.nextElementSibling;
+    btn.textContent = 'Uploading…'; btn.disabled = true;
+    try {
+        modalUploadedUrl = await adminUpload(file);
+        document.getElementById(previewId).src = modalUploadedUrl;
+        btn.textContent = 'Change photo';
+    } catch (err) {
+        alert('Upload failed: ' + err.message);
+        btn.textContent = 'Upload photo';
+    } finally {
+        btn.disabled = false;
+        input.value = '';
+    }
+}
+
+function setStar(n) {
+    document.getElementById('miStars').value = n;
+    document.querySelectorAll('#starSelect button').forEach(b => {
+        b.classList.toggle('active', parseInt(b.dataset.star) <= n);
+    });
+}
+
+async function saveItemModal() {
+    const msg = document.getElementById('itemModalMsg');
+    msg.style.display = 'none';
+    const { type, id } = editingItem;
+    let body = {};
+
+    if (type === 'testimonial') {
+        body = {
+            name:       v('miName'),
+            location:   v('miLocation'),
+            quote:      v('miQuote'),
+            stars:      parseInt(document.getElementById('miStars').value),
+            avatar_url: modalUploadedUrl || (id ? cmsTestimonials.find(t=>t.id===id)?.avatar_url : '') || '',
+            active:     true,
+        };
+        if (!id) body.sort_order = cmsTestimonials.length + 1;
+    } else {
+        body = {
+            dog_name:  v('miDogName'),
+            route:     v('miRoute'),
+            image_url: modalUploadedUrl || (id ? cmsGallery.find(g=>g.id===id)?.image_url : '') || '',
+            active:    true,
+        };
+        if (!id) body.sort_order = cmsGallery.length + 1;
+    }
+
+    try {
+        const path   = `/${type === 'testimonial' ? 'testimonials' : 'gallery'}${id ? '/'+id : ''}`;
+        const method = id ? 'PATCH' : 'POST';
+        const res    = await adminFetch(path, { method, body });
+        const data   = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Save failed');
+
+        // Refresh lists
+        const tr = await adminFetch('/testimonials');
+        const gr = await adminFetch('/gallery');
+        cmsTestimonials = await tr.json();
+        cmsGallery      = await gr.json();
+        renderTestimonialsList();
+        renderGalleryList();
+        closeItemModal();
+    } catch (err) {
+        msg.textContent = 'Error: ' + err.message; msg.style.color = 'var(--primary)'; msg.style.display = 'block';
+    }
+}
+
+async function deleteContentItem(table, id) {
+    if (!confirm('Delete this item?')) return;
+    const path = `/${table}/${id}`;
+    await adminFetch(path, { method: 'DELETE' });
+    const tr = await adminFetch('/testimonials');
+    const gr = await adminFetch('/gallery');
+    cmsTestimonials = await tr.json();
+    cmsGallery      = await gr.json();
+    renderTestimonialsList();
+    renderGalleryList();
+}
+
+function closeItemModal() {
+    document.getElementById('itemModalOverlay').classList.remove('open');
+    modalUploadedUrl = null;
+    editingItem = null;
+}
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escAttr(s) { return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 if (adminToken) {

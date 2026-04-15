@@ -145,6 +145,86 @@ serve(async (req) => {
       return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
 
+    // GET /content
+    if (req.method === 'GET' && path === '/content') {
+      const { data, error } = await supabase.from('content').select('*')
+      if (error) throw error
+      return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+
+    // PATCH /content  — body: { key: value, ... }
+    if (req.method === 'PATCH' && path === '/content') {
+      const body = await req.json()
+      const updates = Object.entries(body).map(([key, value]) => ({
+        key, value: String(value), updated_at: new Date().toISOString()
+      }))
+      const { error } = await supabase.from('content').upsert(updates, { onConflict: 'key' })
+      if (error) throw error
+      return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+
+    // GET /testimonials
+    if (req.method === 'GET' && path === '/testimonials') {
+      const { data, error } = await supabase.from('testimonials').select('*').order('sort_order')
+      if (error) throw error
+      return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+
+    // POST /testimonials
+    if (req.method === 'POST' && path === '/testimonials') {
+      const body = await req.json()
+      const { data, error } = await supabase.from('testimonials').insert(body).select().single()
+      if (error) throw error
+      return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+
+    // PATCH /testimonials/:id  |  DELETE /testimonials/:id
+    const testimonialIdMatch = path.match(/^\/testimonials\/([^/]+)$/)
+    if (testimonialIdMatch) {
+      if (req.method === 'PATCH') {
+        const body = await req.json()
+        const { data, error } = await supabase.from('testimonials').update(body).eq('id', testimonialIdMatch[1]).select().single()
+        if (error) throw error
+        return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+      }
+      if (req.method === 'DELETE') {
+        const { error } = await supabase.from('testimonials').delete().eq('id', testimonialIdMatch[1])
+        if (error) throw error
+        return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+      }
+    }
+
+    // GET /gallery
+    if (req.method === 'GET' && path === '/gallery') {
+      const { data, error } = await supabase.from('gallery_items').select('*').order('sort_order')
+      if (error) throw error
+      return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+
+    // POST /gallery
+    if (req.method === 'POST' && path === '/gallery') {
+      const body = await req.json()
+      const { data, error } = await supabase.from('gallery_items').insert(body).select().single()
+      if (error) throw error
+      return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+
+    // PATCH /gallery/:id  |  DELETE /gallery/:id
+    const galleryIdMatch = path.match(/^\/gallery\/([^/]+)$/)
+    if (galleryIdMatch) {
+      if (req.method === 'PATCH') {
+        const body = await req.json()
+        const { data, error } = await supabase.from('gallery_items').update(body).eq('id', galleryIdMatch[1]).select().single()
+        if (error) throw error
+        return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+      }
+      if (req.method === 'DELETE') {
+        const { error } = await supabase.from('gallery_items').delete().eq('id', galleryIdMatch[1])
+        if (error) throw error
+        return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+      }
+    }
+
     return new Response(JSON.stringify({ error: 'Not found' }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 404
     })
