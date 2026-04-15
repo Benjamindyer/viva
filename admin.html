@@ -246,6 +246,18 @@
         .star-select button { background: none; border: none; font-size: 22px; cursor: pointer; padding: 0 2px; color: #d1d5db; transition: color 0.1s; }
         .star-select button.active { color: #f59e0b; }
 
+        /* Case study toggle */
+        .case-study-block { background: #f8f9fa; border: 1.5px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+        .toggle-label { font-size: 13px; font-weight: 700; color: var(--dark); }
+        .toggle-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+        .toggle-switch { position: relative; display: inline-block; width: 42px; height: 24px; flex-shrink: 0; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-track { position: absolute; inset: 0; background: #d1d5db; border-radius: 24px; cursor: pointer; transition: background 0.2s; }
+        .toggle-track::before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        .toggle-switch input:checked + .toggle-track { background: var(--primary); }
+        .toggle-switch input:checked + .toggle-track::before { transform: translateX(18px); }
+
         /* ── Dates page ── */
         .dates-table { background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 20px; }
         .add-date-form { background: var(--card); border-radius: 12px; padding: 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
@@ -1218,10 +1230,28 @@ function openItemModal(type, id) {
     if (type === 'testimonial') {
         const t = id ? cmsTestimonials.find(x => x.id === id) : {};
         title.textContent = id ? 'Edit Testimonial' : 'Add Testimonial';
+        const csEnabled = t?.case_study_enabled || false;
         body.innerHTML = `
             <div class="content-field"><label>Name</label><input type="text" id="miName" class="content-input" value="${escAttr(t?.name||'')}"></div>
             <div class="content-field"><label>Location</label><input type="text" id="miLocation" class="content-input" placeholder="e.g. Manchester" value="${escAttr(t?.location||'')}"></div>
             <div class="content-field"><label>Quote</label><textarea id="miQuote" class="content-textarea" rows="3">${escHtml(t?.quote||'')}</textarea></div>
+
+            <div class="content-field case-study-block">
+                <div class="toggle-row">
+                    <div>
+                        <div class="toggle-label">Full case study</div>
+                        <div class="toggle-sub">Show an extended write-up on their story page</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="miCaseStudyEnabled" ${csEnabled ? 'checked' : ''} onchange="document.getElementById('caseStudyBody').style.display=this.checked?'block':'none'">
+                        <span class="toggle-track"></span>
+                    </label>
+                </div>
+                <div id="caseStudyBody" style="display:${csEnabled ? 'block' : 'none'};margin-top:12px;">
+                    <textarea id="miStoryText" class="content-textarea" rows="7" placeholder="Write about the dog's journey — how they came to move, any challenges, what the trip was like, how the family felt when reunited…">${escHtml(t?.story_text||'')}</textarea>
+                </div>
+            </div>
+
             <div class="content-field">
                 <label>Stars</label>
                 <div class="star-select" id="starSelect">
@@ -1252,10 +1282,6 @@ function openItemModal(type, id) {
             <div class="content-field">
                 <label>YouTube video URL <small style="color:#888">(optional)</small></label>
                 <input type="url" id="miVideoUrl" class="content-input" placeholder="https://www.youtube.com/watch?v=..." value="${escAttr(t?.video_url||'')}">
-            </div>
-            <div class="content-field">
-                <label>Their story <small style="color:#888">(optional — shown as a case study below the quote)</small></label>
-                <textarea id="miStoryText" class="content-textarea" rows="6" placeholder="Write about the dog's journey, any challenges, how the transport went…">${escHtml(t?.story_text||'')}</textarea>
             </div>
         `;
     } else {
@@ -1321,9 +1347,10 @@ async function saveItemModal() {
             stars:      parseInt(document.getElementById('miStars').value),
             avatar_url: modalUploadedUrls['avatar_url'] || existing?.avatar_url || '',
             photo_url:  modalUploadedUrls['photo_url']  || existing?.photo_url  || '',
-            video_url:  v('miVideoUrl'),
-            story_text: v('miStoryText'),
-            active:     true,
+            video_url:           v('miVideoUrl'),
+            story_text:          v('miStoryText'),
+            case_study_enabled:  document.getElementById('miCaseStudyEnabled')?.checked || false,
+            active:              true,
         };
         if (!id) body.sort_order = cmsTestimonials.length + 1;
     } else {

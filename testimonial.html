@@ -378,7 +378,7 @@
                 const ytId     = getYouTubeId(t.video_url);
                 const hasPhoto  = t.photo_url  && t.photo_url.trim()  !== '';
                 const hasAvatar = t.avatar_url && t.avatar_url.trim() !== '';
-                const hasStory  = t.story_text && t.story_text.trim() !== '';
+                const hasStory  = t.case_study_enabled && t.story_text && t.story_text.trim() !== '';
 
                 // ── Hero ──
                 const avatarHtml = hasAvatar
