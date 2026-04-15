@@ -225,6 +225,37 @@ serve(async (req) => {
       }
     }
 
+    // GET /pages
+    if (req.method === 'GET' && path === '/pages') {
+      const { data, error } = await supabase.from('pages').select('*').order('sort_order')
+      if (error) throw error
+      return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+
+    // POST /pages
+    if (req.method === 'POST' && path === '/pages') {
+      const body = await req.json()
+      const { data, error } = await supabase.from('pages').insert(body).select().single()
+      if (error) throw error
+      return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 201 })
+    }
+
+    // PATCH /pages/:id  |  DELETE /pages/:id
+    const pageIdMatch = path.match(/^\/pages\/([^/]+)$/)
+    if (pageIdMatch) {
+      if (req.method === 'PATCH') {
+        const body = await req.json()
+        const { data, error } = await supabase.from('pages').update({ ...body, updated_at: new Date().toISOString() }).eq('id', pageIdMatch[1]).select().single()
+        if (error) throw error
+        return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+      }
+      if (req.method === 'DELETE') {
+        const { error } = await supabase.from('pages').delete().eq('id', pageIdMatch[1])
+        if (error) throw error
+        return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+      }
+    }
+
     return new Response(JSON.stringify({ error: 'Not found' }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 404
     })

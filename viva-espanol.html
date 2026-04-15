@@ -1862,7 +1862,7 @@
     <!-- Navigation -->
     <nav>
         <a href="#" class="nav-logo">🐕 Viva Españiel</a>
-        <ul class="nav-links">
+        <ul class="nav-links" id="navLinks">
             <li><a href="#about">About</a></li>
             <li><a href="#trust">Why Us</a></li>
             <li><a href="#booking">Book Now</a></li>
@@ -2293,14 +2293,32 @@
         async function loadSiteContent() {
             try {
                 const h = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY };
-                const [cr, tr, gr] = await Promise.all([
+                const [cr, tr, gr, pr] = await Promise.all([
                     fetch(`${SUPABASE_URL}/rest/v1/content?select=key,value`, { headers: h }),
                     fetch(`${SUPABASE_URL}/rest/v1/testimonials?active=eq.true&order=sort_order`, { headers: h }),
                     fetch(`${SUPABASE_URL}/rest/v1/gallery_items?active=eq.true&order=sort_order`, { headers: h }),
+                    fetch(`${SUPABASE_URL}/rest/v1/pages?status=eq.live&order=sort_order&select=slug,nav_label,title`, { headers: h }),
                 ]);
                 const content      = cr.ok ? await cr.json() : [];
                 const testimonials = tr.ok ? await tr.json() : [];
                 const gallery      = gr.ok ? await gr.json() : [];
+                const customPages  = pr.ok ? await pr.json() : [];
+
+                // Inject live custom pages into nav after Testimonials
+                if (customPages.length) {
+                    const navLinks    = document.getElementById('navLinks');
+                    const mobileMenu  = document.getElementById('mobileMenu');
+                    customPages.forEach(pg => {
+                        const label = pg.nav_label || pg.title || pg.slug;
+                        const li = document.createElement('li');
+                        li.innerHTML = `<a href="page.html?slug=${pg.slug}">${label}</a>`;
+                        navLinks.appendChild(li);
+                        const ma = document.createElement('a');
+                        ma.href = `page.html?slug=${pg.slug}`;
+                        ma.textContent = label;
+                        mobileMenu.insertBefore(ma, mobileMenu.lastElementChild);
+                    });
+                }
 
                 // Build content lookup
                 const c = {};

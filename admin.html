@@ -6,6 +6,8 @@
     <title>Viva Españiel — Admin</title>
     <meta name="robots" content="noindex, nofollow">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
     <script>
       // ── Replace with your Supabase project values ──────────────────────────
       const SUPABASE_URL      = 'https://geztmwtgnbgrobtblotp.supabase.co';
@@ -258,6 +260,22 @@
         .toggle-switch input:checked + .toggle-track { background: var(--primary); }
         .toggle-switch input:checked + .toggle-track::before { transform: translateX(18px); }
 
+        /* Page editor */
+        .pe-status-opt { display:flex;align-items:center;cursor:pointer; }
+        .pe-status-opt input { display:none; }
+        .pe-status-label { display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:1.5px solid #e5e7eb;width:100%;transition:border-color 0.15s,background 0.15s; }
+        .pe-status-opt input:checked + .pe-status-label { border-color:var(--primary);background:rgba(200,75,49,0.04); }
+        .pe-status-dot { width:10px;height:10px;border-radius:50%;flex-shrink:0; }
+        /* Quill overrides in admin */
+        #peQuillContainer .ql-toolbar { border-radius:8px 8px 0 0;border-color:#e5e7eb; }
+        #peQuillContainer .ql-container { border-radius:0 0 8px 8px;border-color:#e5e7eb;font-size:15px;min-height:280px; }
+        /* Pages list */
+        .page-row { background:white;border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+        .page-row-status { padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.3px; }
+        .status-live    { background:#dcfce7;color:#15803d; }
+        .status-hidden  { background:#fef3c7;color:#92400e; }
+        .status-draft   { background:#f3f4f6;color:#6b7280; }
+
         /* ── Dates page ── */
         .dates-table { background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 20px; }
         .add-date-form { background: var(--card); border-radius: 12px; padding: 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
@@ -324,6 +342,9 @@
         </div>
         <div class="nav-item" data-page="content" onclick="showPage('content',this)">
             <span class="icon">🖼️</span><span>Site Content</span>
+        </div>
+        <div class="nav-item" data-page="pages" onclick="showPage('pages',this)">
+            <span class="icon">📄</span><span>Pages</span>
         </div>
         <div class="nav-item" data-page="settings" onclick="showPage('settings',this)">
             <span class="icon">⚙️</span><span>Settings</span>
@@ -496,6 +517,130 @@
             </div>
         </div>
 
+        <!-- ── Page editor overlay ── -->
+        <div id="pageEditorOverlay" style="display:none;position:fixed;inset:0;background:#f4f5f7;z-index:700;overflow-y:auto;">
+            <div style="max-width:900px;margin:0 auto;padding:24px 20px 60px;">
+                <!-- Header -->
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;background:white;border-radius:12px;padding:16px 20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                    <button onclick="closePageEditor()" style="background:none;border:1.5px solid #e0e0e0;border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600;">← Back</button>
+                    <h2 id="peTitle" style="flex:1;font-size:17px;font-weight:700;"></h2>
+                    <a id="pePreviewLink" href="#" target="_blank" style="font-size:13px;color:#888;text-decoration:none;display:none;">Preview ↗</a>
+                    <button onclick="savePage()" id="peSaveBtn" style="background:var(--primary);color:white;border:none;border-radius:8px;padding:9px 22px;font-size:14px;font-weight:700;cursor:pointer;">Save</button>
+                </div>
+                <p id="peMsg" style="display:none;background:#fee;border-radius:8px;padding:10px 14px;font-size:13px;color:#c00;margin-bottom:16px;"></p>
+
+                <div style="display:grid;grid-template-columns:1fr 280px;gap:20px;">
+                    <!-- Left: title, slug, body -->
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                            <div class="content-field">
+                                <label>Page title</label>
+                                <input type="text" id="pePageTitle" class="content-input" placeholder="e.g. About Us" oninput="onPeTitleInput(this.value)">
+                            </div>
+                            <div class="content-field" style="margin-bottom:0;">
+                                <label>URL slug <small style="color:#888;text-transform:none;letter-spacing:0;">(auto-generated, editable)</small></label>
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <span style="font-size:13px;color:#888;white-space:nowrap;">page.html?slug=</span>
+                                    <input type="text" id="peSlug" class="content-input" placeholder="about-us" style="font-family:monospace;font-size:13px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                            <div class="content-field" style="margin-bottom:12px;">
+                                <label>Page content</label>
+                            </div>
+                            <div id="peQuillContainer" style="min-height:320px;border-radius:8px;overflow:hidden;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right: settings sidebar -->
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <!-- Status -->
+                        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                            <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:12px;">Status</div>
+                            <div style="display:flex;flex-direction:column;gap:8px;" id="peStatusGroup">
+                                <label class="pe-status-opt" data-val="live">
+                                    <input type="radio" name="peStatus" value="live">
+                                    <div class="pe-status-label">
+                                        <span class="pe-status-dot" style="background:#22c55e;"></span>
+                                        <div><strong>On</strong><div style="font-size:11px;color:#888;">Live & in navigation</div></div>
+                                    </div>
+                                </label>
+                                <label class="pe-status-opt" data-val="hidden">
+                                    <input type="radio" name="peStatus" value="hidden">
+                                    <div class="pe-status-label">
+                                        <span class="pe-status-dot" style="background:#f59e0b;"></span>
+                                        <div><strong>Off</strong><div style="font-size:11px;color:#888;">Accessible by URL, not in nav</div></div>
+                                    </div>
+                                </label>
+                                <label class="pe-status-opt" data-val="draft">
+                                    <input type="radio" name="peStatus" value="draft" checked>
+                                    <div class="pe-status-label">
+                                        <span class="pe-status-dot" style="background:#9ca3af;"></span>
+                                        <div><strong>Draft</strong><div style="font-size:11px;color:#888;">Not visible to anyone</div></div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Nav label -->
+                        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                            <div class="content-field" style="margin-bottom:0;">
+                                <label>Nav label <small style="color:#888;text-transform:none;letter-spacing:0;">(text shown in menu)</small></label>
+                                <input type="text" id="peNavLabel" class="content-input" placeholder="About Us">
+                            </div>
+                        </div>
+
+                        <!-- Hero image -->
+                        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                            <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:12px;">Hero image</div>
+                            <img id="peHeroPreview" src="" style="width:100%;height:100px;object-fit:cover;border-radius:8px;display:none;margin-bottom:10px;">
+                            <div id="peHeroEmpty" style="width:100%;height:80px;background:#f4f5f7;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#aaa;margin-bottom:10px;">No image</div>
+                            <input type="file" id="peHeroFile" accept="image/*" style="display:none" onchange="peUploadHero(this)">
+                            <button class="upload-btn" style="width:100%;" onclick="document.getElementById('peHeroFile').click()">Upload image</button>
+                        </div>
+
+                        <!-- YouTube -->
+                        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                            <div class="content-field" style="margin-bottom:0;">
+                                <label>YouTube URL <small style="color:#888;text-transform:none;letter-spacing:0;">(optional)</small></label>
+                                <input type="url" id="peVideoUrl" class="content-input" placeholder="https://youtube.com/watch?v=...">
+                            </div>
+                        </div>
+
+                        <!-- SEO -->
+                        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                            <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:12px;">SEO</div>
+                            <div class="content-field">
+                                <label>Meta title</label>
+                                <input type="text" id="peMetaTitle" class="content-input" placeholder="Defaults to page title">
+                            </div>
+                            <div class="content-field" style="margin-bottom:0;">
+                                <label>Meta description</label>
+                                <textarea id="peMetaDesc" class="content-textarea" rows="3" placeholder="Short description for search engines…"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Delete -->
+                        <div id="peDeleteWrap" style="display:none;">
+                            <button onclick="deletePage()" style="width:100%;background:none;border:1.5px solid #fca5a5;color:#ef4444;border-radius:8px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;">Delete this page</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Pages page ── -->
+        <div id="page-pages" class="page">
+            <div class="page-header">
+                <h1>Pages</h1>
+                <p>Create up to 3 custom pages for your site. Set to <strong>On</strong> to show in nav, <strong>Off</strong> to keep accessible but unlisted, or <strong>Draft</strong> to hide completely.</p>
+            </div>
+            <div id="pagesList" style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;"></div>
+            <button id="addPageBtn" class="btn-add-item" onclick="openPageEditor(null)">+ Add page</button>
+        </div>
+
         <!-- ── Settings page ── -->
         <div id="page-settings" class="page">
             <div class="page-header">
@@ -661,6 +806,7 @@ function showPage(page, el) {
     if (page === 'dates')    loadDates();
     if (page === 'settings') loadSettings();
     if (page === 'content')  loadContent();
+    if (page === 'pages')    loadPages();
 }
 
 // ── Bookings ─────────────────────────────────────────────────────────────────
@@ -1403,6 +1549,196 @@ function closeItemModal() {
 
 function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function escAttr(s) { return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+
+// ── Pages ─────────────────────────────────────────────────────────────────────
+let cmsPages = [];
+let editingPageId = null;
+let peQuill = null;
+let peHeroUrl = '';
+let peSlugManuallyEdited = false;
+
+function toSlug(s) {
+    return s.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').replace(/-+/g,'-');
+}
+
+async function loadPages() {
+    try {
+        const res  = await adminFetch('/pages');
+        cmsPages   = await res.json();
+    } catch { cmsPages = []; }
+    renderPagesList();
+}
+
+function renderPagesList() {
+    const list = document.getElementById('pagesList');
+    const btn  = document.getElementById('addPageBtn');
+    btn.disabled = cmsPages.length >= 3;
+    btn.style.opacity = cmsPages.length >= 3 ? '0.4' : '1';
+
+    if (!cmsPages.length) {
+        list.innerHTML = '<p style="color:#888;font-size:14px;">No pages yet. Add up to 3.</p>';
+        return;
+    }
+
+    const statusLabel = { live: 'On', hidden: 'Off', draft: 'Draft' };
+    const statusClass = { live: 'status-live', hidden: 'status-hidden', draft: 'status-draft' };
+
+    list.innerHTML = cmsPages.map(p => `
+        <div class="page-row">
+            <span class="page-row-status ${statusClass[p.status]}">${statusLabel[p.status]}</span>
+            <div style="flex:1;">
+                <div style="font-weight:700;font-size:14px;">${escHtml(p.title || '(untitled)')}</div>
+                <div style="font-size:12px;color:#888;">page.html?slug=${escHtml(p.slug)}</div>
+            </div>
+            <a href="page.html?slug=${p.slug}" target="_blank" style="font-size:12px;color:#888;text-decoration:none;">Preview ↗</a>
+            <button class="btn-edit-item" onclick="openPageEditor('${p.id}')">Edit</button>
+        </div>`).join('');
+}
+
+function openPageEditor(id) {
+    editingPageId = id;
+    peSlugManuallyEdited = false;
+    const overlay = document.getElementById('pageEditorOverlay');
+    overlay.style.display = 'block';
+    overlay.scrollTop = 0;
+
+    const p = id ? cmsPages.find(x => x.id === id) : null;
+
+    document.getElementById('peTitle').textContent    = id ? 'Edit page' : 'New page';
+    document.getElementById('pePageTitle').value      = p?.title || '';
+    document.getElementById('peSlug').value           = p?.slug  || '';
+    document.getElementById('peNavLabel').value       = p?.nav_label || '';
+    document.getElementById('peVideoUrl').value       = p?.video_url || '';
+    document.getElementById('peMetaTitle').value      = p?.meta_title || '';
+    document.getElementById('peMetaDesc').value       = p?.meta_description || '';
+    document.getElementById('peDeleteWrap').style.display = id ? 'block' : 'none';
+    document.getElementById('peMsg').style.display   = 'none';
+
+    // Status radio
+    const statusVal = p?.status || 'draft';
+    document.querySelectorAll('input[name="peStatus"]').forEach(r => { r.checked = r.value === statusVal; });
+
+    // Hero image
+    peHeroUrl = p?.hero_image_url || '';
+    const preview = document.getElementById('peHeroPreview');
+    const empty   = document.getElementById('peHeroEmpty');
+    if (peHeroUrl) { preview.src = peHeroUrl; preview.style.display = 'block'; empty.style.display = 'none'; }
+    else           { preview.style.display = 'none'; empty.style.display = 'flex'; }
+
+    // Preview link
+    const previewLink = document.getElementById('pePreviewLink');
+    if (id && p?.slug) {
+        previewLink.href = `page.html?slug=${p.slug}`;
+        previewLink.style.display = 'inline';
+    } else {
+        previewLink.style.display = 'none';
+    }
+
+    // Init Quill after DOM settles
+    requestAnimationFrame(() => {
+        const container = document.getElementById('peQuillContainer');
+        container.innerHTML = '';
+        peQuill = new Quill(container, {
+            theme: 'snow',
+            modules: { toolbar: [
+                [{ header: [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline'],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['blockquote', 'link'],
+                ['clean']
+            ]},
+        });
+        if (p?.body_html) peQuill.clipboard.dangerouslyPasteHTML(p.body_html);
+    });
+}
+
+function closePageEditor() {
+    document.getElementById('pageEditorOverlay').style.display = 'none';
+    if (peQuill) { peQuill = null; }
+}
+
+function onPeTitleInput(val) {
+    if (!peSlugManuallyEdited) {
+        document.getElementById('peSlug').value = toSlug(val);
+    }
+    if (!document.getElementById('peNavLabel').value || !peSlugManuallyEdited) {
+        document.getElementById('peNavLabel').value = val;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('peSlug')?.addEventListener('input', () => { peSlugManuallyEdited = true; });
+});
+
+async function peUploadHero(input) {
+    const file = input.files[0]; if (!file) return;
+    const btn = input.nextElementSibling;
+    btn.textContent = 'Uploading…'; btn.disabled = true;
+    try {
+        peHeroUrl = await adminUpload(file);
+        const preview = document.getElementById('peHeroPreview');
+        preview.src = peHeroUrl; preview.style.display = 'block';
+        document.getElementById('peHeroEmpty').style.display = 'none';
+        btn.textContent = 'Change image';
+    } catch (err) {
+        alert('Upload failed: ' + err.message);
+        btn.textContent = 'Upload image';
+    } finally {
+        btn.disabled = false; input.value = '';
+    }
+}
+
+async function savePage() {
+    const btn = document.getElementById('peSaveBtn');
+    const msg = document.getElementById('peMsg');
+    msg.style.display = 'none';
+    btn.textContent = 'Saving…'; btn.disabled = true;
+
+    const body = {
+        title:            document.getElementById('pePageTitle').value.trim(),
+        slug:             document.getElementById('peSlug').value.trim(),
+        nav_label:        document.getElementById('peNavLabel').value.trim(),
+        status:           document.querySelector('input[name="peStatus"]:checked')?.value || 'draft',
+        hero_image_url:   peHeroUrl,
+        body_html:        peQuill ? peQuill.root.innerHTML : '',
+        video_url:        document.getElementById('peVideoUrl').value.trim(),
+        meta_title:       document.getElementById('peMetaTitle').value.trim(),
+        meta_description: document.getElementById('peMetaDesc').value.trim(),
+        sort_order:       editingPageId ? (cmsPages.find(p => p.id === editingPageId)?.sort_order || 0) : cmsPages.length,
+    };
+
+    if (!body.title) { msg.textContent = 'Title is required.'; msg.style.display = 'block'; btn.textContent = 'Save'; btn.disabled = false; return; }
+    if (!body.slug)  { msg.textContent = 'Slug is required.';  msg.style.display = 'block'; btn.textContent = 'Save'; btn.disabled = false; return; }
+
+    try {
+        const path   = editingPageId ? `/pages/${editingPageId}` : '/pages';
+        const method = editingPageId ? 'PATCH' : 'POST';
+        const res    = await adminFetch(path, { method, body });
+        const data   = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Save failed');
+
+        await loadPages();
+        closePageEditor();
+    } catch (err) {
+        msg.textContent = err.message; msg.style.display = 'block';
+    } finally {
+        btn.textContent = 'Save'; btn.disabled = false;
+    }
+}
+
+async function deletePage() {
+    if (!editingPageId) return;
+    const p = cmsPages.find(x => x.id === editingPageId);
+    if (!confirm(`Delete "${p?.title || 'this page'}"? This cannot be undone.`)) return;
+    try {
+        await adminFetch(`/pages/${editingPageId}`, { method: 'DELETE' });
+        await loadPages();
+        closePageEditor();
+    } catch (err) {
+        const msg = document.getElementById('peMsg');
+        msg.textContent = err.message; msg.style.display = 'block';
+    }
+}
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 if (adminToken) {
