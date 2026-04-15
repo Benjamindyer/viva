@@ -1253,6 +1253,10 @@ function openItemModal(type, id) {
                 <label>YouTube video URL <small style="color:#888">(optional)</small></label>
                 <input type="url" id="miVideoUrl" class="content-input" placeholder="https://www.youtube.com/watch?v=..." value="${escAttr(t?.video_url||'')}">
             </div>
+            <div class="content-field">
+                <label>Their story <small style="color:#888">(optional — shown as a case study below the quote)</small></label>
+                <textarea id="miStoryText" class="content-textarea" rows="6" placeholder="Write about the dog's journey, any challenges, how the transport went…">${escHtml(t?.story_text||'')}</textarea>
+            </div>
         `;
     } else {
         const g = id ? cmsGallery.find(x => x.id === id) : {};
@@ -1318,6 +1322,7 @@ async function saveItemModal() {
             avatar_url: modalUploadedUrls['avatar_url'] || existing?.avatar_url || '',
             photo_url:  modalUploadedUrls['photo_url']  || existing?.photo_url  || '',
             video_url:  v('miVideoUrl'),
+            story_text: v('miStoryText'),
             active:     true,
         };
         if (!id) body.sort_order = cmsTestimonials.length + 1;
