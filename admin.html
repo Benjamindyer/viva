@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viva Españiel — Admin</title>
+    <meta name="robots" content="noindex, nofollow">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+      // ── Replace with your Supabase project values ──────────────────────────
+      const SUPABASE_URL      = 'https://geztmwtgnbgrobtblotp.supabase.co';
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlenRtd3RnbmJncm9idGJsb3RwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyNDc1NzEsImV4cCI6MjA5MTgyMzU3MX0.HIqvHZohlAk4o_blQKiFmzd6LPpgF2XLG5ZM1uLs-EE';
+      const EDGE_BASE_URL     = `${SUPABASE_URL}/functions/v1`;
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary:   #c84b31;
+            --primary-d: #a33d28;
+            --accent:    #ffb319;
+            --dark:      #1a1a2e;
+            --sidebar:   #111827;
+            --card:      #ffffff;
+            --bg:        #f3f4f6;
+            --border:    #e5e7eb;
+            --text:      #1f2937;
+            --muted:     #6b7280;
+
+            --status-pending:          #fbbf24;
+            --status-approved:         #3b82f6;
+            --status-deposit_sent:     #8b5cf6;
+            --status-deposit_received: #06b6d4;
+            --status-in_transit:       #f97316;
+            --status-completed:        #22c55e;
+            --status-cancelled:        #ef4444;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+        /* ── Login overlay ── */
+        #loginOverlay {
+            position: fixed; inset: 0; background: var(--dark);
+            display: flex; align-items: center; justify-content: center; z-index: 9999;
+        }
+        #loginOverlay.hidden { display: none; }
+        .login-box {
+            background: #fff; border-radius: 16px; padding: 40px;
+            width: 100%; max-width: 380px; text-align: center;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+        }
+        .login-logo { font-size: 40px; margin-bottom: 12px; }
+        .login-box h1 { font-size: 20px; color: var(--dark); margin-bottom: 6px; }
+        .login-box p  { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+        .login-input {
+            width: 100%; padding: 12px 16px; border: 2px solid var(--border);
+            border-radius: 10px; font-size: 16px; margin-bottom: 14px;
+            transition: border-color 0.2s; outline: none;
+        }
+        .login-input:focus { border-color: var(--primary); }
+        .login-btn {
+            width: 100%; padding: 13px; background: var(--primary); color: white;
+            border: none; border-radius: 10px; font-size: 15px; font-weight: 600;
+            cursor: pointer; transition: background 0.2s;
+        }
+        .login-btn:hover { background: var(--primary-d); }
+        .login-error { color: var(--primary); font-size: 13px; margin-top: 10px; display: none; }
+
+        /* ── Shell ── */
+        #app { display: flex; min-height: 100vh; }
+        #app.hidden { display: none; }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 220px; background: var(--sidebar); color: white;
+            display: flex; flex-direction: column; flex-shrink: 0;
+            position: sticky; top: 0; height: 100vh; overflow-y: auto;
+        }
+        .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .sidebar-logo h2 { font-size: 15px; font-weight: 700; color: var(--accent); }
+        .sidebar-logo p  { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 3px; }
+        .nav-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 13px 20px; color: rgba(255,255,255,0.6);
+            cursor: pointer; font-size: 14px; font-weight: 500;
+            border-left: 3px solid transparent; transition: all 0.15s;
+        }
+        .nav-item:hover { background: rgba(255,255,255,0.06); color: white; }
+        .nav-item.active { background: rgba(200,75,49,0.2); color: white; border-left-color: var(--primary); }
+        .nav-item .icon { font-size: 18px; width: 22px; text-align: center; }
+        .nav-section { padding: 16px 20px 6px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.3); }
+        .sidebar-footer { margin-top: auto; padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .logout-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.5); padding: 8px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; width: 100%; transition: all 0.2s; }
+        .logout-btn:hover { border-color: var(--primary); color: white; }
+
+        /* ── Main content ── */
+        .main { flex: 1; overflow-y: auto; }
+        .page { display: none; padding: 28px; }
+        .page.active { display: block; }
+        .page-header { margin-bottom: 24px; }
+        .page-header h1 { font-size: 22px; font-weight: 700; color: var(--dark); }
+        .page-header p  { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+        /* ── Stat cards ── */
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: var(--card); border-radius: 12px; padding: 18px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        .stat-card .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 6px; }
+        .stat-card .stat-value { font-size: 28px; font-weight: 700; color: var(--dark); }
+        .stat-card .stat-sub   { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+        /* ── Filter tabs ── */
+        .filter-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+        .filter-tab {
+            padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;
+            cursor: pointer; border: 1.5px solid var(--border); background: white; color: var(--muted);
+            transition: all 0.15s;
+        }
+        .filter-tab:hover { border-color: var(--primary); color: var(--primary); }
+        .filter-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* ── Bookings table ── */
+        .table-wrap { background: var(--card); border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        thead th { padding: 12px 16px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); background: #f9fafb; border-bottom: 1px solid var(--border); }
+        tbody tr { border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: #fafafa; }
+        tbody td { padding: 13px 16px; font-size: 13px; }
+        .td-ref { font-weight: 700; color: var(--primary); font-family: monospace; font-size: 14px; }
+        .td-muted { color: var(--muted); font-size: 12px; margin-top: 2px; }
+
+        /* ── Status badge ── */
+        .status-badge {
+            display: inline-block; padding: 3px 10px; border-radius: 20px;
+            font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .status-pending          { background: #fef3c7; color: #92400e; }
+        .status-approved         { background: #dbeafe; color: #1e40af; }
+        .status-deposit_sent     { background: #ede9fe; color: #5b21b6; }
+        .status-deposit_received { background: #cffafe; color: #155e75; }
+        .status-in_transit       { background: #ffedd5; color: #9a3412; }
+        .status-completed        { background: #dcfce7; color: #166534; }
+        .status-cancelled        { background: #fee2e2; color: #991b1b; }
+
+        /* ── Booking detail panel ── */
+        .detail-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+            z-index: 500; display: none; align-items: stretch; justify-content: flex-end;
+        }
+        .detail-overlay.open { display: flex; }
+        .detail-panel {
+            width: 100%; max-width: 520px; background: white;
+            overflow-y: auto; display: flex; flex-direction: column;
+            box-shadow: -10px 0 40px rgba(0,0,0,0.15);
+            animation: slideIn 0.25s ease;
+        }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        .detail-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: white; z-index: 1; }
+        .detail-header h2 { font-size: 16px; font-weight: 700; }
+        .close-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--muted); padding: 4px; line-height: 1; }
+        .close-btn:hover { color: var(--text); }
+        .detail-body { padding: 20px 24px; flex: 1; }
+        .detail-section { margin-bottom: 22px; }
+        .detail-section h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+        .detail-row { display: flex; justify-content: space-between; padding: 7px 0; font-size: 13px; border-bottom: 1px solid #f3f4f6; }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-row .label { color: var(--muted); }
+        .detail-row .val   { font-weight: 500; text-align: right; max-width: 60%; }
+        .detail-row .val.price { color: var(--primary); font-weight: 700; font-size: 15px; }
+        .detail-row .val.deposit { color: #2d6a4f; font-weight: 600; }
+        .price-edit { border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 13px; width: 120px; text-align: right; }
+        .price-edit:focus { outline: none; border-color: var(--primary); }
+        .notes-area { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 13px; resize: vertical; min-height: 80px; font-family: inherit; transition: border-color 0.2s; }
+        .notes-area:focus { outline: none; border-color: var(--primary); }
+        .notes-saved { font-size: 11px; color: #22c55e; margin-top: 4px; display: none; }
+        .detail-footer { padding: 16px 24px; border-top: 1px solid var(--border); background: #f9fafb; position: sticky; bottom: 0; }
+        .detail-footer h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 10px; }
+        .action-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+            cursor: pointer; border: none; transition: all 0.15s; margin: 3px;
+        }
+        .btn-approve  { background: #3b82f6; color: white; }
+        .btn-approve:hover  { background: #2563eb; }
+        .btn-pay      { background: #8b5cf6; color: white; }
+        .btn-pay:hover      { background: #7c3aed; }
+        .btn-deposit  { background: #06b6d4; color: white; }
+        .btn-deposit:hover  { background: #0891b2; }
+        .btn-transit  { background: #f97316; color: white; }
+        .btn-transit:hover  { background: #ea580c; }
+        .btn-complete { background: #22c55e; color: white; }
+        .btn-complete:hover { background: #16a34a; }
+        .btn-cancel   { background: #fee2e2; color: #991b1b; }
+        .btn-cancel:hover   { background: #fecaca; }
+        .btn-disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* ── Settings page ── */
+        .settings-card { background: var(--card); border-radius: 12px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 20px; }
+        .settings-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 18px; color: var(--dark); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .setting-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px; align-items: center; }
+        .setting-row label { font-size: 13px; font-weight: 500; color: var(--text); }
+        .setting-row small { font-size: 11px; color: var(--muted); display: block; margin-top: 2px; }
+        .setting-input { padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; width: 100%; transition: border-color 0.2s; }
+        .setting-input:focus { outline: none; border-color: var(--primary); }
+        .save-btn { background: var(--primary); color: white; border: none; padding: 10px 22px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .save-btn:hover { background: var(--primary-d); }
+        .save-msg { font-size: 13px; color: #22c55e; margin-left: 12px; display: none; }
+
+        /* ── Dates page ── */
+        .dates-table { background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 20px; }
+        .add-date-form { background: var(--card); border-radius: 12px; padding: 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        .add-date-form h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 12px; align-items: end; }
+        .form-field label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 5px; }
+        .form-field input, .form-field select {
+            padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px;
+            font-size: 13px; width: 100%; transition: border-color 0.2s;
+        }
+        .form-field input:focus, .form-field select:focus { outline: none; border-color: var(--primary); }
+        .toggle-active { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; }
+        .toggle-active input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary); }
+        .direction-label { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+        .dir-uk_to_spain   { background: #dbeafe; color: #1e40af; }
+        .dir-spain_to_uk   { background: #dcfce7; color: #166534; }
+        .dir-both          { background: #ede9fe; color: #5b21b6; }
+        .icon-btn { background: none; border: none; font-size: 16px; cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: background 0.1s; }
+        .icon-btn:hover { background: var(--bg); }
+
+        /* ── Loading ── */
+        .loading-spinner { display: flex; align-items: center; justify-content: center; padding: 60px; color: var(--muted); }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .sidebar { width: 60px; }
+            .nav-item span, .nav-section, .sidebar-logo p, .sidebar-logo h2 { display: none; }
+            .nav-item { padding: 14px; justify-content: center; }
+            .sidebar-footer { padding: 12px; }
+            .page { padding: 16px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .setting-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── Login overlay ─────────────────────────────────────────────────────────── -->
+<div id="loginOverlay">
+    <div class="login-box">
+        <div class="login-logo">🐕</div>
+        <h1>Viva Españiel Admin</h1>
+        <p>Enter your admin password to continue</p>
+        <input type="password" id="loginPassword" class="login-input" placeholder="Password" onkeypress="if(event.key==='Enter')doLogin()">
+        <button class="login-btn" onclick="doLogin()">Sign In</button>
+        <p class="login-error" id="loginError">Incorrect password. Please try again.</p>
+    </div>
+</div>
+
+<!-- ── App shell ──────────────────────────────────────────────────────────────── -->
+<div id="app" class="hidden">
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>🐕 Viva Españiel</h2>
+            <p>Admin dashboard</p>
+        </div>
+        <div class="nav-section">Main</div>
+        <div class="nav-item active" data-page="bookings" onclick="showPage('bookings',this)">
+            <span class="icon">📋</span><span>Bookings</span>
+        </div>
+        <div class="nav-section">Config</div>
+        <div class="nav-item" data-page="dates" onclick="showPage('dates',this)">
+            <span class="icon">📅</span><span>Travel Dates</span>
+        </div>
+        <div class="nav-item" data-page="settings" onclick="showPage('settings',this)">
+            <span class="icon">⚙️</span><span>Settings</span>
+        </div>
+        <div class="sidebar-footer">
+            <button class="logout-btn" onclick="doLogout()">Sign out</button>
+        </div>
+    </aside>
+
+    <main class="main">
+
+        <!-- ── Bookings page ── -->
+        <div id="page-bookings" class="page active">
+            <div class="page-header">
+                <h1>Bookings</h1>
+                <p>All booking requests — click a row to view details</p>
+            </div>
+            <div class="stats" id="statsRow"></div>
+            <div class="filter-tabs" id="filterTabs">
+                <div class="filter-tab active" data-status="all"        onclick="filterBookings('all',this)">All</div>
+                <div class="filter-tab" data-status="pending"           onclick="filterBookings('pending',this)">Pending</div>
+                <div class="filter-tab" data-status="approved"          onclick="filterBookings('approved',this)">Approved</div>
+                <div class="filter-tab" data-status="deposit_sent"      onclick="filterBookings('deposit_sent',this)">Deposit Sent</div>
+                <div class="filter-tab" data-status="deposit_received"  onclick="filterBookings('deposit_received',this)">Deposit Received</div>
+                <div class="filter-tab" data-status="in_transit"        onclick="filterBookings('in_transit',this)">In Transit</div>
+                <div class="filter-tab" data-status="completed"         onclick="filterBookings('completed',this)">Completed</div>
+                <div class="filter-tab" data-status="cancelled"         onclick="filterBookings('cancelled',this)">Cancelled</div>
+            </div>
+            <div class="table-wrap">
+                <div id="bookingsTableBody" class="loading-spinner">Loading bookings…</div>
+            </div>
+        </div>
+
+        <!-- ── Dates page ── -->
+        <div id="page-dates" class="page">
+            <div class="page-header">
+                <h1>Travel Dates</h1>
+                <p>Manage available run dates that customers can book</p>
+            </div>
+            <div class="dates-table" id="datesTableWrap">
+                <div class="loading-spinner">Loading dates…</div>
+            </div>
+            <div class="add-date-form">
+                <h3>Add a new date</h3>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label>Departure date</label>
+                        <input type="date" id="newDateVal">
+                    </div>
+                    <div class="form-field">
+                        <label>Direction</label>
+                        <select id="newDateDir">
+                            <option value="spain_to_uk">Spain → UK</option>
+                            <option value="uk_to_spain">UK → Spain</option>
+                            <option value="both">Both</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Spots available</label>
+                        <input type="number" id="newDateSpots" value="6" min="1" max="20">
+                    </div>
+                    <button class="save-btn" onclick="addDate()">+ Add Date</button>
+                </div>
+                <p id="addDateMsg" style="margin-top:10px;font-size:13px;color:#22c55e;display:none;">Date added.</p>
+            </div>
+        </div>
+
+        <!-- ── Settings page ── -->
+        <div id="page-settings" class="page">
+            <div class="page-header">
+                <h1>Settings</h1>
+                <p>Pricing and payment configuration</p>
+            </div>
+            <div class="settings-card">
+                <h3>Pricing</h3>
+                <div class="setting-row">
+                    <div>
+                        <label>Base transport price</label>
+                        <small>Per dog, Spain ↔ Dover</small>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <span style="color:var(--muted);font-size:14px;">£</span>
+                        <input type="number" id="setBasePrice" class="setting-input" step="0.01" min="0">
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <div>
+                        <label>UK mileage rate</label>
+                        <small>Per mile, Dover to UK address</small>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <input type="number" id="setPerMile" class="setting-input" step="1" min="0">
+                        <span style="color:var(--muted);font-size:14px;">p/mi</span>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <div>
+                        <label>Booking fee</label>
+                        <small>Flat fee to secure a booking</small>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <span style="color:var(--muted);font-size:14px;">£</span>
+                        <input type="number" id="setBookingFee" class="setting-input" step="1" min="0">
+                    </div>
+                </div>
+                <div style="margin-top:8px;">
+                    <button class="save-btn" onclick="savePricing()">Save Pricing</button>
+                    <span class="save-msg" id="pricingMsg">Saved!</span>
+                </div>
+            </div>
+            <div class="settings-card">
+                <h3>Bank Transfer</h3>
+                <div class="setting-row">
+                    <div><label>Account name</label></div>
+                    <input type="text" id="setBankAccountName" class="setting-input" placeholder="J Smith">
+                </div>
+                <div class="setting-row">
+                    <div><label>Sort code</label></div>
+                    <input type="text" id="setBankSortCode" class="setting-input" placeholder="00-00-00">
+                </div>
+                <div class="setting-row">
+                    <div><label>Account number</label></div>
+                    <input type="text" id="setBankAccountNumber" class="setting-input" placeholder="12345678">
+                </div>
+                <div class="setting-row">
+                    <div><label>Bank name</label></div>
+                    <input type="text" id="setBankName" class="setting-input" placeholder="Barclays">
+                </div>
+                <div style="margin-top:8px;">
+                    <button class="save-btn" onclick="saveBankDetails()">Save Bank Details</button>
+                    <span class="save-msg" id="bankMsg">Saved!</span>
+                </div>
+            </div>
+            <div class="settings-card">
+                <h3>PayPal</h3>
+                <div class="setting-row">
+                    <div>
+                        <label>PayPal email</label>
+                        <small>Displayed in payment emails</small>
+                    </div>
+                    <input type="email" id="setPaypalEmail" class="setting-input" placeholder="you@paypal.com">
+                </div>
+                <div class="setting-row">
+                    <div>
+                        <label>PayPal.me link</label>
+                        <small>e.g. https://paypal.me/yourname (optional — shown as button in email)</small>
+                    </div>
+                    <input type="url" id="setPaypalLink" class="setting-input" placeholder="https://paypal.me/yourname">
+                </div>
+                <div style="margin-top:8px;">
+                    <button class="save-btn" onclick="savePaypal()">Save PayPal</button>
+                    <span class="save-msg" id="paypalMsg">Saved!</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- ── Booking detail panel ─────────────────────────────────────────────────── -->
+<div class="detail-overlay" id="detailOverlay" onclick="closeDetail(event)">
+    <div class="detail-panel" id="detailPanel">
+        <div class="detail-header">
+            <h2 id="detailTitle">Booking</h2>
+            <button class="close-btn" onclick="closeDetailPanel()">✕</button>
+        </div>
+        <div class="detail-body" id="detailBody"></div>
+        <div class="detail-footer">
+            <h3>Actions</h3>
+            <div id="detailActions"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ── Auth ─────────────────────────────────────────────────────────────────────
+let adminToken = sessionStorage.getItem('ve_admin_token') || '';
+
+async function doLogin() {
+    const pw  = document.getElementById('loginPassword').value;
+    const err = document.getElementById('loginError');
+    err.style.display = 'none';
+    try {
+        const res = await fetch(`${EDGE_BASE_URL}/admin-auth`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: pw })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed');
+        adminToken = data.token;
+        sessionStorage.setItem('ve_admin_token', adminToken);
+        document.getElementById('loginOverlay').classList.add('hidden');
+        document.getElementById('app').classList.remove('hidden');
+        loadBookings();
+    } catch {
+        err.style.display = 'block';
+        document.getElementById('loginPassword').value = '';
+    }
+}
+
+function doLogout() {
+    sessionStorage.removeItem('ve_admin_token');
+    adminToken = '';
+    document.getElementById('loginOverlay').classList.remove('hidden');
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginError').style.display = 'none';
+}
+
+function adminFetch(path, options = {}) {
+    return fetch(`${EDGE_BASE_URL}/admin-bookings${path}`, {
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${adminToken}`,
+            ...(options.headers || {}),
+        },
+        body: options.body ? JSON.stringify(options.body) : undefined,
+    });
+}
+
+// ── Navigation ───────────────────────────────────────────────────────────────
+function showPage(page, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(`page-${page}`).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+    if (page === 'bookings') loadBookings();
+    if (page === 'dates')    loadDates();
+    if (page === 'settings') loadSettings();
+}
+
+// ── Bookings ─────────────────────────────────────────────────────────────────
+let allBookings = [];
+let currentFilter = 'all';
+
+async function loadBookings() {
+    const el = document.getElementById('bookingsTableBody');
+    el.innerHTML = '<div class="loading-spinner">Loading bookings…</div>';
+    try {
+        const res  = await adminFetch('/bookings');
+        allBookings = await res.json();
+        renderStats(allBookings);
+        renderBookingsTable(allBookings, currentFilter);
+    } catch {
+        el.innerHTML = '<div class="loading-spinner" style="color:var(--primary);">Failed to load bookings.</div>';
+    }
+}
+
+function renderStats(bookings) {
+    const pending   = bookings.filter(b => b.status === 'pending').length;
+    const inProgress = bookings.filter(b => ['approved','deposit_sent','deposit_received','in_transit'].includes(b.status)).length;
+    const completed  = bookings.filter(b => b.status === 'completed').length;
+    const total      = bookings.length;
+    document.getElementById('statsRow').innerHTML = `
+        <div class="stat-card"><div class="stat-label">Total Bookings</div><div class="stat-value">${total}</div></div>
+        <div class="stat-card"><div class="stat-label">Pending Review</div><div class="stat-value" style="color:var(--status-pending)">${pending}</div></div>
+        <div class="stat-card"><div class="stat-label">In Progress</div><div class="stat-value" style="color:var(--status-in_transit)">${inProgress}</div></div>
+        <div class="stat-card"><div class="stat-label">Completed</div><div class="stat-value" style="color:var(--status-completed)">${completed}</div></div>
+    `;
+}
+
+function filterBookings(status, el) {
+    currentFilter = status;
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    renderBookingsTable(allBookings, status);
+}
+
+function renderBookingsTable(bookings, filter) {
+    const filtered = filter === 'all' ? bookings : bookings.filter(b => b.status === filter);
+    const wrap = document.getElementById('bookingsTableBody');
+    if (!filtered.length) {
+        wrap.innerHTML = '<div class="loading-spinner" style="color:var(--muted);">No bookings found.</div>';
+        return;
+    }
+    wrap.innerHTML = `
+        <table>
+            <thead>
+                <tr>
+                    <th>Reference</th>
+                    <th>Customer</th>
+                    <th>Dog</th>
+                    <th>Direction</th>
+                    <th>Travel Date</th>
+                    <th>Total</th>
+                    <th>Fee Paid</th>
+                    <th>Status</th>
+                    <th>Received</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${filtered.map(b => `
+                    <tr onclick="openDetail('${b.id}')">
+                        <td class="td-ref">${b.reference}</td>
+                        <td>${b.first_name} ${b.last_name}<div class="td-muted">${b.email}</div></td>
+                        <td>${b.dog_name}<div class="td-muted">${b.breed_display || b.breed || ''}</div></td>
+                        <td><span class="direction-label dir-${b.direction}">${b.direction === 'spain_to_uk' ? '🇪🇸 → 🇬🇧' : '🇬🇧 → 🇪🇸'}</span></td>
+                        <td>${b.travel_date_display || '—'}</td>
+                        <td>£${Number(b.total_price_gbp).toFixed(2)}</td>
+                        <td><span style="font-size:16px;">${b.booking_fee_paid ? '✅' : '⏳'}</span></td>
+                        <td><span class="status-badge status-${b.status}">${statusLabel(b.status)}</span></td>
+                        <td>${new Date(b.created_at).toLocaleDateString('en-GB')}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>`;
+}
+
+function statusLabel(s) {
+    return { pending: 'Pending', approved: 'Approved', deposit_sent: 'Deposit Sent', deposit_received: 'Deposit Received', in_transit: 'In Transit', completed: 'Completed', cancelled: 'Cancelled' }[s] || s;
+}
+
+// ── Booking detail ────────────────────────────────────────────────────────────
+let currentBooking = null;
+let notesSaveTimer = null;
+
+function openDetail(id) {
+    const b = allBookings.find(b => b.id === id);
+    if (!b) return;
+    currentBooking = b;
+    renderDetailPanel(b);
+    document.getElementById('detailOverlay').classList.add('open');
+}
+
+function closeDetail(e) {
+    if (e.target === document.getElementById('detailOverlay')) closeDetailPanel();
+}
+function closeDetailPanel() {
+    document.getElementById('detailOverlay').classList.remove('open');
+    currentBooking = null;
+}
+
+function renderDetailPanel(b) {
+    document.getElementById('detailTitle').textContent = b.reference;
+    const dirLabel = b.direction === 'spain_to_uk' ? 'Spain → UK' : 'UK → Spain';
+
+    document.getElementById('detailBody').innerHTML = `
+        <div style="margin-bottom:16px;">
+            <span class="status-badge status-${b.status}" style="font-size:13px;padding:5px 14px;">${statusLabel(b.status)}</span>
+        </div>
+
+        <div class="detail-section">
+            <h3>Journey</h3>
+            <div class="detail-row"><span class="label">Direction</span><span class="val">${dirLabel}</span></div>
+            <div class="detail-row"><span class="label">Travel date</span><span class="val">${b.travel_date_display || '—'}</span></div>
+            <div class="detail-row"><span class="label">Spanish address</span><span class="val">${b.spain_address_display || b.spain_address || '—'}</span></div>
+            <div class="detail-row"><span class="label">UK address</span><span class="val">${b.uk_address_display || b.uk_address || '—'}</span></div>
+            <div class="detail-row"><span class="label">Miles from Dover</span><span class="val">${b.miles_from_dover ? Number(b.miles_from_dover).toFixed(0) + ' mi' : '—'}</span></div>
+        </div>
+
+        <div class="detail-section">
+            <h3>Customer</h3>
+            <div class="detail-row"><span class="label">Name</span><span class="val">${b.first_name} ${b.last_name}</span></div>
+            <div class="detail-row"><span class="label">Email</span><span class="val"><a href="mailto:${b.email}">${b.email}</a></span></div>
+            <div class="detail-row"><span class="label">Phone</span><span class="val">${b.phone || '—'}</span></div>
+        </div>
+
+        <div class="detail-section">
+            <h3>Dog</h3>
+            <div class="detail-row"><span class="label">Name</span><span class="val">${b.dog_name}</span></div>
+            <div class="detail-row"><span class="label">Breed</span><span class="val">${b.breed_display || b.breed || '—'}</span></div>
+            <div class="detail-row"><span class="label">Size</span><span class="val">${b.size || '—'}</span></div>
+        </div>
+
+        <div class="detail-section">
+            <h3>Pricing</h3>
+            <div class="detail-row"><span class="label">Base price</span><span class="val">£${Number(b.base_price_gbp).toFixed(2)}</span></div>
+            <div class="detail-row"><span class="label">Mileage</span><span class="val">£${Number(b.mileage_cost_gbp).toFixed(2)}</span></div>
+            <div class="detail-row"><span class="label">Total</span><span class="val">£${Number(b.total_price_gbp).toFixed(2)}</span></div>
+            <div class="detail-row"><span class="label">Booking fee</span><span class="val">£${Number(b.deposit_gbp).toFixed(2)}</span></div>
+            <div class="detail-row"><span class="label">Balance on travel day</span><span class="val">£${Number(b.balance_gbp).toFixed(2)}</span></div>
+            <div class="detail-row"><span class="label">Received</span><span class="val">${new Date(b.created_at).toLocaleString('en-GB')}</span></div>
+        </div>
+
+        <div class="detail-section">
+            <h3>Booking Fee</h3>
+            <div class="detail-row">
+                <span class="label">Fee paid</span>
+                <span class="val">
+                    <button onclick="toggleFeePaid('${b.id}', ${b.booking_fee_paid})"
+                        style="padding:6px 16px;border-radius:8px;border:none;cursor:pointer;font-weight:600;font-size:13px;
+                               background:${b.booking_fee_paid ? '#dcfce7' : '#fef3c7'};
+                               color:${b.booking_fee_paid ? '#166534' : '#92400e'};">
+                        ${b.booking_fee_paid ? '✅ Paid' : '⏳ Mark as Paid'}
+                    </button>
+                </span>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <h3>Jon's Notes</h3>
+            <textarea class="notes-area" id="adminNotes" placeholder="Private notes…" oninput="scheduleNotesSave()">${b.admin_notes || ''}</textarea>
+            <p class="notes-saved" id="notesSavedMsg">Saved</p>
+        </div>
+    `;
+    renderDetailActions(b.status, b.id);
+}
+
+function recalcDeposit() {
+    const total = parseFloat(document.getElementById('editTotal').value) || 0;
+    document.getElementById('editDepositDisplay').textContent = '£' + (total * 0.5).toFixed(2);
+}
+
+function scheduleNotesSave() {
+    clearTimeout(notesSaveTimer);
+    notesSaveTimer = setTimeout(saveNotes, 1500);
+}
+
+async function saveNotes() {
+    if (!currentBooking) return;
+    const notes = document.getElementById('adminNotes')?.value || '';
+    await adminFetch(`/bookings/${currentBooking.id}`, { method: 'PATCH', body: { admin_notes: notes } });
+    const msg = document.getElementById('notesSavedMsg');
+    if (msg) { msg.style.display = 'block'; setTimeout(() => { msg.style.display = 'none'; }, 2000); }
+    currentBooking.admin_notes = notes;
+    updateLocalBooking({ admin_notes: notes });
+}
+
+function renderDetailActions(status, id) {
+    const actions = document.getElementById('detailActions');
+    let html = '';
+
+    if (status === 'pending') {
+        html += `<button class="action-btn btn-approve" onclick="updateStatus('${id}','approved')">✓ Approve Quote</button>`;
+    }
+    if (status === 'approved') {
+        html += `<button class="action-btn btn-approve" onclick="updateStatus('${id}','approved')">✓ Save Price Change</button>`;
+        html += `<button class="action-btn btn-pay" onclick="sendPaymentDetails('${id}')">✉ Send Payment Details</button>`;
+    }
+    if (status === 'deposit_sent') {
+        html += `<button class="action-btn btn-deposit" onclick="updateStatus('${id}','deposit_received')">💰 Mark Deposit Received</button>`;
+    }
+    if (status === 'deposit_received') {
+        html += `<button class="action-btn btn-transit" onclick="updateStatus('${id}','in_transit')">🚐 Mark In Transit</button>`;
+    }
+    if (status === 'in_transit') {
+        html += `<button class="action-btn btn-complete" onclick="updateStatus('${id}','completed')">✅ Mark Completed</button>`;
+    }
+    if (!['completed','cancelled'].includes(status)) {
+        html += `<button class="action-btn btn-cancel" onclick="cancelBooking('${id}')">✕ Cancel</button>`;
+    }
+    actions.innerHTML = html || '<p style="font-size:13px;color:var(--muted);">No further actions available.</p>';
+}
+
+async function updateStatus(id, newStatus) {
+    const body = { status: newStatus };
+    // If approving, also save any edited total
+    if (newStatus === 'approved') {
+        const newTotal = parseFloat(document.getElementById('editTotal')?.value);
+        if (!isNaN(newTotal)) {
+            body.total_price_gbp = newTotal;
+            body.deposit_gbp     = newTotal * 0.5;
+            body.balance_gbp     = newTotal * 0.5;
+        }
+    }
+    const res  = await adminFetch(`/bookings/${id}`, { method: 'PATCH', body });
+    const data = await res.json();
+    if (!res.ok) { alert(data.error || 'Update failed'); return; }
+    updateLocalBooking(body);
+    currentBooking = { ...currentBooking, ...body };
+    renderDetailActions(newStatus, id);
+    // Update status badge in panel
+    const badge = document.querySelector('#detailBody .status-badge');
+    if (badge) { badge.className = `status-badge status-${newStatus}`; badge.textContent = statusLabel(newStatus); }
+    renderBookingsTable(allBookings, currentFilter);
+    renderStats(allBookings);
+}
+
+async function sendPaymentDetails(id) {
+    const btn = event.target;
+    btn.disabled = true; btn.textContent = 'Sending…';
+    try {
+        const res = await fetch(`${EDGE_BASE_URL}/send-payment-details`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
+            body: JSON.stringify({ bookingId: id })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed');
+        alert('Payment details email sent to customer.');
+        await loadBookings();
+        closeDetailPanel();
+    } catch (e) {
+        alert(e.message);
+        btn.disabled = false; btn.textContent = '✉ Send Payment Details';
+    }
+}
+
+async function cancelBooking(id) {
+    if (!confirm('Cancel this booking? This cannot be undone.')) return;
+    await updateStatus(id, 'cancelled');
+}
+
+function updateLocalBooking(changes) {
+    const idx = allBookings.findIndex(b => b.id === currentBooking?.id);
+    if (idx !== -1) allBookings[idx] = { ...allBookings[idx], ...changes };
+}
+
+// ── Travel dates ──────────────────────────────────────────────────────────────
+async function loadDates() {
+    const wrap = document.getElementById('datesTableWrap');
+    wrap.innerHTML = '<div class="loading-spinner">Loading…</div>';
+    const res   = await adminFetch('/dates');
+    const dates = await res.json();
+    if (!dates.length) {
+        wrap.innerHTML = '<div class="loading-spinner" style="color:var(--muted);">No dates yet — add one below.</div>';
+        return;
+    }
+    wrap.innerHTML = `
+        <table>
+            <thead><tr><th>Date</th><th>Direction</th><th>Spots</th><th>Taken</th><th>Active</th><th></th></tr></thead>
+            <tbody>
+                ${dates.map(d => `
+                    <tr>
+                        <td>${new Date(d.departure_date).toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' })}</td>
+                        <td><span class="direction-label dir-${d.direction}">${{ uk_to_spain: '🇬🇧 → 🇪🇸', spain_to_uk: '🇪🇸 → 🇬🇧', both: '🇬🇧 ↔ 🇪🇸' }[d.direction]}</span></td>
+                        <td>${d.spots_available}</td>
+                        <td>${d.spots_taken}</td>
+                        <td>
+                            <label class="toggle-active">
+                                <input type="checkbox" ${d.active ? 'checked' : ''} onchange="toggleDateActive('${d.id}', this.checked)">
+                                ${d.active ? 'Active' : 'Hidden'}
+                            </label>
+                        </td>
+                        <td>
+                            <button class="icon-btn" onclick="deleteDate('${d.id}')" title="Delete">🗑️</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>`;
+}
+
+async function addDate() {
+    const val   = document.getElementById('newDateVal').value;
+    const dir   = document.getElementById('newDateDir').value;
+    const spots = parseInt(document.getElementById('newDateSpots').value);
+    if (!val) { alert('Please select a date'); return; }
+    const res = await adminFetch('/dates', { method: 'POST', body: { departure_date: val, direction: dir, spots_available: spots, active: true } });
+    if (!res.ok) { const e = await res.json(); alert(e.error || 'Failed'); return; }
+    const msg = document.getElementById('addDateMsg');
+    msg.style.display = 'block'; setTimeout(() => { msg.style.display = 'none'; }, 2500);
+    loadDates();
+}
+
+async function toggleDateActive(id, active) {
+    await adminFetch(`/dates/${id}`, { method: 'PATCH', body: { active } });
+}
+
+async function deleteDate(id) {
+    if (!confirm('Delete this travel date?')) return;
+    await adminFetch(`/dates/${id}`, { method: 'DELETE' });
+    loadDates();
+}
+
+// ── Settings ──────────────────────────────────────────────────────────────────
+async function loadSettings() {
+    const res      = await adminFetch('/settings');
+    const settings = await res.json();
+    const get = key => settings.find(s => s.key === key)?.value || '';
+    document.getElementById('setBasePrice').value        = get('base_price_gbp');
+    document.getElementById('setPerMile').value          = get('per_mile_pence');
+    document.getElementById('setBookingFee').value       = get('booking_fee_gbp');
+    document.getElementById('setBankAccountName').value  = get('bank_account_name');
+    document.getElementById('setBankSortCode').value     = get('bank_sort_code');
+    document.getElementById('setBankAccountNumber').value= get('bank_account_number');
+    document.getElementById('setBankName').value         = get('bank_name');
+    document.getElementById('setPaypalEmail').value      = get('paypal_email');
+    document.getElementById('setPaypalLink').value       = get('paypal_link');
+}
+
+async function saveSettings(body, msgId) {
+    const msg = document.getElementById(msgId);
+    try {
+        const res  = await adminFetch('/settings', { method: 'PATCH', body });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+        msg.textContent = 'Saved!';
+        msg.style.color = '#22c55e';
+        msg.style.display = 'inline';
+        setTimeout(() => { msg.style.display = 'none'; }, 3000);
+    } catch (err) {
+        console.error('Settings save error:', err);
+        msg.textContent = 'Error: ' + err.message;
+        msg.style.color = 'var(--primary)';
+        msg.style.display = 'inline';
+    }
+}
+
+async function savePricing() {
+    await saveSettings({
+        base_price_gbp:  document.getElementById('setBasePrice').value,
+        per_mile_pence:  document.getElementById('setPerMile').value,
+        booking_fee_gbp: document.getElementById('setBookingFee').value,
+    }, 'pricingMsg');
+}
+
+async function saveBankDetails() {
+    await saveSettings({
+        bank_account_name:   document.getElementById('setBankAccountName').value,
+        bank_sort_code:      document.getElementById('setBankSortCode').value,
+        bank_account_number: document.getElementById('setBankAccountNumber').value,
+        bank_name:           document.getElementById('setBankName').value,
+    }, 'bankMsg');
+}
+
+async function savePaypal() {
+    await saveSettings({
+        paypal_email: document.getElementById('setPaypalEmail').value,
+        paypal_link:  document.getElementById('setPaypalLink').value,
+    }, 'paypalMsg');
+}
+
+async function toggleFeePaid(id, currentlyPaid) {
+    await adminFetch(`/bookings/${id}`, { method: 'PATCH', body: { booking_fee_paid: !currentlyPaid } });
+    await loadBookings();
+    openDetail(id);
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+if (adminToken) {
+    document.getElementById('loginOverlay').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    loadBookings();
+}
+</script>
+</body>
+</html>

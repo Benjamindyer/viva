@@ -4,8 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Viva Españiel - Safe Dog Transport Between Spain & UK</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <meta name="description" content="Viva Españiel offers caring road transport for dogs between Spain and the UK. Clear guidance on travel paperwork, comfortable journeys with regular stops, and updates along the route.">
+    <link rel="canonical" href="https://benjamindyer.github.io/ben-dyer-projects/viva-espanol.html">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://benjamindyer.github.io/ben-dyer-projects/viva-espanol.html">
+    <meta property="og:title" content="Viva Españiel - Safe Dog Transport Between Spain & UK">
+    <meta property="og:description" content="Caring road transport for dogs between Spain and the UK. Comfortable journeys, regular stops, and help understanding pet travel paperwork.">
+    <meta property="og:image" content="https://benjamindyer.github.io/ben-dyer-projects/jon-brown.png">
+    <meta property="og:locale" content="en_GB">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Viva Españiel - Safe Dog Transport Between Spain & UK">
+    <meta name="twitter:description" content="Caring road transport for dogs between Spain and the UK. Comfortable journeys, regular stops, and help understanding pet travel paperwork.">
+    <meta name="twitter:image" content="https://benjamindyer.github.io/ben-dyer-projects/jon-brown.png">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "Viva Españiel",
+      "description": "Road transport service for dogs between Spain and the United Kingdom, with emphasis on animal welfare and travel planning support.",
+      "url": "https://benjamindyer.github.io/ben-dyer-projects/viva-espanol.html",
+      "areaServed": [
+        { "@type": "Country", "name": "United Kingdom" },
+        { "@type": "Country", "name": "Spain" }
+      ]
+    }
+    </script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+      // ── Supabase config ──────────────────────────────────────────────────────
+      // Replace these two values with your own from the Supabase project dashboard
+      // (Settings → API → Project URL & anon/public key)
+      const SUPABASE_URL      = 'https://geztmwtgnbgrobtblotp.supabase.co';
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlenRtd3RnbmJncm9idGJsb3RwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyNDc1NzEsImV4cCI6MjA5MTgyMzU3MX0.HIqvHZohlAk4o_blQKiFmzd6LPpgF2XLG5ZM1uLs-EE';
+      const MAPBOX_TOKEN      = 'pk.eyJ1IjoiYmVuamFtaW5keWVyIiwiYSI6ImNtbnp5MDdlNDAyYTQyc3I0enk5b3Zxc2gifQ.jS2Lj1u7CZpBzjSoJCyKUQ';
+      // Edge function base URL (same project)
+      const EDGE_BASE_URL     = `${SUPABASE_URL}/functions/v1`;
+    </script>
     <style>
         * {
             margin: 0;
@@ -233,17 +269,17 @@
             letter-spacing: -1px;
         }
 
-        .defra-badge {
+        .corridor-badge {
             background: linear-gradient(135deg, #1d4ed8, #3b82f6);
             color: white;
         }
 
-        .defra-badge .trust-badge-title,
-        .defra-badge .trust-badge-subtitle {
+        .corridor-badge .trust-badge-title,
+        .corridor-badge .trust-badge-subtitle {
             color: white;
         }
 
-        .defra-badge .trust-badge-subtitle {
+        .corridor-badge .trust-badge-subtitle {
             opacity: 0.9;
         }
 
@@ -441,6 +477,29 @@
             margin-bottom: 15px;
         }
 
+        .about-content blockquote.about-quote {
+            margin: 0 0 20px 0;
+            padding: 20px 24px;
+            border-left: 4px solid var(--primary);
+            background: var(--light);
+            border-radius: 0 12px 12px 0;
+        }
+
+        .about-content blockquote.about-quote p {
+            margin-bottom: 0;
+            font-style: italic;
+            color: #444;
+        }
+
+        .about-content blockquote.about-quote cite {
+            display: block;
+            margin-top: 14px;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
         .about-highlights {
             display: flex;
             gap: 20px;
@@ -551,18 +610,22 @@
         }
 
         .booking-container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 30px 60px rgba(0,0,0,0.3);
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            align-items: flex-start;
         }
 
         .booking-panel {
             padding: 40px;
+            width: 480px;
+            min-width: 480px;
+            flex-shrink: 0;
         }
 
         /* Direction Toggle */
@@ -940,9 +1003,13 @@
 
         /* Map */
         .map-panel {
-            border-top: 1px solid #eee;
-            height: 350px;
-            position: relative;
+            flex: 1;
+            position: sticky;
+            top: 70px;
+            height: calc(100vh - 90px);
+            max-height: 780px;
+            min-height: 500px;
+            border-left: 1px solid #eee;
         }
 
         #map {
@@ -1353,42 +1420,125 @@
             opacity: 0.9;
         }
 
-        /* Processing Overlay */
+        /* Confirmation Overlay */
         .processing-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.9);
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(26,26,46,0.96);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 9999;
+            padding: 20px;
         }
 
         .processing-overlay.visible {
             display: flex;
+            animation: overlayFadeIn 0.3s ease;
         }
 
-        .processing-content {
+        @keyframes overlayFadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        .confirm-card {
+            background: white;
+            border-radius: 24px;
+            padding: 48px 40px 40px;
+            max-width: 460px;
+            width: 100%;
             text-align: center;
-            color: white;
+            animation: cardBounceIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
         }
 
-        .processing-spinner {
-            width: 80px;
-            height: 80px;
-            border: 4px solid rgba(255,255,255,0.2);
-            border-top-color: var(--secondary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 25px;
+        @keyframes cardBounceIn {
+            from { opacity: 0; transform: scale(0.75) translateY(30px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        .processing-content h3 {
-            font-size: 24px;
-            margin-bottom: 10px;
+        .confirm-paw {
+            font-size: 72px;
+            display: block;
+            margin-bottom: 16px;
+            animation: pawBounce 1s ease 0.4s both;
+        }
+
+        @keyframes pawBounce {
+            0%   { transform: scale(0); opacity: 0; }
+            60%  { transform: scale(1.2); opacity: 1; }
+            80%  { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+
+        .confirm-headline {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--dark);
+            margin: 0 0 8px;
+            line-height: 1.2;
+            animation: fadeUp 0.4s ease 0.5s both;
+        }
+
+        .confirm-sub {
+            font-size: 15px;
+            color: #666;
+            margin: 0 0 28px;
+            animation: fadeUp 0.4s ease 0.6s both;
+        }
+
+        .confirm-ref-box {
+            background: linear-gradient(135deg, var(--dark), #16213e);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            animation: fadeUp 0.4s ease 0.65s both;
+        }
+
+        .confirm-ref-label {
+            font-size: 11px;
+            color: rgba(255,255,255,0.6);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0 0 6px;
+        }
+
+        .confirm-ref-number {
+            font-size: 30px;
+            font-weight: 800;
+            color: var(--secondary);
+            letter-spacing: 4px;
+            margin: 0;
+        }
+
+        .confirm-detail {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+            margin: 0 0 28px;
+            animation: fadeUp 0.4s ease 0.7s both;
+        }
+
+        .confirm-done-btn {
+            animation: fadeUp 0.4s ease 0.75s both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .confirm-card::before {
+            content: '🐾';
+            position: absolute;
+            font-size: 120px;
+            opacity: 0.04;
+            top: -20px;
+            right: -20px;
+            transform: rotate(15deg);
+            pointer-events: none;
         }
 
         .processing-content p {
@@ -1583,10 +1733,22 @@
             .booking-container {
                 margin: 0 10px;
                 border-radius: 16px;
+                flex-direction: column;
             }
 
             .booking-panel {
                 padding: 25px 20px;
+                width: 100%;
+                min-width: unset;
+            }
+
+            .map-panel {
+                position: relative;
+                top: unset;
+                height: 300px;
+                min-height: 300px;
+                border-left: none;
+                border-top: 1px solid #eee;
             }
 
             .gallery-item:first-child {
@@ -1648,91 +1810,7 @@
     </style>
 </head>
 <body>
-    <!-- Processing Overlay -->
-    <div class="processing-overlay" id="processingOverlay">
-        <div class="processing-content">
-            <div class="processing-spinner"></div>
-            <h3>Processing Payment</h3>
-            <p>Please wait while we secure your booking...</p>
-            <div class="processing-steps">
-                <div class="proc-step" id="procStep1"><div class="check">✓</div><span>Validating card</span></div>
-                <div class="proc-step" id="procStep2"><div class="check">✓</div><span>Processing payment</span></div>
-                <div class="proc-step" id="procStep3"><div class="check">✓</div><span>Confirming booking</span></div>
-                <div class="proc-step" id="procStep4"><div class="check">✓</div><span>Generating ticket</span></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Full Screen Ticket Overlay -->
-    <div class="ticket-overlay" id="ticketOverlay">
-        <div class="confetti-container" id="confettiContainer"></div>
-        
-        <div class="ticket-animation-container">
-            <div class="success-message" id="successMessage">
-                <div class="success-icon">🎉</div>
-                <h2>Payment Successful!</h2>
-                <p>Your furry friend is booked and ready to travel</p>
-            </div>
-
-            <div class="animated-ticket" id="animatedTicket">
-                <div class="ticket-shine"></div>
-                <div class="ticket-header">
-                    <h2>🐕 Viva Españiel</h2>
-                    <div class="ticket-class">✨ First Class Woof ✨</div>
-                </div>
-                <div class="ticket-body">
-                    <div class="ticket-passenger">
-                        <div class="passenger-avatar">
-                            <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&q=80" alt="Dog" id="ticketDogImage">
-                        </div>
-                        <div class="passenger-info">
-                            <h3 id="ticketDogName">Buddy</h3>
-                            <p id="ticketBreed">Spanish Galgo • Medium</p>
-                        </div>
-                    </div>
-                    <div class="ticket-route">
-                        <div class="route-point">
-                            <div class="flag" id="ticketFromFlag">🇪🇸</div>
-                            <div class="city" id="ticketFromCity">Spain</div>
-                        </div>
-                        <div class="route-line"></div>
-                        <div class="route-point">
-                            <div class="flag" id="ticketToFlag">🇬🇧</div>
-                            <div class="city" id="ticketToCity">Manchester</div>
-                        </div>
-                    </div>
-                    <div class="ticket-details">
-                        <div class="ticket-detail">
-                            <div class="label">Travel Date</div>
-                            <div class="value" id="ticketDate" style="font-size:14px;">Feb 8-14</div>
-                        </div>
-                        <div class="ticket-detail">
-                            <div class="label">Van</div>
-                            <div class="value" id="ticketVan">Luna 🌙</div>
-                        </div>
-                        <div class="ticket-detail">
-                            <div class="label">Total Paid</div>
-                            <div class="value" id="ticketTotal">£831</div>
-                        </div>
-                    </div>
-                    <div class="ticket-barcode">
-                        <div class="barcode-lines" id="barcodeLines"></div>
-                        <div class="ticket-ref" id="ticketRef">VE-XXXXXX</div>
-                    </div>
-                </div>
-                <div class="ticket-footer">
-                    <p>🐾 We'll be in touch to arrange collection!</p>
-                    <p>Confirmation sent to <strong id="ticketEmail">email@example.com</strong></p>
-                </div>
-            </div>
-
-            <div class="ticket-actions" id="ticketActions" style="opacity: 0;">
-                <button class="btn btn-secondary" onclick="window.print()">🖨️ Print</button>
-                <button class="btn btn-primary" onclick="closeTicket()">Book Another</button>
-            </div>
-        </div>
-    </div>
-
+    <main id="main-content">
     <!-- Navigation -->
     <nav>
         <a href="#" class="nav-logo">🐕 Viva Españiel</a>
@@ -1757,9 +1835,9 @@
     <section class="hero">
         <div class="hero-content">
             <div class="hero-text">
-                <div class="hero-badge">🇪🇸 Spain ↔ UK 🇬🇧 Trusted Pet Transport</div>
+                <div class="hero-badge">🇬🇧 UK ↔ Spain ↔ UK 🇪🇸 British Dog Transport</div>
                 <h1>Safe Journeys for Your Furry Family</h1>
-                <p>Reuniting dogs with their families between Spain and the UK. Every paw-senger travels in comfort and safety.</p>
+                <p>A British company reuniting dogs with their families between the UK and Spain — in both directions. Every paw-senger travels in comfort and safety.</p>
                 <div class="hero-badges">
                     <div class="trust-badge">
                         <div class="trust-badge-icon">
@@ -1771,7 +1849,7 @@
                             <div class="trust-badge-subtitle">186 Reviews</div>
                         </div>
                     </div>
-                    <div class="trust-badge defra-badge">
+                    <div class="trust-badge corridor-badge">
                         <div class="trust-badge-icon">🛡️</div>
                         <div class="trust-badge-content">
                             <div class="trust-badge-title">DEFRA Approved</div>
@@ -1801,22 +1879,22 @@
         </div>
         <div class="trust-grid">
             <div class="trust-card">
-                <div class="trust-icon"><img src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=200&q=80" alt="Vet"></div>
+                <div class="trust-icon"><img src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=200&q=80" alt="Vet" loading="lazy" decoding="async"></div>
                 <h3>Vet Approved</h3>
                 <p>Health checks before and after every journey</p>
             </div>
             <div class="trust-card">
-                <div class="trust-icon"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=80" alt="Van"></div>
+                <div class="trust-icon"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=80" alt="Van" loading="lazy" decoding="async"></div>
                 <h3>Climate Controlled</h3>
                 <p>AC and heating for maximum comfort</p>
             </div>
             <div class="trust-card">
-                <div class="trust-icon"><img src="https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=200&q=80" alt="GPS"></div>
+                <div class="trust-icon"><img src="https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=200&q=80" alt="GPS" loading="lazy" decoding="async"></div>
                 <h3>Live Tracking</h3>
                 <p>Real-time updates and photos</p>
             </div>
             <div class="trust-card">
-                <div class="trust-icon"><img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=200&q=80" alt="Walk"></div>
+                <div class="trust-icon"><img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=200&q=80" alt="Walk" loading="lazy" decoding="async"></div>
                 <h3>Regular Stops</h3>
                 <p>Comfort breaks every 2-3 hours</p>
             </div>
@@ -1827,7 +1905,7 @@
     <section class="section about-section" id="about">
         <div class="about-container">
             <div class="about-image">
-                <img src="jon-brown.png" alt="Jon Brown with two happy dogs he recently transported">
+                <img src="jon-brown.png" alt="Jon Brown with two happy dogs he recently transported" loading="lazy" decoding="async">
                 <div class="about-image-badge">
                     <span>16+</span>
                     <small>Years Experience</small>
@@ -1837,7 +1915,10 @@
                 <div class="subtitle">Meet The Founder</div>
                 <h2>Jon Brown</h2>
                 <p>With over 16 years in the transport industry, Jon has dedicated his career to reuniting families with their four-legged loved ones. What started as a passion project has grown into a trusted service that's helped thousands of dogs make the journey between Spain and the UK safely.</p>
-                <p>"Every dog that travels with us becomes part of our family for the journey. I understand how much trust people place in us, and I take that responsibility seriously. These aren't just pets – they're family members, and they deserve to travel in comfort and safety."</p>
+                <blockquote class="about-quote">
+                    <p>Every dog that travels with us becomes part of our family for the journey. I understand how much trust people place in us, and I take that responsibility seriously. These aren't just pets – they're family members, and they deserve to travel in comfort and safety.</p>
+                    <cite>— Jon Brown, Viva Españiel</cite>
+                </blockquote>
                 <p>Jon personally oversees every transport, ensuring the highest standards of care from pickup to delivery. His hands-on approach and genuine love for animals is what sets Viva Españiel apart.</p>
                 <div class="about-highlights">
                     <div class="about-highlight">
@@ -1865,23 +1946,23 @@
         </div>
         <div class="gallery-grid">
             <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=800&q=80" alt="Luna">
+                <img src="https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=800&q=80" alt="Luna" loading="lazy" decoding="async">
                 <div class="gallery-overlay"><h4>Luna</h4><p>Galgo • Murcia → Manchester</p></div>
             </div>
             <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&q=80" alt="Max">
+                <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&q=80" alt="Max" loading="lazy" decoding="async">
                 <div class="gallery-overlay"><h4>Max</h4><p>Podenco • Valencia → London</p></div>
             </div>
             <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?w=400&q=80" alt="Bella">
+                <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?w=400&q=80" alt="Bella" loading="lazy" decoding="async">
                 <div class="gallery-overlay"><h4>Bella</h4><p>Mixed • Seville → Bristol</p></div>
             </div>
             <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&q=80" alt="Charlie">
+                <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&q=80" alt="Charlie" loading="lazy" decoding="async">
                 <div class="gallery-overlay"><h4>Charlie</h4><p>Golden • Madrid → Edinburgh</p></div>
             </div>
             <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400&q=80" alt="Rocky">
+                <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400&q=80" alt="Rocky" loading="lazy" decoding="async">
                 <div class="gallery-overlay"><h4>Rocky</h4><p>Bulldog • Barcelona → Birmingham</p></div>
             </div>
         </div>
@@ -1895,11 +1976,6 @@
         </div>
         <div class="booking-container">
             <div class="booking-panel">
-                <div class="direction-toggle">
-                    <button class="direction-btn active" data-direction="spain-to-uk" onclick="setDirection('spain-to-uk')">🇪🇸 Spain → UK 🇬🇧</button>
-                    <button class="direction-btn" data-direction="uk-to-spain" onclick="setDirection('uk-to-spain')">🇬🇧 UK → Spain 🇪🇸</button>
-                </div>
-
                 <div class="step-indicator">
                     <div class="step active" data-step="1"><div class="step-num">1</div><div class="step-label">Date</div></div>
                     <div class="step" data-step="2"><div class="step-num">2</div><div class="step-label">Route</div></div>
@@ -1910,6 +1986,10 @@
 
                 <!-- Step 1: Date Selection -->
                 <div class="booking-step active" id="step1">
+                    <div class="direction-toggle">
+                        <button class="direction-btn active" data-direction="uk-to-spain" onclick="setDirection('uk-to-spain')">🇬🇧 UK → Spain 🇪🇸</button>
+                        <button class="direction-btn" data-direction="spain-to-uk" onclick="setDirection('spain-to-uk')">🇪🇸 Spain → UK 🇬🇧</button>
+                    </div>
                     <div class="date-intro">
                         <h3>🚐 When should we travel?</h3>
                         <p>We depart during the second week of each month</p>
@@ -1923,15 +2003,21 @@
                 <!-- Step 2: Route -->
                 <div class="booking-step" id="step2">
                     <div class="form-group">
-                        <label id="addressLabel">Your UK Delivery Address</label>
+                        <label>Your Spanish address (for Pick up / Drop off)</label>
+                        <input type="text" id="spainAddress" placeholder="e.g., Calle Mayor 1, Madrid">
+                    </div>
+                    <div class="form-group">
+                        <label id="addressLabel">Your UK address (for Pick up / Drop off)</label>
                         <input type="text" id="destination" placeholder="e.g., Manchester, SW1A 1AA">
                     </div>
                     <button class="btn btn-primary" onclick="calculateRoute()">Calculate Price</button>
                     <div class="error-message" id="errorMessage"></div>
                     <div class="price-breakdown" id="priceBreakdown" style="display:none;">
-                        <div class="price-line"><span>Spain to Dover</span><span>£699.00</span></div>
-                        <div class="price-line"><span>UK Delivery (<span id="deliveryMiles">0</span> mi)</span><span id="deliveryCost">£0.00</span></div>
-                        <div class="price-line total"><span>Total</span><span class="value" id="totalPrice">£699.00</span></div>
+                        <div class="price-line"><span>Transport (Spain ↔ Dover)</span><span id="basePriceDisplay">£495.00</span></div>
+                        <div class="price-line"><span>UK mileage (<span id="deliveryMiles">0</span> mi @ 50p)</span><span id="deliveryCost">£0.00</span></div>
+                        <div class="price-line total"><span>Total per pet</span><span class="value" id="totalPrice">£495.00</span></div>
+                        <div class="price-line" style="color:#2d6a4f;font-weight:600;"><span>Booking fee to secure spot</span><span id="depositDisplay">—</span></div>
+                        <div class="price-line" style="color:#888;font-size:13px;"><span>Balance on travel day</span><span id="balanceDisplay">—</span></div>
                         <div class="btn-row">
                             <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
                             <button class="btn btn-primary" onclick="goToStep(3)">Continue</button>
@@ -1979,51 +2065,80 @@
                 <!-- Step 4: Review -->
                 <div class="booking-step" id="step4">
                     <div style="background:#f8f9fa;padding:15px;border-radius:12px;margin-bottom:15px;">
-                        <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:14px;"><span style="color:#666;">Travel Date</span><span id="summaryDate">-</span></div>
-                        <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:14px;"><span style="color:#666;">Customer</span><span id="summaryName">-</span></div>
-                        <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:14px;"><span style="color:#666;">Dog</span><span id="summaryDog">-</span></div>
-                        <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:14px;"><span style="color:#666;">Destination</span><span id="summaryDest">-</span></div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:14px;border-bottom:1px solid #eee;">
+                            <span style="color:#666;">Travel Date</span>
+                            <span style="display:flex;align-items:center;gap:10px;"><span id="summaryDate">-</span><button onclick="goToStep(1)" style="font-size:11px;color:var(--primary);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;">Change</button></span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:14px;border-bottom:1px solid #eee;">
+                            <span style="color:#666;">Spanish address</span>
+                            <span style="display:flex;align-items:center;gap:10px;"><span id="summarySpain">-</span><button onclick="goToStep(2)" style="font-size:11px;color:var(--primary);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;">Change</button></span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:14px;border-bottom:1px solid #eee;">
+                            <span style="color:#666;">UK address</span>
+                            <span style="display:flex;align-items:center;gap:10px;"><span id="summaryDest">-</span><button onclick="goToStep(2)" style="font-size:11px;color:var(--primary);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;">Change</button></span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:14px;border-bottom:1px solid #eee;">
+                            <span style="color:#666;">Customer</span>
+                            <span style="display:flex;align-items:center;gap:10px;"><span id="summaryName">-</span><button onclick="goToStep(3)" style="font-size:11px;color:var(--primary);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;">Edit</button></span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:14px;">
+                            <span style="color:#666;">Dog</span>
+                            <span style="display:flex;align-items:center;gap:10px;"><span id="summaryDog">-</span><button onclick="goToStep(3)" style="font-size:11px;color:var(--primary);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;">Edit</button></span>
+                        </div>
                     </div>
                     <div class="price-breakdown">
-                        <div class="price-line total" style="border:none;margin:0;padding:0;"><span>Total</span><span class="value" id="summaryTotal">£699</span></div>
+                        <div class="price-line total" style="border:none;margin:0 0 8px;padding:0;"><span>Total</span><span class="value" id="summaryTotal">—</span></div>
+                        <div class="price-line" style="color:#2d6a4f;font-weight:600;"><span>Booking fee to secure spot</span><span id="summaryDeposit">—</span></div>
+                        <div class="price-line" style="color:#888;font-size:13px;"><span>Balance on travel day</span><span id="summaryBalance">—</span></div>
                     </div>
                     <div class="btn-row">
                         <button class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
-                        <button class="btn btn-primary" onclick="goToStep(5)">Payment</button>
+                        <button class="btn btn-primary" onclick="goToStep(5)">Book 🐾</button>
                     </div>
                 </div>
 
-                <!-- Step 5: Payment -->
+                <!-- Step 5: Secure your booking -->
                 <div class="booking-step" id="step5">
-                    <div class="card-preview">
-                        <div class="card-chip"></div>
-                        <div class="card-number-display" id="cardDisplay">•••• •••• •••• ••••</div>
-                        <div class="card-icons">
-                            <span class="card-icon" id="iconVisa">VISA</span>
-                            <span class="card-icon" id="iconMC">MC</span>
-                            <span class="card-icon" id="iconAmex">AMEX</span>
+                    <div style="text-align:center;margin-bottom:20px;">
+                        <div style="display:inline-block;background:linear-gradient(135deg,var(--dark),#16213e);color:white;border-radius:16px;padding:16px 32px;">
+                            <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;opacity:0.7;margin-bottom:4px;">Booking fee to secure your spot</div>
+                            <div style="font-size:36px;font-weight:800;" id="confirmFee">£95</div>
+                            <div style="font-size:12px;opacity:0.7;margin-top:4px;">Balance of <span id="confirmBalance">—</span> due on travel day</div>
                         </div>
                     </div>
-                    <div class="form-group"><label>Name on Card</label><input type="text" id="cardName" placeholder="John Smith" oninput="updateCard()"></div>
-                    <div class="form-group"><label>Card Number</label><input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this);updateCard()"></div>
-                    <div class="form-row">
-                        <div class="form-group"><label>Expiry</label><input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)"></div>
-                        <div class="form-group"><label>CVV</label><input type="text" id="cardCvv" placeholder="123" maxlength="4"></div>
+
+                    <p style="font-size:13px;color:#666;text-align:center;margin-bottom:20px;">Pay your booking fee using one of the options below, then click <strong>Confirm Booking</strong>.</p>
+
+                    <!-- PayPal -->
+                    <div id="paypalSection" style="border:2px solid #eee;border-radius:12px;padding:16px;margin-bottom:12px;">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                            <span style="font-size:20px;">💳</span>
+                            <strong style="font-size:14px;">Pay via PayPal</strong>
+                        </div>
+                        <a id="paypalBtn" href="#" target="_blank" rel="noopener" style="display:block;background:#0070ba;color:white;text-align:center;padding:12px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;">Pay £95 with PayPal →</a>
                     </div>
-                    <div style="display:flex;align-items:center;gap:8px;background:#e8f5e9;padding:10px;border-radius:8px;font-size:13px;color:#2d6a4f;margin-bottom:15px;">🔒 256-bit SSL encrypted</div>
-                    <div class="price-breakdown">
-                        <div class="price-line total" style="border:none;margin:0;padding:0;"><span>Pay Now</span><span class="value" id="payTotal">£699</span></div>
+
+                    <!-- Bank Transfer -->
+                    <div id="bankSection" style="border:2px solid #eee;border-radius:12px;padding:16px;margin-bottom:20px;">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                            <span style="font-size:20px;">🏦</span>
+                            <strong style="font-size:14px;">Pay via Bank Transfer</strong>
+                        </div>
+                        <div id="bankDetails" style="font-size:13px;line-height:2;background:#f8f9fa;border-radius:8px;padding:12px;">
+                            <!-- Populated by JS -->
+                        </div>
                     </div>
+
                     <div class="btn-row">
                         <button class="btn btn-secondary" onclick="goToStep(4)">← Back</button>
-                        <button class="btn btn-primary" onclick="processPayment()">🔒 Pay Now</button>
+                        <button class="btn btn-primary" id="submitBtn" onclick="submitBooking()">Confirm Booking 🐾</button>
                     </div>
-                    <p style="font-size:11px;color:#999;text-align:center;margin-top:10px;">TEST MODE - No real payment</p>
                 </div>
             </div>
             <div class="map-panel">
                 <div id="map"></div>
                 <div class="loading" id="loading"><div class="spinner"></div><span>Calculating...</span></div>
+                <div style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.55);color:white;font-size:11px;padding:4px 10px;border-radius:20px;pointer-events:none;white-space:nowrap;">Route shown for illustrative purposes only</div>
             </div>
         </div>
     </section>
@@ -2037,7 +2152,7 @@
         <div class="testimonials-grid">
             <div class="testimonial-card">
                 <div class="testimonial-header">
-                    <div class="testimonial-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80" alt="Sarah"></div>
+                    <div class="testimonial-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80" alt="Sarah" loading="lazy" decoding="async"></div>
                     <div class="testimonial-author"><h4>Sarah Mitchell</h4><p>Manchester</p></div>
                 </div>
                 <div class="testimonial-stars">★★★★★</div>
@@ -2045,7 +2160,7 @@
             </div>
             <div class="testimonial-card">
                 <div class="testimonial-header">
-                    <div class="testimonial-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80" alt="James"></div>
+                    <div class="testimonial-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80" alt="James" loading="lazy" decoding="async"></div>
                     <div class="testimonial-author"><h4>James Thompson</h4><p>Bristol</p></div>
                 </div>
                 <div class="testimonial-stars">★★★★★</div>
@@ -2053,7 +2168,7 @@
             </div>
             <div class="testimonial-card">
                 <div class="testimonial-header">
-                    <div class="testimonial-avatar"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80" alt="Emma"></div>
+                    <div class="testimonial-avatar"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80" alt="Emma" loading="lazy" decoding="async"></div>
                     <div class="testimonial-author"><h4>Emma Watson</h4><p>Edinburgh</p></div>
                 </div>
                 <div class="testimonial-stars">★★★★★</div>
@@ -2061,6 +2176,8 @@
             </div>
         </div>
     </section>
+
+    </main>
 
     <!-- Footer -->
     <footer>
@@ -2087,152 +2204,241 @@
                 <a href="#">+44 800 123 4567</a>
             </div>
         </div>
-        <div class="footer-bottom">© 2026 Viva Españiel • TEST APPLICATION</div>
+        <div class="footer-bottom">© 2026 Viva Españiel • Spain ↔ UK pet transport</div>
     </footer>
 
-    <script>
-        const ORS_API_KEY = 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjMzYTM4NmFmMTc2YjQ1YjRiZTFlNjM4ZGU5ZGQ1MWRmIiwiaCI6Im11cm11cjY0In0=';
-        const DOVER = { lat: 51.1279, lng: 1.3134 };
-        let currentDirection = 'spain-to-uk';
-        let routeData = { destination: null, miles: 0, total: 699, travelDate: null };
-        const vanNames = ['Luna 🌙', 'Sol ☀️', 'Estrella ⭐', 'Mar 🌊', 'Cielo 🌤️'];
-        const dogImages = [
-            'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&q=80',
-            'https://images.unsplash.com/photo-1517849845537-4d257902454a?w=200&q=80',
-            'https://images.unsplash.com/photo-1552053831-71594a27632d?w=200&q=80',
-            'https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=200&q=80'
-        ];
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const monthsFull = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    <!-- Booking confirmation overlay -->
+    <div class="processing-overlay" id="confirmOverlay">
+        <div class="confirm-card">
+            <span class="confirm-paw">🐾</span>
+            <h2 class="confirm-headline" id="confirmHeadline">Your dog is going on an adventure!</h2>
+            <p class="confirm-sub">Booking request received</p>
+            <div class="confirm-ref-box">
+                <p class="confirm-ref-label">Your reference</p>
+                <p class="confirm-ref-number" id="confirmRef">VE-XXXXXX</p>
+            </div>
+            <p class="confirm-detail">Jon will review your booking and be in touch with <strong id="confirmEmail">—</strong> within 24 hours.</p>
+            <div class="confirm-done-btn">
+                <button class="btn btn-primary" onclick="resetBooking()" style="width:100%;background:var(--secondary);color:var(--dark);font-weight:700;">Done</button>
+            </div>
+        </div>
+    </div>
 
-        // Generate travel dates (second week of each month = days 8-14)
-        function generateTravelDates() {
-            const dates = [];
-            const now = new Date();
-            let month = now.getMonth();
-            let year = now.getFullYear();
-            
-            // If we're past the 14th, start from next month
-            if (now.getDate() > 14) {
-                month++;
-                if (month > 11) { month = 0; year++; }
+    <script>
+        // ── Runtime state ────────────────────────────────────────────────────────
+        const DOVER = { lat: 51.1279, lng: 1.3134 };
+        let currentDirection = 'uk-to-spain';
+        let routeData = { destination: null, miles: 0, total: 0, bookingFee: 95, balance: 0, travelDate: null, travelDateId: null };
+        let pricing = { base: 495, perMilePence: 50, bookingFee: 95 };
+        let paymentSettings = { paypalEmail: '', paypalLink: '', bankName: '', bankSortCode: '', bankAccountNumber: '', bankAccountName: '' };
+
+        // ── Supabase client ──────────────────────────────────────────────────────
+        const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ── Page init: fetch settings + dates from Supabase ─────────────────────
+        async function initPage() {
+            try {
+                const [{ data: settingsData }, { data: datesData }] = await Promise.all([
+                    _supabase.from('settings').select('key,value').in('key', ['base_price_gbp','per_mile_pence','booking_fee_gbp','paypal_email','paypal_link','bank_name','bank_sort_code','bank_account_number','bank_account_name']),
+                    _supabase.from('travel_dates').select('*').eq('active', true).order('departure_date', { ascending: true })
+                ]);
+                if (settingsData) {
+                    settingsData.forEach(r => {
+                        if (r.key === 'base_price_gbp')       pricing.base                     = parseFloat(r.value);
+                        if (r.key === 'per_mile_pence')       pricing.perMilePence              = parseFloat(r.value);
+                        if (r.key === 'booking_fee_gbp')      pricing.bookingFee                = parseFloat(r.value) || 95;
+                        if (r.key === 'paypal_email')         paymentSettings.paypalEmail       = r.value;
+                        if (r.key === 'paypal_link')          paymentSettings.paypalLink        = r.value;
+                        if (r.key === 'bank_name')            paymentSettings.bankName          = r.value;
+                        if (r.key === 'bank_sort_code')       paymentSettings.bankSortCode      = r.value;
+                        if (r.key === 'bank_account_number')  paymentSettings.bankAccountNumber = r.value;
+                        if (r.key === 'bank_account_name')    paymentSettings.bankAccountName   = r.value;
+                    });
+                }
+                window._allDates = datesData || [];
+            } catch (e) {
+                console.warn('Could not load Supabase data — using defaults');
+                window._allDates = [];
             }
-            
-            // Generate 6 upcoming travel dates
-            for (let i = 0; i < 6; i++) {
-                const startDay = 8;
-                const endDay = 14;
-                const spots = Math.floor(Math.random() * 5) + 2; // 2-6 spots
-                
-                dates.push({
-                    month: months[month],
-                    monthFull: monthsFull[month],
-                    startDay,
-                    endDay,
-                    year,
-                    spots,
-                    id: `${year}-${String(month + 1).padStart(2, '0')}`
-                });
-                
-                month++;
-                if (month > 11) { month = 0; year++; }
-            }
-            return dates;
+            renderDateCards();
         }
 
         function renderDateCards() {
             const grid = document.getElementById('dateGrid');
-            const dates = generateTravelDates();
-            
-            grid.innerHTML = dates.map(d => `
-                <div class="date-card" data-date-id="${d.id}" data-date-display="${d.monthFull} ${d.startDay}-${d.endDay}" onclick="selectDate(this, '${d.id}', '${d.monthFull} ${d.startDay}-${d.endDay}, ${d.year}')">
-                    <div class="date-month">${d.month}</div>
-                    <div class="date-range">${d.startDay}-${d.endDay}</div>
-                    <div class="date-year">${d.year}</div>
-                    <div class="date-spots ${d.spots <= 3 ? 'limited' : ''}">${d.spots} spots left</div>
-                </div>
-            `).join('');
+            const dbDirection = currentDirection.replace(/-/g, '_');
+            const relevantDates = (window._allDates || []).filter(d =>
+                (d.direction === dbDirection || d.direction === 'both') &&
+                (d.spots_available - d.spots_taken) > 0
+            );
+            if (relevantDates.length === 0) {
+                grid.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">No upcoming dates available for this direction. Please <a href="#contact">contact us</a> directly.</p>';
+                return;
+            }
+            grid.innerHTML = relevantDates.map(d => {
+                const date   = new Date(d.departure_date);
+                const mon    = date.toLocaleString('en-GB', { month: 'short' });
+                const day    = date.getDate();
+                const year   = date.getFullYear();
+                const spots  = d.spots_available - d.spots_taken;
+                const label  = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+                return `<div class="date-card" data-date-id="${d.id}" onclick="selectDate(this,'${d.id}','${label}')">
+                    <div class="date-month">${mon}</div>
+                    <div class="date-range">${day}</div>
+                    <div class="date-year">${year}</div>
+                    <div class="date-spots ${spots <= 3 ? 'limited' : ''}">${spots} spot${spots !== 1 ? 's' : ''} left</div>
+                </div>`;
+            }).join('');
         }
 
         function selectDate(el, id, display) {
             document.querySelectorAll('.date-card').forEach(c => c.classList.remove('selected'));
             el.classList.add('selected');
-            routeData.travelDate = display;
-            document.getElementById('dateNextBtn').disabled = false;
-            document.getElementById('dateNextBtn').textContent = 'Continue →';
+            routeData.travelDate   = display;
+            routeData.travelDateId = id;
+            document.getElementById('dateNextBtn').disabled     = false;
+            document.getElementById('dateNextBtn').textContent  = 'Continue →';
         }
 
-        // Map
-        const map = L.map('map').setView([48, -2], 5);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OSM' }).addTo(map);
-        let routeLayer = L.layerGroup().addTo(map);
+        // ── Map ──────────────────────────────────────────────────────────────────
+        mapboxgl.accessToken = MAPBOX_TOKEN;
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v12',
+            center: [-2, 48],
+            zoom: 5
+        });
+        map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
+
+        let mapLoaded = false;
+        let markers = [];
+
+        const emptyLine = { type: 'Feature', geometry: { type: 'LineString', coordinates: [] } };
+
+        map.on('load', () => {
+            mapLoaded = true;
+            map.addSource('route-spain', { type: 'geojson', data: emptyLine });
+            map.addLayer({ id: 'route-spain', type: 'line', source: 'route-spain',
+                layout: { 'line-join': 'round', 'line-cap': 'round' },
+                paint: { 'line-color': '#c84b31', 'line-width': 4 } });
+            map.addSource('route-uk', { type: 'geojson', data: emptyLine });
+            map.addLayer({ id: 'route-uk', type: 'line', source: 'route-uk',
+                layout: { 'line-join': 'round', 'line-cap': 'round' },
+                paint: { 'line-color': '#c84b31', 'line-width': 4 } });
+            initMap();
+        });
+
+        function clearMarkers() {
+            markers.forEach(m => m.remove());
+            markers = [];
+        }
+
+        function addMarker(lng, lat, label) {
+            const el = document.createElement('div');
+            el.style.cssText = 'width:12px;height:12px;background:#c84b31;border-radius:50%;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.4)';
+            const m = new mapboxgl.Marker(el)
+                .setLngLat([lng, lat])
+                .setPopup(new mapboxgl.Popup({ offset: 10 }).setText(label))
+                .addTo(map);
+            markers.push(m);
+            return m;
+        }
 
         function initMap() {
-            routeLayer.clearLayers();
-            L.marker([40.4168, -3.7038]).addTo(routeLayer).bindPopup('Spain');
-            L.marker([DOVER.lat, DOVER.lng]).addTo(routeLayer).bindPopup('Dover');
+            clearMarkers();
+            addMarker(DOVER.lng, DOVER.lat, 'Dover');
+            if (mapLoaded) {
+                map.getSource('route-spain').setData(emptyLine);
+                map.getSource('route-uk').setData(emptyLine);
+            }
         }
-        initMap();
-        renderDateCards();
+        initPage();
 
-        // Mobile menu
+        // ── Mobile menu ──────────────────────────────────────────────────────────
         function toggleMobileMenu() {
             document.getElementById('mobileMenu').classList.toggle('active');
         }
 
-        // Direction
+        // ── Direction toggle ─────────────────────────────────────────────────────
         function setDirection(dir) {
             currentDirection = dir;
             document.querySelectorAll('.direction-btn').forEach(b => b.classList.toggle('active', b.dataset.direction === dir));
-            document.getElementById('addressLabel').textContent = dir === 'spain-to-uk' ? 'Your UK Delivery Address' : 'Your UK Pickup Address';
+            document.getElementById('addressLabel').textContent = 'Your UK address (for Pick up / Drop off)';
             document.getElementById('priceBreakdown').style.display = 'none';
+            renderDateCards();
         }
 
-        // Geocode
-        async function geocode(loc) {
-            const res = await fetch(`https://api.openrouteservice.org/geocode/search?api_key=${ORS_API_KEY}&text=${encodeURIComponent(loc)}&boundary.country=GB&size=1`);
-            const data = await res.json();
-            if (data.features?.length) return { lng: data.features[0].geometry.coordinates[0], lat: data.features[0].geometry.coordinates[1], name: data.features[0].properties.label };
-            throw new Error('Location not found');
-        }
-
-        // Route
-        async function getRoute(start, end) {
-            const res = await fetch(`https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}&start=${start.lng},${start.lat}&end=${end.lng},${end.lat}`);
-            const data = await res.json();
-            if (data.features?.length) return { distance: data.features[0].properties.summary.distance, coords: data.features[0].geometry.coordinates };
-            throw new Error('Route not found');
-        }
-
+        // ── Route calculation ────────────────────────────────────────────────────
         async function calculateRoute() {
-            const dest = document.getElementById('destination').value.trim();
-            if (!dest) { showError('Please enter address'); return; }
-            
+            const spainAddr = document.getElementById('spainAddress').value.trim();
+            const dest      = document.getElementById('destination').value.trim();
+            if (!spainAddr) { showError('Please enter your Spanish address'); return; }
+            if (!dest)      { showError('Please enter your UK address'); return; }
             document.getElementById('errorMessage').classList.remove('visible');
             document.getElementById('loading').classList.add('visible');
-
             try {
-                const destCoords = await geocode(dest);
-                const route = await getRoute(DOVER, destCoords);
-                
-                routeLayer.clearLayers();
-                L.marker([40.4168, -3.7038]).addTo(routeLayer);
-                L.marker([DOVER.lat, DOVER.lng]).addTo(routeLayer);
-                L.marker([destCoords.lat, destCoords.lng]).addTo(routeLayer);
-                L.polyline(route.coords.map(c => [c[1], c[0]]), { color: '#c84b31', weight: 4 }).addTo(routeLayer);
-                map.fitBounds([[40.4168, -3.7038], [DOVER.lat, DOVER.lng], [destCoords.lat, destCoords.lng]], { padding: [30, 30] });
+                // Geocode Spanish address + get Spain→Dover route (client-side, Mapbox)
+                const spainGeoRes = await fetch(
+                    `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(spainAddr)}.json?country=ES&limit=1&access_token=${MAPBOX_TOKEN}`
+                );
+                const spainGeoData = await spainGeoRes.json();
+                if (!spainGeoData.features?.length) throw new Error('Spanish address not found. Please check and try again.');
+                const [spainLng, spainLat] = spainGeoData.features[0].center;
+                const spainDisplayName     = spainGeoData.features[0].place_name;
 
-                const miles = route.distance / 1609.34;
-                const delivery = miles * 0.5;
-                const total = 699 + delivery;
-                routeData = { destination: destCoords, miles, total };
+                const spainRouteRes = await fetch(
+                    `https://api.mapbox.com/directions/v5/mapbox/driving/${spainLng},${spainLat};${DOVER.lng},${DOVER.lat}?geometries=geojson&access_token=${MAPBOX_TOKEN}`
+                );
+                const spainRouteData = await spainRouteRes.json();
+                const spainRouteCoords = spainRouteData.routes?.[0]?.geometry?.coordinates || [];
 
-                document.getElementById('deliveryMiles').textContent = miles.toFixed(0);
-                document.getElementById('deliveryCost').textContent = `£${delivery.toFixed(2)}`;
-                document.getElementById('totalPrice').textContent = `£${total.toFixed(2)}`;
+                // UK route via edge function (pricing is based on Dover→UK mileage)
+                const res = await fetch(`${EDGE_BASE_URL}/route-proxy`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address: dest })
+                });
+                if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Route error'); }
+                const data = await res.json();
+
+                const miles       = data.miles;
+                const mileageCost = (miles * pricing.perMilePence) / 100;
+                const total       = pricing.base + mileageCost;
+                const bookingFee  = pricing.bookingFee;
+                const balance     = total - bookingFee;
+
+                routeData = {
+                    destination:        { name: data.displayName, lat: data.lat, lng: data.lng },
+                    spainDestination:   { name: spainDisplayName, lat: spainLat, lng: spainLng },
+                    miles, total, bookingFee, balance,
+                    travelDate: routeData.travelDate, travelDateId: routeData.travelDateId
+                };
+
+                // Draw full route on map
+                clearMarkers();
+                addMarker(spainLng, spainLat, spainDisplayName.split(',')[0]);
+                addMarker(DOVER.lng, DOVER.lat, 'Dover');
+                addMarker(data.lng, data.lat, data.displayName.split(',')[0]);
+                if (mapLoaded) {
+                    map.getSource('route-spain').setData({ type: 'Feature', geometry: { type: 'LineString', coordinates: spainRouteCoords } });
+                    map.getSource('route-uk').setData({ type: 'Feature', geometry: { type: 'LineString', coordinates: data.routeCoords || [] } });
+                }
+                const bounds = new mapboxgl.LngLatBounds();
+                [[spainLng, spainLat], [DOVER.lng, DOVER.lat], [data.lng, data.lat]].forEach(c => bounds.extend(c));
+                map.fitBounds(bounds, { padding: 50 });
+
+                document.getElementById('basePriceDisplay').textContent = `£${pricing.base.toFixed(2)}`;
+                document.getElementById('deliveryMiles').textContent    = miles.toFixed(0);
+                document.getElementById('deliveryCost').textContent     = `£${mileageCost.toFixed(2)}`;
+                document.getElementById('totalPrice').textContent       = `£${total.toFixed(2)}`;
+                document.getElementById('depositDisplay').textContent   = `£${bookingFee.toFixed(2)}`;
+                document.getElementById('balanceDisplay').textContent   = `£${balance.toFixed(2)}`;
                 document.getElementById('priceBreakdown').style.display = 'block';
+                // On mobile, scroll map into view so user sees the route
+                if (window.innerWidth <= 900) {
+                    document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             } catch (e) {
-                showError(e.message);
+                showError(e.message || 'Unable to calculate route. Please check the addresses and try again.');
             }
             document.getElementById('loading').classList.remove('visible');
         }
@@ -2243,194 +2449,136 @@
             el.classList.add('visible');
         }
 
+        // ── Step navigation ──────────────────────────────────────────────────────
         function goToStep(step) {
-            // Validation for each step
-            if (step === 2 && !routeData.travelDate) { alert('Please select a travel date'); return; }
-            if (step === 3 && !routeData.miles) { showError('Calculate price first'); return; }
+            if (step === 2 && !routeData.travelDate)  { alert('Please select a travel date'); return; }
+            if (step === 3 && !routeData.miles)        { showError('Calculate price first'); return; }
             if (step === 4) {
-                const fields = ['firstName', 'lastName', 'email', 'phone', 'dogName', 'dogBreed', 'dogSize'];
-                if (fields.some(f => !document.getElementById(f).value.trim())) { alert('Fill all fields'); return; }
-                document.getElementById('summaryDate').textContent = routeData.travelDate;
-                document.getElementById('summaryName').textContent = `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`;
-                document.getElementById('summaryDog').textContent = `${document.getElementById('dogName').value} (${document.getElementById('dogBreed').options[document.getElementById('dogBreed').selectedIndex].text})`;
-                document.getElementById('summaryDest').textContent = routeData.destination.name.split(',')[0];
-                document.getElementById('summaryTotal').textContent = `£${routeData.total.toFixed(2)}`;
+                const fields = ['firstName','lastName','email','phone','dogName','dogBreed','dogSize'];
+                if (fields.some(f => !document.getElementById(f).value.trim())) { alert('Please fill in all fields'); return; }
+                document.getElementById('summaryDate').textContent    = routeData.travelDate;
+                document.getElementById('summaryName').textContent    = `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`;
+                const breedSel = document.getElementById('dogBreed');
+                document.getElementById('summaryDog').textContent     = `${document.getElementById('dogName').value} (${breedSel.options[breedSel.selectedIndex].text})`;
+                document.getElementById('summarySpain').textContent  = routeData.spainDestination?.name?.split(',')[0] || '—';
+                document.getElementById('summaryDest').textContent    = routeData.destination?.name?.split(',')[0] || '—';
+                document.getElementById('summaryTotal').textContent   = `£${routeData.total.toFixed(2)}`;
+                document.getElementById('summaryDeposit').textContent = `£${routeData.bookingFee.toFixed(2)}`;
+                document.getElementById('summaryBalance').textContent = `£${routeData.balance.toFixed(2)}`;
             }
             if (step === 5) {
-                document.getElementById('payTotal').textContent = `£${routeData.total.toFixed(2)}`;
-                document.getElementById('cardName').value = `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`;
+                document.getElementById('confirmFee').textContent     = `£${routeData.bookingFee.toFixed(2)}`;
+                document.getElementById('confirmBalance').textContent = `£${routeData.balance.toFixed(2)}`;
+                // PayPal
+                const paypalLink = paymentSettings.paypalLink || paymentSettings.paypalEmail;
+                const paypalBtn  = document.getElementById('paypalBtn');
+                if (paypalLink) {
+                    paypalBtn.href = paypalLink.startsWith('http') ? paypalLink : `https://${paypalLink}`;
+                    document.getElementById('paypalSection').style.display = 'block';
+                } else {
+                    document.getElementById('paypalSection').style.display = 'none';
+                }
+                // Bank transfer
+                const b = paymentSettings;
+                const customerName = `${document.getElementById('firstName').value.trim()} ${document.getElementById('lastName').value.trim()}`;
+                const dogName = document.getElementById('dogName').value.trim();
+                if (b.bankSortCode || b.bankAccountNumber) {
+                    document.getElementById('bankDetails').innerHTML = `
+                        <div><span style="color:#666;">Account name</span><br><strong>${b.bankAccountName || '—'}</strong></div>
+                        <div><span style="color:#666;">Sort code</span><br><strong>${b.bankSortCode || '—'}</strong></div>
+                        <div><span style="color:#666;">Account number</span><br><strong>${b.bankAccountNumber || '—'}</strong></div>
+                        <div><span style="color:#666;">Bank</span><br><strong>${b.bankName || '—'}</strong></div>
+                        <div style="margin-top:8px;padding-top:8px;border-top:1px solid #eee;"><span style="color:#666;">Reference</span><br><strong>${customerName} – ${dogName}</strong></div>`;
+                    document.getElementById('bankSection').style.display = 'block';
+                } else {
+                    document.getElementById('bankSection').style.display = 'none';
+                }
             }
-
             document.querySelectorAll('.booking-step').forEach(s => s.classList.remove('active'));
             document.getElementById(`step${step}`).classList.add('active');
             document.querySelectorAll('.step').forEach(s => {
                 const n = parseInt(s.dataset.step);
-                s.classList.remove('active', 'completed');
+                s.classList.remove('active','completed');
                 if (n === step) s.classList.add('active');
                 else if (n < step) s.classList.add('completed');
             });
         }
 
-        // Card formatting
-        function formatCard(input) {
-            let v = input.value.replace(/\D/g, '').substring(0, 16);
-            input.value = v.replace(/(.{4})/g, '$1 ').trim();
-            document.querySelectorAll('.card-icon').forEach(i => i.classList.remove('active'));
-            if (/^4/.test(v)) document.getElementById('iconVisa').classList.add('active');
-            else if (/^5[1-5]/.test(v)) document.getElementById('iconMC').classList.add('active');
-            else if (/^3[47]/.test(v)) document.getElementById('iconAmex').classList.add('active');
-        }
-
-        function formatExpiry(input) {
-            let v = input.value.replace(/\D/g, '').substring(0, 4);
-            if (v.length >= 2) v = v.substring(0, 2) + '/' + v.substring(2);
-            input.value = v;
-        }
-
-        function updateCard() {
-            document.getElementById('cardDisplay').textContent = document.getElementById('cardNumber').value || '•••• •••• •••• ••••';
-        }
-
-        // Payment
-        function processPayment() {
-            if (!document.getElementById('cardNumber').value || !document.getElementById('cardCvv').value) { 
-                alert('Please fill in card details'); 
-                return; 
-            }
-
-            var overlay = document.getElementById('processingOverlay');
-            var steps = ['procStep1', 'procStep2', 'procStep3', 'procStep4'];
-            var currentStep = 0;
-            
-            overlay.classList.add('visible');
-
-            function runStep() {
-                if (currentStep < steps.length) {
-                    for (var j = 0; j < steps.length; j++) {
-                        document.getElementById(steps[j]).classList.remove('active', 'done');
-                        if (j < currentStep) document.getElementById(steps[j]).classList.add('done');
-                        if (j === currentStep) document.getElementById(steps[j]).classList.add('active');
-                    }
-                    currentStep++;
-                    setTimeout(runStep, 700);
-                } else {
-                    document.getElementById(steps[3]).classList.add('done');
-                    setTimeout(function() {
-                        overlay.classList.remove('visible');
-                        for (var k = 0; k < steps.length; k++) {
-                            document.getElementById(steps[k]).classList.remove('active', 'done');
-                        }
-                        showTicket();
-                    }, 500);
-                }
-            }
-            
-            runStep();
-        }
-
-        function showTicket() {
-            const ref = 'VE-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-            
-            // Update ticket with safe fallbacks
-            const dogNameEl = document.getElementById('dogName');
-            const emailEl = document.getElementById('email');
-            const breedSelect = document.getElementById('dogBreed');
-            const sizeSelect = document.getElementById('dogSize');
-            
-            document.getElementById('ticketDogName').textContent = dogNameEl?.value || 'Your Dog';
-            document.getElementById('ticketBreed').textContent = (breedSelect?.selectedIndex > 0 ? breedSelect.options[breedSelect.selectedIndex].text : 'Mixed') + ' • ' + (sizeSelect?.selectedIndex > 0 ? sizeSelect.options[sizeSelect.selectedIndex].text : 'Medium');
-            document.getElementById('ticketEmail').textContent = emailEl?.value || 'your@email.com';
-            document.getElementById('ticketRef').textContent = ref;
-            document.getElementById('ticketVan').textContent = vanNames[Math.floor(Math.random() * vanNames.length)];
-            document.getElementById('ticketDate').textContent = routeData.travelDate ? routeData.travelDate.split(',')[0] : 'TBC';
-            document.getElementById('ticketTotal').textContent = '£' + Math.round(routeData.total || 699);
-            document.getElementById('ticketDogImage').src = dogImages[Math.floor(Math.random() * dogImages.length)];
-
-            const city = routeData.destination?.name?.split(',')[0] || 'Your Destination';
-            if (currentDirection === 'spain-to-uk') {
-                document.getElementById('ticketFromFlag').textContent = '🇪🇸';
-                document.getElementById('ticketFromCity').textContent = 'Spain';
-                document.getElementById('ticketToFlag').textContent = '🇬🇧';
-                document.getElementById('ticketToCity').textContent = city;
-            } else {
-                document.getElementById('ticketFromFlag').textContent = '🇬🇧';
-                document.getElementById('ticketFromCity').textContent = city;
-                document.getElementById('ticketToFlag').textContent = '🇪🇸';
-                document.getElementById('ticketToCity').textContent = 'Spain';
-            }
-
-            // Show overlay
-            document.getElementById('ticketOverlay').classList.add('visible');
-            
-            // Create confetti
-            createConfetti();
-
-            // Animate sequence
-            setTimeout(function() {
-                document.getElementById('successMessage').classList.add('visible');
-            }, 300);
-
-            setTimeout(function() {
-                document.getElementById('animatedTicket').classList.add('revealed');
-                
-                // Animate barcode
-                const barcode = document.getElementById('barcodeLines');
-                barcode.innerHTML = '';
-                for (let i = 0; i < 35; i++) {
-                    const line = document.createElement('div');
-                    line.className = 'barcode-line';
-                    line.style.height = (25 + Math.random() * 25) + 'px';
-                    line.style.animationDelay = (0.8 + i * 0.02) + 's';
-                    barcode.appendChild(line);
-                }
-            }, 800);
-
-            setTimeout(function() {
-                document.getElementById('ticketActions').style.opacity = '1';
-                document.getElementById('ticketActions').style.transition = 'opacity 0.5s';
-            }, 1600);
-        }
-
-        function createConfetti() {
-            const container = document.getElementById('confettiContainer');
-            container.innerHTML = '';
-            const colors = ['#c84b31', '#ffb319', '#2d6a4f', '#3b82f6', '#ec4899', '#f59e0b'];
-            
-            for (let i = 0; i < 100; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = `${Math.random() * 100}%`;
-                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.width = `${5 + Math.random() * 10}px`;
-                confetti.style.height = `${5 + Math.random() * 10}px`;
-                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-                confetti.style.animation = `confetti-fall ${2 + Math.random() * 3}s linear forwards`;
-                confetti.style.animationDelay = `${Math.random() * 2}s`;
-                container.appendChild(confetti);
+        // ── Submit booking ───────────────────────────────────────────────────────
+        async function submitBooking() {
+            const btn = document.getElementById('submitBtn');
+            btn.disabled    = true;
+            btn.textContent = 'Submitting…';
+            const breedSel = document.getElementById('dogBreed');
+            const sizeSel  = document.getElementById('dogSize');
+            try {
+                const res = await fetch(`${EDGE_BASE_URL}/submit-booking`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        direction:          currentDirection.replace(/-/g, '_'),
+                        travelDateId:       routeData.travelDateId,
+                        travelDateDisplay:  routeData.travelDate,
+                        firstName:          document.getElementById('firstName').value.trim(),
+                        lastName:           document.getElementById('lastName').value.trim(),
+                        email:              document.getElementById('email').value.trim(),
+                        phone:              document.getElementById('phone').value.trim(),
+                        dogName:            document.getElementById('dogName').value.trim(),
+                        breed:              breedSel.value,
+                        breedDisplay:       breedSel.options[breedSel.selectedIndex].text,
+                        size:               sizeSel.value,
+                        spainAddress:        document.getElementById('spainAddress').value.trim(),
+                        spainAddressDisplay: routeData.spainDestination?.name || document.getElementById('spainAddress').value.trim(),
+                        ukAddress:          document.getElementById('destination').value.trim(),
+                        ukAddressDisplay:   routeData.destination?.name || document.getElementById('destination').value.trim(),
+                        milesFromDover:     routeData.miles,
+                        basePriceGbp:       pricing.base,
+                        mileageCostGbp:     (routeData.miles * pricing.perMilePence) / 100,
+                        totalPriceGbp:      routeData.total,
+                        depositGbp:         routeData.bookingFee,
+                        balanceGbp:         routeData.balance,
+                    })
+                });
+                if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Submission failed'); }
+                const { reference } = await res.json();
+                showConfirmation(reference, document.getElementById('email').value.trim(), document.getElementById('dogName').value.trim());
+            } catch (e) {
+                alert('Sorry, there was a problem submitting your request. Please try again or contact us directly.');
+                btn.disabled    = false;
+                btn.textContent = 'Request to Book 🐾';
             }
         }
 
-        function closeTicket() {
-            document.getElementById('ticketOverlay').classList.remove('visible');
-            document.getElementById('animatedTicket').classList.remove('revealed');
-            document.getElementById('successMessage').classList.remove('visible');
-            document.getElementById('ticketActions').style.opacity = '0';
-            
-            // Reset form
-            ['destination', 'firstName', 'lastName', 'email', 'phone', 'dogName', 'dogBreed', 'dogSize', 'cardName', 'cardNumber', 'cardExpiry', 'cardCvv'].forEach(id => document.getElementById(id).value = '');
+        function showConfirmation(reference, email, dogName) {
+            const destination = currentDirection === 'uk-to-spain' ? 'Spain 🇪🇸' : 'the UK 🇬🇧';
+            document.getElementById('confirmHeadline').textContent = `${dogName} is going to ${destination}!`;
+            document.getElementById('confirmRef').textContent      = reference;
+            document.getElementById('confirmEmail').textContent    = email;
+            document.getElementById('confirmOverlay').classList.add('visible');
+        }
+
+        function resetBooking() {
+            document.getElementById('confirmOverlay').classList.remove('visible');
+            ['spainAddress','destination','firstName','lastName','email','phone','dogName'].forEach(id => {
+                const el = document.getElementById(id); if (el) el.value = '';
+            });
+            ['dogBreed','dogSize'].forEach(id => {
+                const el = document.getElementById(id); if (el) el.selectedIndex = 0;
+            });
             document.getElementById('priceBreakdown').style.display = 'none';
             document.querySelectorAll('.date-card').forEach(c => c.classList.remove('selected'));
-            document.getElementById('dateNextBtn').disabled = true;
+            document.getElementById('dateNextBtn').disabled    = true;
             document.getElementById('dateNextBtn').textContent = 'Select a Travel Date';
-            routeData = { destination: null, miles: 0, total: 699, travelDate: null };
+            routeData = { destination: null, miles: 0, total: 0, deposit: 0, balance: 0, travelDate: null, travelDateId: null };
+            const btn = document.getElementById('submitBtn');
+            if (btn) { btn.disabled = false; btn.textContent = 'Request to Book 🐾'; }
             initMap();
+            map.flyTo({ center: [-2, 48], zoom: 5 });
             goToStep(1);
         }
 
-        // Keyboard
+        // ── Keyboard + scroll ────────────────────────────────────────────────────
         document.getElementById('destination').addEventListener('keypress', e => { if (e.key === 'Enter') calculateRoute(); });
-        
-        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
             e.preventDefault();
             document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
