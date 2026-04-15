@@ -1633,6 +1633,26 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
         }
 
+        .testimonial-card-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .testimonial-card-link:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        }
+
+        .testimonial-read-more {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
         .testimonial-header {
             display: flex;
             align-items: center;
@@ -1846,7 +1866,7 @@
             <li><a href="#about">About</a></li>
             <li><a href="#trust">Why Us</a></li>
             <li><a href="#booking">Book Now</a></li>
-            <li><a href="#testimonials">Stories</a></li>
+            <li><a href="#testimonials">Testimonials</a></li>
         </ul>
         <a href="#booking" class="nav-cta">Book Transport</a>
         <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
@@ -1855,7 +1875,7 @@
     <div class="mobile-menu" id="mobileMenu">
         <a href="#about" onclick="toggleMobileMenu()">About Jon</a>
         <a href="#trust" onclick="toggleMobileMenu()">Why Us</a>
-        <a href="#testimonials" onclick="toggleMobileMenu()">Stories</a>
+        <a href="#testimonials" onclick="toggleMobileMenu()">Testimonials</a>
         <a href="#booking" onclick="toggleMobileMenu()">Book Now</a>
     </div>
 
@@ -2196,7 +2216,7 @@
                 <h4>Links</h4>
                 <a href="#trust">Why Us</a>
                 <a href="#booking">Book Now</a>
-                <a href="#testimonials">Stories</a>
+                <a href="#testimonials">Testimonials</a>
             </div>
             <div class="footer-column">
                 <h4>Support</h4>
@@ -2319,14 +2339,15 @@
                 // Re-render testimonials
                 if (testimonials.length > 0) {
                     document.getElementById('testimonialsGrid').innerHTML = testimonials.map(t =>
-                        `<div class="testimonial-card">
+                        `<a class="testimonial-card testimonial-card-link" href="testimonial.html?id=${t.id}">
                             <div class="testimonial-header">
                                 <div class="testimonial-avatar"><img src="${t.avatar_url}" alt="${t.name}" loading="lazy" decoding="async"></div>
                                 <div class="testimonial-author"><h4>${t.name}</h4><p>${t.location}</p></div>
                             </div>
                             <div class="testimonial-stars">${'★'.repeat(t.stars)}${'☆'.repeat(5 - t.stars)}</div>
                             <p class="testimonial-text">"${t.quote}"</p>
-                        </div>`
+                            <span class="testimonial-read-more">Read their story →</span>
+                        </a>`
                     ).join('');
                 }
 

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <title>Testimonial — Viva Españiel</title>
+    <meta name="description" content="Read stories from families who have used Viva Españiel to transport their dogs between Spain and the UK.">
+    <link rel="canonical" href="https://vivaespaniel.com/testimonial.html">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+        const SUPABASE_URL      = 'https://geztmwtgnbgrobtblotp.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlenRtd3RnbmJncm9idGJsb3RwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyNDc1NzEsImV4cCI6MjA5MTgyMzU3MX0.HIqvHZohlAk4o_blQKiFmzd6LPpgF2XLG5ZM1uLs-EE';
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #c84b31;
+            --primary-dark: #a33d28;
+            --secondary: #ffb319;
+            --accent: #2d6a4f;
+            --dark: #1a1a2e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            background: #fafafa;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: rgba(255,255,255,0.98);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover { color: var(--primary); }
+
+        .nav-cta {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .nav-cta:hover { background: var(--primary-dark); }
+
+        /* Page */
+        .page {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 100px 20px 60px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        /* Loading / error states */
+        .state-box {
+            text-align: center;
+            padding: 80px 20px;
+            color: #888;
+        }
+
+        .state-box .icon { font-size: 48px; margin-bottom: 16px; }
+        .state-box h2 { color: #333; margin-bottom: 8px; }
+
+        /* Photo */
+        .photo-wrap {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #e0e0e0;
+            margin-bottom: 32px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .photo-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-wrap.avatar-mode {
+            aspect-ratio: unset;
+            height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(200,75,49,0.08), rgba(255,179,25,0.08));
+        }
+
+        .photo-wrap.avatar-mode img {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        /* Video */
+        .video-wrap {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 32px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .video-wrap iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* Card */
+        .testimonial-card {
+            background: white;
+            border-radius: 16px;
+            padding: 36px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+        }
+
+        .profile-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--secondary);
+            flex-shrink: 0;
+        }
+
+        .avatar-placeholder {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .profile-info h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .profile-info .location {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .stars {
+            color: var(--secondary);
+            font-size: 22px;
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+        }
+
+        .quote {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #444;
+            font-style: italic;
+            border-left: 4px solid var(--primary);
+            padding-left: 20px;
+        }
+
+        /* CTA */
+        .cta-box {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 16px;
+            padding: 36px;
+            text-align: center;
+            color: white;
+        }
+
+        .cta-box h2 { font-size: 22px; margin-bottom: 8px; }
+        .cta-box p  { opacity: 0.9; margin-bottom: 20px; }
+
+        .btn-cta {
+            display: inline-block;
+            background: var(--secondary);
+            color: var(--dark);
+            font-weight: 700;
+            padding: 14px 32px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+
+        .btn-cta:hover { transform: scale(1.05); }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: rgba(255,255,255,0.7);
+            text-align: center;
+            padding: 24px;
+            font-size: 14px;
+            margin-top: 60px;
+        }
+
+        footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="viva-espanol.html" class="nav-logo">🐕 Viva Españiel</a>
+        <a href="viva-espanol.html#testimonials" class="nav-back">← All testimonials</a>
+        <a href="viva-espanol.html#booking" class="nav-cta">Book Now</a>
+    </nav>
+
+    <div class="page" id="page">
+        <div class="state-box" id="loadingState">
+            <div class="icon">🐾</div>
+            <p>Loading story…</p>
+        </div>
+    </div>
+
+    <footer>© 2026 Viva Españiel • <a href="viva-espanol.html">vivaespaniel.com</a></footer>
+
+    <script>
+        function getParam(name) {
+            return new URLSearchParams(window.location.search).get(name);
+        }
+
+        function getYouTubeId(url) {
+            if (!url) return null;
+            const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?\s]+)/);
+            return m ? m[1] : null;
+        }
+
+        function starsHtml(n) {
+            return '★'.repeat(n) + '☆'.repeat(5 - n);
+        }
+
+        async function load() {
+            const id   = getParam('id');
+            const page = document.getElementById('page');
+
+            if (!id) {
+                page.innerHTML = `<div class="state-box"><div class="icon">🤔</div><h2>No testimonial specified</h2><p><a href="viva-espanol.html#testimonials">← Back to all testimonials</a></p></div>`;
+                return;
+            }
+
+            try {
+                const res = await fetch(
+                    `${SUPABASE_URL}/rest/v1/testimonials?id=eq.${encodeURIComponent(id)}&active=eq.true&limit=1`,
+                    { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY } }
+                );
+                const rows = await res.json();
+                const t = rows[0];
+
+                if (!t) {
+                    page.innerHTML = `<div class="state-box"><div class="icon">🐕</div><h2>Story not found</h2><p><a href="viva-espanol.html#testimonials">← Back to all testimonials</a></p></div>`;
+                    return;
+                }
+
+                // Update page title + meta
+                document.title = `${t.name} — Viva Españiel`;
+                const metaDesc = document.querySelector('meta[name="description"]');
+                if (metaDesc) metaDesc.setAttribute('content', `"${t.quote.slice(0, 120)}…" — ${t.name}, ${t.location}`);
+
+                const ytId    = getYouTubeId(t.video_url);
+                const hasPhoto = t.photo_url && t.photo_url.trim() !== '';
+                const hasAvatar = t.avatar_url && t.avatar_url.trim() !== '';
+
+                // Photo block
+                let mediaHtml = '';
+                if (ytId) {
+                    mediaHtml += `
+                        <div class="video-wrap">
+                            <iframe src="https://www.youtube.com/embed/${ytId}?rel=0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen loading="lazy"></iframe>
+                        </div>`;
+                }
+                if (hasPhoto) {
+                    mediaHtml += `
+                        <div class="photo-wrap">
+                            <img src="${t.photo_url}" alt="${t.name}">
+                        </div>`;
+                } else if (!ytId && hasAvatar) {
+                    mediaHtml += `
+                        <div class="photo-wrap avatar-mode">
+                            <img src="${t.avatar_url}" alt="${t.name}">
+                        </div>`;
+                }
+
+                // Avatar in profile row
+                const avatarHtml = hasAvatar
+                    ? `<img src="${t.avatar_url}" alt="${t.name}" class="avatar">`
+                    : `<div class="avatar-placeholder">🐾</div>`;
+
+                page.innerHTML = `
+                    <a href="viva-espanol.html#testimonials" class="back-link">← All testimonials</a>
+                    ${mediaHtml}
+                    <div class="testimonial-card">
+                        <div class="profile-row">
+                            ${avatarHtml}
+                            <div class="profile-info">
+                                <h1>${t.name}</h1>
+                                <div class="location">📍 ${t.location}</div>
+                            </div>
+                        </div>
+                        <div class="stars">${starsHtml(t.stars)}</div>
+                        <p class="quote">"${t.quote}"</p>
+                    </div>
+                    <div class="cta-box">
+                        <h2>Ready to book your dog's journey?</h2>
+                        <p>Join hundreds of happy families who've trusted Viva Españiel.</p>
+                        <a href="viva-espanol.html#booking" class="btn-cta">Book Now 🐾</a>
+                    </div>`;
+            } catch (e) {
+                page.innerHTML = `<div class="state-box"><div class="icon">😔</div><h2>Something went wrong</h2><p>${e.message}</p><p><a href="viva-espanol.html#testimonials">← Back to all testimonials</a></p></div>`;
+            }
+        }
+
+        load();
+    </script>
+</body>
+</html>

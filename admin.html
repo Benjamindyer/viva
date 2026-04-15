@@ -1213,6 +1213,7 @@ function openItemModal(type, id) {
     const title   = document.getElementById('itemModalTitle');
     const body    = document.getElementById('itemModalBody');
     document.getElementById('itemModalMsg').style.display = 'none';
+    modalUploadedUrls = {};
 
     if (type === 'testimonial') {
         const t = id ? cmsTestimonials.find(x => x.id === id) : {};
@@ -1229,14 +1230,28 @@ function openItemModal(type, id) {
                 <input type="hidden" id="miStars" value="${t?.stars||5}">
             </div>
             <div class="content-field">
-                <label>Avatar photo</label>
+                <label>Avatar photo <small style="color:#888">(small circle shown on card)</small></label>
                 <div class="img-upload-row">
                     <img id="miAvatarPreview" src="${escAttr(t?.avatar_url||'')}" class="img-preview img-preview-round" alt="">
                     <div>
-                        <input type="file" id="miAvatarFile" accept="image/*" style="display:none" onchange="handleModalUpload(this,'miAvatarPreview')">
-                        <button class="upload-btn" onclick="document.getElementById('miAvatarFile').click()">Upload photo</button>
+                        <input type="file" id="miAvatarFile" accept="image/*" style="display:none" onchange="handleModalUpload(this,'miAvatarPreview','avatar_url')">
+                        <button class="upload-btn" onclick="document.getElementById('miAvatarFile').click()">Upload avatar</button>
                     </div>
                 </div>
+            </div>
+            <div class="content-field">
+                <label>Full photo <small style="color:#888">(shown large on their story page)</small></label>
+                <div class="img-upload-row">
+                    <img id="miPhotoPreview" src="${escAttr(t?.photo_url||'')}" class="img-preview" style="width:100px;height:70px;" alt="">
+                    <div>
+                        <input type="file" id="miPhotoFile" accept="image/*" style="display:none" onchange="handleModalUpload(this,'miPhotoPreview','photo_url')">
+                        <button class="upload-btn" onclick="document.getElementById('miPhotoFile').click()">Upload photo</button>
+                    </div>
+                </div>
+            </div>
+            <div class="content-field">
+                <label>YouTube video URL <small style="color:#888">(optional)</small></label>
+                <input type="url" id="miVideoUrl" class="content-input" placeholder="https://www.youtube.com/watch?v=..." value="${escAttr(t?.video_url||'')}">
             </div>
         `;
     } else {
@@ -1250,7 +1265,7 @@ function openItemModal(type, id) {
                 <div class="img-upload-row">
                     <img id="miGalleryPreview" src="${escAttr(g?.image_url||'')}" class="img-preview" style="width:100px;height:70px;" alt="">
                     <div>
-                        <input type="file" id="miGalleryFile" accept="image/*" style="display:none" onchange="handleModalUpload(this,'miGalleryPreview')">
+                        <input type="file" id="miGalleryFile" accept="image/*" style="display:none" onchange="handleModalUpload(this,'miGalleryPreview','image_url')">
                         <button class="upload-btn" onclick="document.getElementById('miGalleryFile').click()">Upload photo</button>
                     </div>
                 </div>
@@ -1260,15 +1275,16 @@ function openItemModal(type, id) {
     overlay.classList.add('open');
 }
 
-let modalUploadedUrl = null;
+let modalUploadedUrls = {};
 
-async function handleModalUpload(input, previewId) {
+async function handleModalUpload(input, previewId, key) {
     const file = input.files[0]; if (!file) return;
     const btn = input.nextElementSibling;
     btn.textContent = 'Uploading…'; btn.disabled = true;
     try {
-        modalUploadedUrl = await adminUpload(file);
-        document.getElementById(previewId).src = modalUploadedUrl;
+        const url = await adminUpload(file);
+        modalUploadedUrls[key || previewId] = url;
+        document.getElementById(previewId).src = url;
         btn.textContent = 'Change photo';
     } catch (err) {
         alert('Upload failed: ' + err.message);
@@ -1293,12 +1309,15 @@ async function saveItemModal() {
     let body = {};
 
     if (type === 'testimonial') {
+        const existing = id ? cmsTestimonials.find(t => t.id === id) : {};
         body = {
             name:       v('miName'),
             location:   v('miLocation'),
             quote:      v('miQuote'),
             stars:      parseInt(document.getElementById('miStars').value),
-            avatar_url: modalUploadedUrl || (id ? cmsTestimonials.find(t=>t.id===id)?.avatar_url : '') || '',
+            avatar_url: modalUploadedUrls['avatar_url'] || existing?.avatar_url || '',
+            photo_url:  modalUploadedUrls['photo_url']  || existing?.photo_url  || '',
+            video_url:  v('miVideoUrl'),
             active:     true,
         };
         if (!id) body.sort_order = cmsTestimonials.length + 1;
@@ -1306,7 +1325,7 @@ async function saveItemModal() {
         body = {
             dog_name:  v('miDogName'),
             route:     v('miRoute'),
-            image_url: modalUploadedUrl || (id ? cmsGallery.find(g=>g.id===id)?.image_url : '') || '',
+            image_url: modalUploadedUrls['image_url'] || (id ? cmsGallery.find(g=>g.id===id)?.image_url : '') || '',
             active:    true,
         };
         if (!id) body.sort_order = cmsGallery.length + 1;
