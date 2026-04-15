@@ -1634,11 +1634,16 @@ function openPageEditor(id) {
         previewLink.style.display = 'none';
     }
 
-    // Init Quill after DOM settles
+    // Replace container entirely so no stale Quill instance/toolbar remains
+    peQuill = null;
+    const oldContainer = document.getElementById('peQuillContainer');
+    const fresh = document.createElement('div');
+    fresh.id = 'peQuillContainer';
+    fresh.style.cssText = 'min-height:320px;border-radius:8px;overflow:hidden;';
+    oldContainer.parentNode.replaceChild(fresh, oldContainer);
+
     requestAnimationFrame(() => {
-        const container = document.getElementById('peQuillContainer');
-        container.innerHTML = '';
-        peQuill = new Quill(container, {
+        peQuill = new Quill(fresh, {
             theme: 'snow',
             modules: { toolbar: [
                 [{ header: [1, 2, 3, false] }],
