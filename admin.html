@@ -202,6 +202,12 @@
         .setting-row small { font-size: 11px; color: var(--muted); display: block; margin-top: 2px; }
         .setting-input { padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; width: 100%; transition: border-color 0.2s; }
         .setting-input:focus { outline: none; border-color: var(--primary); }
+        .toggle { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; cursor: pointer; inset: 0; background: #d1d5db; border-radius: 24px; transition: 0.3s; }
+        .toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        .toggle input:checked + .toggle-slider { background: #22c55e; }
+        .toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
         .save-btn { background: var(--primary); color: white; border: none; padding: 10px 22px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
         .save-btn:hover { background: var(--primary-d); }
         .save-msg { font-size: 13px; color: #22c55e; margin-left: 12px; display: none; }
@@ -267,8 +273,8 @@
         .pe-status-opt input:checked + .pe-status-label { border-color:var(--primary);background:rgba(200,75,49,0.04); }
         .pe-status-dot { width:10px;height:10px;border-radius:50%;flex-shrink:0; }
         /* Quill overrides in admin */
-        #peQuillContainer .ql-toolbar { border-radius:8px 8px 0 0;border-color:#e5e7eb; }
-        #peQuillContainer .ql-container { border-radius:0 0 8px 8px;border-color:#e5e7eb;font-size:15px;min-height:280px; }
+        #peEditorWrap .ql-toolbar { border-radius:8px 8px 0 0;border-color:#e5e7eb; }
+        #peEditorWrap .ql-container { border-radius:0 0 8px 8px;border-color:#e5e7eb;font-size:15px;min-height:280px; }
         /* Pages list */
         .page-row { background:white;border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06); }
         .page-row-status { padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.3px; }
@@ -490,6 +496,14 @@
                 <button class="btn-add-item" onclick="openItemModal('gallery',null)">+ Add dog photo</button>
             </div>
 
+            <!-- FAQs -->
+            <div class="content-card">
+                <h3>❓ FAQs</h3>
+                <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Shown as an accordion on the website. Each FAQ is also added to Google's structured data for SEO.</p>
+                <div class="items-list" id="faqsList"></div>
+                <button class="btn-add-item" onclick="openItemModal('faq',null)">+ Add FAQ</button>
+            </div>
+
             <!-- Footer & Meta -->
             <div class="content-card">
                 <h3>🔍 Footer & SEO</h3>
@@ -550,7 +564,7 @@
                             <div class="content-field" style="margin-bottom:12px;">
                                 <label>Page content</label>
                             </div>
-                            <div id="peQuillContainer" style="min-height:320px;border-radius:8px;overflow:hidden;"></div>
+                            <div id="peEditorWrap"><div id="peQuillContainer" style="min-height:320px;border-radius:8px;overflow:hidden;"></div></div>
                         </div>
                     </div>
 
@@ -726,6 +740,30 @@
                 <div style="margin-top:8px;">
                     <button class="save-btn" onclick="savePaypal()">Save PayPal</button>
                     <span class="save-msg" id="paypalMsg">Saved!</span>
+                </div>
+            </div>
+            <div class="settings-card">
+                <h3>WhatsApp</h3>
+                <div class="setting-row">
+                    <div>
+                        <label>WhatsApp number</label>
+                        <small>Include country code, e.g. +447700900123</small>
+                    </div>
+                    <input type="tel" id="setWhatsappNumber" class="setting-input" placeholder="+447700900123">
+                </div>
+                <div class="setting-row">
+                    <div>
+                        <label>Show WhatsApp button</label>
+                        <small>Displays in header and footer when enabled</small>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" id="setWhatsappEnabled">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div style="margin-top:8px;">
+                    <button class="save-btn" onclick="saveWhatsApp()">Save WhatsApp</button>
+                    <span class="save-msg" id="whatsappMsg">Saved!</span>
                 </div>
             </div>
         </div>
@@ -1147,6 +1185,8 @@ async function loadSettings() {
     document.getElementById('setBankName').value         = get('bank_name');
     document.getElementById('setPaypalEmail').value      = get('paypal_email');
     document.getElementById('setPaypalLink').value       = get('paypal_link');
+    document.getElementById('setWhatsappNumber').value   = get('whatsapp_number');
+    document.getElementById('setWhatsappEnabled').checked = get('whatsapp_enabled') === 'true';
 }
 
 async function saveSettings(body, msgId) {
@@ -1191,6 +1231,13 @@ async function savePaypal() {
     }, 'paypalMsg');
 }
 
+async function saveWhatsApp() {
+    await saveSettings({
+        whatsapp_number:  document.getElementById('setWhatsappNumber').value,
+        whatsapp_enabled: document.getElementById('setWhatsappEnabled').checked ? 'true' : 'false',
+    }, 'whatsappMsg');
+}
+
 async function toggleFeePaid(id, currentlyPaid) {
     await adminFetch(`/bookings/${id}`, { method: 'PATCH', body: { booking_fee_paid: !currentlyPaid } });
     await loadBookings();
@@ -1201,19 +1248,22 @@ async function toggleFeePaid(id, currentlyPaid) {
 let cmsContent = {};       // key → value
 let cmsTestimonials = [];
 let cmsGallery = [];
+let cmsFaqs = [];
 let editingItem = null;    // { type, id } or { type, id: null } for new
 
 const v = id => document.getElementById(id)?.value || '';
 
 async function loadContent() {
-    const [cr, tr, gr] = await Promise.all([
+    const [cr, tr, gr, fr] = await Promise.all([
         adminFetch('/content'),
         adminFetch('/testimonials'),
         adminFetch('/gallery'),
+        adminFetch('/faqs'),
     ]);
     cmsContent      = Object.fromEntries((await cr.json()).map(r => [r.key, r.value]));
     cmsTestimonials = await tr.json();
     cmsGallery      = await gr.json();
+    cmsFaqs         = await fr.json();
 
     const get = k => cmsContent[k] || '';
 
@@ -1235,9 +1285,10 @@ async function loadContent() {
     // Trust cards
     renderTrustCards();
 
-    // Testimonials + gallery
+    // Testimonials, gallery + FAQs
     renderTestimonialsList();
     renderGalleryList();
+    renderFaqsList();
 
     // Footer / meta
     document.getElementById('cFooterTagline').value = get('footer_tagline');
@@ -1364,6 +1415,24 @@ function renderGalleryList() {
     `).join('');
 }
 
+// FAQs list
+function renderFaqsList() {
+    const el = document.getElementById('faqsList');
+    if (!cmsFaqs.length) { el.innerHTML = '<p style="font-size:13px;color:var(--muted);">No FAQs yet.</p>'; return; }
+    el.innerHTML = cmsFaqs.map(f => `
+        <div class="item-row">
+            <div class="item-row-info" style="flex:1;">
+                <strong>${escHtml(f.question)}</strong>
+                <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:400px;">${escHtml(f.answer)}</span>
+            </div>
+            <div class="item-row-actions">
+                <button class="btn-edit-item" onclick="openItemModal('faq','${f.id}')">Edit</button>
+                <button class="btn-del-item"  onclick="deleteContentItem('faqs','${f.id}')">✕</button>
+            </div>
+        </div>
+    `).join('');
+}
+
 // Item modal
 function openItemModal(type, id) {
     editingItem = { type, id };
@@ -1429,6 +1498,13 @@ function openItemModal(type, id) {
                 <label>YouTube video URL <small style="color:#888">(optional)</small></label>
                 <input type="url" id="miVideoUrl" class="content-input" placeholder="https://www.youtube.com/watch?v=..." value="${escAttr(t?.video_url||'')}">
             </div>
+        `;
+    } else if (type === 'faq') {
+        const f = id ? cmsFaqs.find(x => x.id === id) : {};
+        title.textContent = id ? 'Edit FAQ' : 'Add FAQ';
+        body.innerHTML = `
+            <div class="content-field"><label>Question</label><input type="text" id="miFaqQuestion" class="content-input" placeholder="e.g. How long does the journey take?" value="${escAttr(f?.question||'')}"></div>
+            <div class="content-field"><label>Answer</label><textarea id="miFaqAnswer" class="content-textarea" rows="5" placeholder="Write a clear, helpful answer…">${escHtml(f?.answer||'')}</textarea></div>
         `;
     } else {
         const g = id ? cmsGallery.find(x => x.id === id) : {};
@@ -1634,16 +1710,14 @@ function openPageEditor(id) {
         previewLink.style.display = 'none';
     }
 
-    // Replace container entirely so no stale Quill instance/toolbar remains
+    // Wipe the wrapper innerHTML — guarantees no stale Quill toolbar survives
     peQuill = null;
-    const oldContainer = document.getElementById('peQuillContainer');
-    const fresh = document.createElement('div');
-    fresh.id = 'peQuillContainer';
-    fresh.style.cssText = 'min-height:320px;border-radius:8px;overflow:hidden;';
-    oldContainer.parentNode.replaceChild(fresh, oldContainer);
+    const wrap = document.getElementById('peEditorWrap');
+    wrap.innerHTML = '<div style="min-height:320px;border-radius:8px;overflow:hidden;"></div>';
+    const editorEl = wrap.firstElementChild;
 
-    requestAnimationFrame(() => {
-        peQuill = new Quill(fresh, {
+    setTimeout(() => {
+        peQuill = new Quill(editorEl, {
             theme: 'snow',
             modules: { toolbar: [
                 [{ header: [1, 2, 3, false] }],
@@ -1654,7 +1728,7 @@ function openPageEditor(id) {
             ]},
         });
         if (p?.body_html) peQuill.clipboard.dangerouslyPasteHTML(p.body_html);
-    });
+    }, 50);
 }
 
 function closePageEditor() {
