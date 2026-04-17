@@ -517,7 +517,7 @@
             <div class="content-card">
                 <h3>📸 Happy Arrivals Gallery</h3>
                 <div class="items-list" id="galleryList"></div>
-                <button class="btn-add-item" onclick="openItemModal('gallery',null)">+ Add dog photo</button>
+                <button class="btn-add-item" onclick="openItemModal('gallery',null)">+ Add arrival video / photo</button>
             </div>
 
             <!-- FAQs -->
@@ -1706,10 +1706,10 @@ function renderGalleryList() {
     if (!cmsGallery.length) { el.innerHTML = '<p style="font-size:13px;color:var(--muted);">No gallery items yet.</p>'; return; }
     el.innerHTML = cmsGallery.map(g => `
         <div class="item-row">
-            <img src="${escAttr(g.image_url)}" alt="${escHtml(g.dog_name)}">
+            ${g.video_url ? `<div style="width:56px;height:40px;background:#111;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">▶️</div>` : `<img src="${escAttr(g.image_url)}" alt="${escHtml(g.dog_name)}">`}
             <div class="item-row-info">
                 <strong>${escHtml(g.dog_name)}</strong>
-                <span>${escHtml(g.route)}</span>
+                <span>${escHtml(g.route)}${g.video_url ? ' · <em>YouTube video</em>' : ''}</span>
             </div>
             <div class="item-row-actions">
                 <button class="btn-edit-item" onclick="openItemModal('gallery','${g.id}')">Edit</button>
@@ -1819,7 +1819,11 @@ function openItemModal(type, id) {
             <div class="content-field"><label>Dog's name</label><input type="text" id="miDogName" class="content-input" value="${escAttr(g?.dog_name||'')}"></div>
             <div class="content-field"><label>Route / caption</label><input type="text" id="miRoute" class="content-input" placeholder="e.g. Galgo • Murcia → Manchester" value="${escAttr(g?.route||'')}"></div>
             <div class="content-field">
-                <label>Photo</label>
+                <label>YouTube URL <span style="font-weight:400;color:var(--muted);">(paste a YouTube link — if set, this shows instead of a photo)</span></label>
+                <input type="url" id="miVideoUrl" class="content-input" placeholder="https://www.youtube.com/watch?v=..." value="${escAttr(g?.video_url||'')}">
+            </div>
+            <div class="content-field">
+                <label>Photo <span style="font-weight:400;color:var(--muted);">(used as fallback if no YouTube URL)</span></label>
                 <div class="img-upload-row">
                     <img id="miGalleryPreview" src="${escAttr(g?.image_url||'')}" class="img-preview" style="width:100px;height:70px;" alt="">
                     <div>
@@ -1910,6 +1914,7 @@ async function saveItemModal() {
         body = {
             dog_name:  v('miDogName'),
             route:     v('miRoute'),
+            video_url: v('miVideoUrl'),
             image_url: 'image_url' in modalUploadedUrls ? modalUploadedUrls['image_url'] : ((id ? cmsGallery.find(g=>g.id===id)?.image_url : '') || ''),
             active:    true,
         };
