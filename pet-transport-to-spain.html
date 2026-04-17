@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index, follow">
-    <title>Viva Españiel — Dog Transport Spain ↔ UK</title>
-    <meta name="description" content="Professional dog transport between Spain and the UK. Door-to-door service, climate-controlled vans, live updates and regular stops. Book your dog's journey today.">
+    <title>Dog Transport Spain to UK | Viva Españiel — Door-to-Door, DEFRA Compliant</title>
+    <meta name="description" content="Trusted dog transport between Spain and the UK. Door-to-door collection from Andalucia, Costa del Sol & beyond. Climate-controlled van, live updates, regular stops. Run by Jon Brown — personal service, not a courier company.">
     <link rel="canonical" href="https://vivaespaniel.com/">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://vivaespaniel.com/">
-    <meta property="og:title" content="Viva Españiel — Dog Transport Spain ↔ UK">
-    <meta property="og:description" content="Professional dog transport between Spain and the UK. Door-to-door service, climate-controlled vans, live updates and regular stops.">
+    <meta property="og:title" content="Dog Transport Spain to UK | Viva Españiel">
+    <meta property="og:description" content="Trusted door-to-door dog transport between Spain and the UK. Personal service by Jon Brown — climate-controlled van, live updates, regular stops.">
     <meta property="og:image" content="https://vivaespaniel.com/jon-brown.png">
     <meta property="og:locale" content="en_GB">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Viva Españiel — Dog Transport Spain ↔ UK">
-    <meta name="twitter:description" content="Professional dog transport between Spain and the UK. Door-to-door service, climate-controlled vans, live updates and regular stops.">
+    <meta name="twitter:title" content="Dog Transport Spain to UK | Viva Españiel">
+    <meta name="twitter:description" content="Trusted door-to-door dog transport between Spain and the UK. Personal service by Jon Brown — climate-controlled van, live updates, regular stops.">
     <meta name="twitter:image" content="https://vivaespaniel.com/jon-brown.png">
     <script type="application/ld+json">
     {
@@ -33,7 +33,11 @@
           "foundingDate": "2019",
           "areaServed": [
             { "@type": "Country", "name": "United Kingdom" },
-            { "@type": "Country", "name": "Spain" }
+            { "@type": "Country", "name": "Spain" },
+            { "@type": "Place", "name": "Andalucia" },
+            { "@type": "Place", "name": "Costa del Sol" },
+            { "@type": "Place", "name": "Malaga" },
+            { "@type": "Place", "name": "Alicante" }
           ],
           "serviceType": "Pet Transport",
           "aggregateRating": {
@@ -150,6 +154,25 @@
 
         .nav-cta:hover {
             background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .nav-whatsapp {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            background: #25d366;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .nav-whatsapp:hover {
+            background: #1ebe5d;
             transform: scale(1.05);
         }
 
@@ -402,29 +425,37 @@
 
         .trust-card {
             background: white;
-            padding: 25px;
             border-radius: 16px;
             text-align: center;
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
             transition: transform 0.3s;
+            overflow: hidden;
         }
 
         .trust-card:hover {
             transform: translateY(-5px);
         }
 
+        .trust-card-body {
+            padding: 20px 25px 25px;
+        }
+
         .trust-icon {
-            width: 70px;
-            height: 70px;
-            margin: 0 auto 15px;
-            border-radius: 50%;
+            width: 100%;
+            height: 150px;
             overflow: hidden;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .trust-icon img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            padding: 16px;
+            box-sizing: border-box;
         }
 
         .trust-card h3 {
@@ -647,6 +678,11 @@
             display: flex;
             flex-direction: row;
             align-items: flex-start;
+            transition: max-width 0.35s ease;
+        }
+
+        .booking-container.map-hidden {
+            max-width: 640px;
         }
 
         .booking-panel {
@@ -654,6 +690,48 @@
             width: 480px;
             min-width: 480px;
             flex-shrink: 0;
+        }
+
+        .booking-container.map-hidden .booking-panel {
+            width: 100%;
+            min-width: unset;
+        }
+
+        /* Route summary bar shown on steps 3–5 */
+        .route-summary-bar {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            background: #f4f6f9;
+            border: 1px solid #e8eaed;
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #444;
+            flex-wrap: wrap;
+        }
+
+        .route-summary-bar.visible { display: flex; }
+
+        .route-summary-bar .rsb-pill {
+            background: white;
+            border: 1px solid #dde1e7;
+            border-radius: 6px;
+            padding: 3px 9px;
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--dark);
+            white-space: nowrap;
+        }
+
+        .route-summary-bar .rsb-sep {
+            color: #bbb;
+            font-size: 11px;
+        }
+
+        .rsb-top-row {
+            display: contents; /* inline on desktop — items just flow in the flex row */
         }
 
         /* Direction Toggle */
@@ -872,6 +950,123 @@
             font-weight: 700;
         }
 
+        /* Multi-dog entries */
+        .dog-entry {
+            border: 1.5px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            background: #fafafa;
+        }
+
+        .dog-entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .dog-entry-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-remove-dog {
+            background: none;
+            border: none;
+            color: #ccc;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            padding: 2px 6px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-remove-dog:hover { color: var(--primary); background: rgba(200,75,49,0.08); }
+
+        .btn-add-dog {
+            width: 100%;
+            border: 2px dashed #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            padding: 12px;
+            font-size: 14px;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .btn-add-dog:hover { border-color: var(--primary); color: var(--primary); }
+
+        .dogs-total-note {
+            font-size: 13px;
+            text-align: center;
+            color: var(--accent);
+            font-weight: 600;
+            padding: 8px;
+            background: rgba(45,106,79,0.08);
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        /* Dog size picker — compact pills */
+        .size-pills { display: flex; gap: 8px; margin-bottom: 4px; }
+
+        .size-pill {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        .size-pill:hover { border-color: var(--primary); background: rgba(200,75,49,0.04); }
+        .size-pill.selected {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(200,75,49,0.08), rgba(255,179,25,0.06));
+        }
+        .size-pill-icon { font-size: 22px; flex-shrink: 0; line-height: 1; }
+        .size-pill-info { flex: 1; }
+        .size-pill-label { font-size: 13px; font-weight: 700; color: var(--dark); display: block; }
+        .size-pill.selected .size-pill-label { color: var(--primary); }
+        .size-pill-height { font-size: 11px; color: #888; }
+        .size-pill-check { margin-left: auto; color: var(--primary); font-weight: 700; font-size: 14px; visibility: hidden; }
+        .size-pill.selected .size-pill-check { visibility: visible; }
+        .size-pill.size-pill-disabled {
+            opacity: 0.38;
+            cursor: not-allowed;
+            border-color: #e0e0e0 !important;
+            background: #f5f5f5 !important;
+        }
+        .size-pill.size-pill-disabled:hover { border-color: #e0e0e0; background: #f5f5f5; }
+        .crate-availability-hint {
+            font-size: 12px;
+            color: #666;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        .size-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+            margin-bottom: 4px;
+        }
+
         /* Date Selection */
         .date-grid {
             display: grid;
@@ -955,6 +1150,64 @@
             background: #fff3e0;
             color: #e65100;
         }
+
+        .date-spots.full {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .date-spots.past {
+            background: #f3f4f6;
+            color: #9ca3af;
+        }
+
+        .date-card.unavailable {
+            opacity: 0.55;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .date-card.unavailable:hover {
+            border-color: #e0e0e0;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Month filter pills */
+        .month-filter {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            margin-bottom: 16px;
+            scrollbar-width: none;
+        }
+
+        .month-filter::-webkit-scrollbar { display: none; }
+
+        .month-pill {
+            flex-shrink: 0;
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1.5px solid #e0e0e0;
+            background: white;
+            font-size: 13px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .month-pill:hover { border-color: var(--primary); color: var(--primary); }
+
+        .month-pill.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .month-pill.past-month { color: #aaa; }
 
         .date-intro {
             text-align: center;
@@ -1694,6 +1947,76 @@
             font-style: italic;
         }
 
+        /* FAQ Section */
+        .faq-section { background: var(--light); }
+
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            border: 1.5px solid #e5e7eb;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            background: white;
+            transition: box-shadow 0.2s;
+        }
+
+        .faq-item.open {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--dark);
+            gap: 16px;
+            user-select: none;
+        }
+
+        .faq-question:hover { color: var(--primary); }
+
+        .faq-chevron {
+            flex-shrink: 0;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            transition: transform 0.3s, background 0.2s;
+            color: #666;
+        }
+
+        .faq-item.open .faq-chevron {
+            transform: rotate(180deg);
+            background: var(--primary);
+            color: white;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.3s ease;
+            padding: 0 24px;
+        }
+
+        .faq-answer-inner {
+            padding-bottom: 20px;
+            font-size: 15px;
+            color: #555;
+            line-height: 1.75;
+        }
+
         /* Footer */
         footer {
             background: var(--dark);
@@ -1749,8 +2072,8 @@
 
         /* Mobile Styles */
         @media (max-width: 900px) {
-            .nav-links, .nav-cta {
-                display: none;
+            .nav-links, .nav-cta, .nav-whatsapp {
+                display: none !important;
             }
 
             .mobile-menu-btn {
@@ -1778,25 +2101,61 @@
                 display: none;
             }
 
+            .booking-section {
+                padding: 0;
+            }
+
+            .booking-section .section-header {
+                padding: 36px 20px 24px;
+            }
+
+            .booking-section .section-header h2 { font-size: 22px; }
+            .booking-section .section-header p  { font-size: 14px; margin-top: 4px; }
+
             .booking-container {
-                margin: 0 10px;
-                border-radius: 16px;
+                margin: 0;
+                border-radius: 0;
+                box-shadow: none;
                 flex-direction: column;
             }
 
+            .booking-container.map-hidden {
+                max-width: unset;
+                margin: 0;
+            }
+
             .booking-panel {
-                padding: 25px 20px;
+                padding: 20px 16px 32px;
                 width: 100%;
                 min-width: unset;
             }
 
             .map-panel {
-                position: relative;
-                top: unset;
-                height: 300px;
-                min-height: 300px;
-                border-left: none;
-                border-top: 1px solid #eee;
+                display: none !important;
+            }
+
+            .route-summary-bar {
+                flex-direction: column;
+                gap: 6px;
+                padding: 10px 12px;
+            }
+
+            .route-summary-bar .rsb-sep { display: none; }
+
+            .route-summary-bar #rsbRoute {
+                font-size: 12px;
+                color: #555;
+            }
+
+            .route-summary-bar #rsbDate,
+            .route-summary-bar #rsbPrice {
+                display: inline-block;
+            }
+
+            .rsb-top-row {
+                display: flex;
+                gap: 8px;
+                align-items: center;
             }
 
             .gallery-item:first-child {
@@ -1867,8 +2226,15 @@
             <li><a href="#trust">Why Us</a></li>
             <li><a href="#booking">Book Now</a></li>
             <li><a href="#testimonials">Testimonials</a></li>
+            <li><a href="blog.html">Blog</a></li>
         </ul>
-        <a href="#booking" class="nav-cta">Book Transport</a>
+        <div style="display:flex;align-items:center;gap:10px;">
+            <a id="navWhatsapp" class="nav-whatsapp" href="#" target="_blank" rel="noopener noreferrer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                WhatsApp
+            </a>
+            <a href="#booking" class="nav-cta">Book Transport</a>
+        </div>
         <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
     </nav>
 
@@ -1877,6 +2243,7 @@
         <a href="#trust" onclick="toggleMobileMenu()">Why Us</a>
         <a href="#testimonials" onclick="toggleMobileMenu()">Testimonials</a>
         <a href="#booking" onclick="toggleMobileMenu()">Book Now</a>
+        <a href="blog.html" onclick="toggleMobileMenu()">Blog</a>
     </div>
 
     <!-- Hero -->
@@ -1884,19 +2251,19 @@
         <div class="hero-content">
             <div class="hero-text">
                 <div class="hero-badge" id="heroBadge">🇬🇧 UK ↔ Spain ↔ UK 🇪🇸 British Dog Transport</div>
-                <h1 id="heroHeadline">Safe Journeys for Your Furry Family</h1>
+                <h1 id="heroHeadline">Dog Transport Spain ↔ UK — Safe, Personal, Door-to-Door</h1>
                 <p id="heroTagline">A British company reuniting dogs with their families between the UK and Spain — in both directions. Every paw-senger travels in comfort and safety.</p>
                 <div class="hero-badges">
-                    <div class="trust-badge">
+                    <a id="googleRatingBadge" class="trust-badge" href="#" style="text-decoration:none;cursor:default;" onclick="return !!this.dataset.url" target="_blank" rel="noopener noreferrer">
                         <div class="trust-badge-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
                         </div>
                         <div class="trust-badge-content">
-                            <div class="google-stars">★★★★★</div>
-                            <div class="trust-badge-title">4.9 Google Rating</div>
-                            <div class="trust-badge-subtitle">186 Reviews</div>
+                            <div class="google-stars" id="googleStars">★★★★★</div>
+                            <div class="trust-badge-title" id="googleRatingTitle">4.9 Google Rating</div>
+                            <div class="trust-badge-subtitle" id="googleReviewCount">186 Reviews</div>
                         </div>
-                    </div>
+                    </a>
                     <div class="trust-badge corridor-badge">
                         <div class="trust-badge-icon">🛡️</div>
                         <div class="trust-badge-content">
@@ -1907,9 +2274,9 @@
                 </div>
             </div>
             <div class="hero-visual">
-                <img src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=800&q=80" alt="Happy dog" class="hero-image" id="heroImage">
+                <img src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=800&q=80" alt="Dog safely transported from Spain to UK by Viva Españiel" class="hero-image" id="heroImage">
                 <div class="hero-notification">
-                    <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=100&q=80" alt="Dog">
+                    <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=100&q=80" alt="">
                     <div class="text">
                         <strong>Luna arrived safely! 🎉</strong>
                         <span>Valencia → Manchester • 2 hours ago</span>
@@ -1922,29 +2289,37 @@
     <!-- Trust -->
     <section class="section trust-section" id="trust">
         <div class="section-header">
-            <h2>Why Families Trust Us</h2>
+            <h2>Why Families Trust Our Spain–UK Dog Transport</h2>
             <p>Every dog is a VIP (Very Important Pup) to us</p>
         </div>
         <div class="trust-grid">
             <div class="trust-card" id="trust1Card">
-                <div class="trust-icon"><img id="trust1Img" src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=200&q=80" alt="Vet" loading="lazy" decoding="async"></div>
-                <h3 id="trust1Title">Vet Approved</h3>
-                <p id="trust1Desc">Health checks before and after every journey</p>
+                <div class="trust-icon"><img id="trust1Img" src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=400&q=80" alt="DEFRA-approved dog transport vet health check" loading="lazy" decoding="async"></div>
+                <div class="trust-card-body">
+                    <h3 id="trust1Title">Vet Approved</h3>
+                    <p id="trust1Desc">Health checks before and after every journey</p>
+                </div>
             </div>
             <div class="trust-card" id="trust2Card">
-                <div class="trust-icon"><img id="trust2Img" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=80" alt="Van" loading="lazy" decoding="async"></div>
-                <h3 id="trust2Title">Climate Controlled</h3>
-                <p id="trust2Desc">AC and heating for maximum comfort</p>
+                <div class="trust-icon"><img id="trust2Img" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80" alt="Climate-controlled dog transport van Spain to UK" loading="lazy" decoding="async"></div>
+                <div class="trust-card-body">
+                    <h3 id="trust2Title">Climate Controlled</h3>
+                    <p id="trust2Desc">AC and heating for maximum comfort</p>
+                </div>
             </div>
             <div class="trust-card" id="trust3Card">
-                <div class="trust-icon"><img id="trust3Img" src="https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=200&q=80" alt="GPS" loading="lazy" decoding="async"></div>
-                <h3 id="trust3Title">Live Tracking</h3>
-                <p id="trust3Desc">Real-time updates and photos</p>
+                <div class="trust-icon"><img id="trust3Img" src="https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=400&q=80" alt="Live GPS tracking during Spain UK dog transport journey" loading="lazy" decoding="async"></div>
+                <div class="trust-card-body">
+                    <h3 id="trust3Title">Live Tracking</h3>
+                    <p id="trust3Desc">Real-time updates and photos</p>
+                </div>
             </div>
             <div class="trust-card" id="trust4Card">
-                <div class="trust-icon"><img id="trust4Img" src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=200&q=80" alt="Walk" loading="lazy" decoding="async"></div>
-                <h3 id="trust4Title">Regular Stops</h3>
-                <p id="trust4Desc">Comfort breaks every 2-3 hours</p>
+                <div class="trust-icon"><img id="trust4Img" src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&q=80" alt="Rest stop for dogs on Spain to UK transport journey" loading="lazy" decoding="async"></div>
+                <div class="trust-card-body">
+                    <h3 id="trust4Title">Regular Stops</h3>
+                    <p id="trust4Desc">Comfort breaks every 2-3 hours</p>
+                </div>
             </div>
         </div>
     </section>
@@ -1994,23 +2369,23 @@
         </div>
         <div class="gallery-grid" id="galleryGrid">
             <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=800&q=80" alt="Luna" loading="lazy" decoding="async">
+                <img src="https://images.unsplash.com/photo-1477884213360-7e9d7dcc1e48?w=800&q=80" alt="Luna safely transported from Spain to UK by Viva Españiel" loading="lazy" decoding="async">
                 <div class="gallery-overlay"><h4>Luna</h4><p>Galgo • Murcia → Manchester</p></div>
             </div>
             <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&q=80" alt="Max" loading="lazy" decoding="async">
+                <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&q=80" alt="Max enjoying the journey — door-to-door dog transport Spain UK" loading="lazy" decoding="async">
                 <div class="gallery-overlay"><h4>Max</h4><p>Podenco • Valencia → London</p></div>
             </div>
             <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?w=400&q=80" alt="Bella" loading="lazy" decoding="async">
+                <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?w=400&q=80" alt="Bella arriving safe and happy after Spain to UK dog transport" loading="lazy" decoding="async">
                 <div class="gallery-overlay"><h4>Bella</h4><p>Mixed • Seville → Bristol</p></div>
             </div>
             <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&q=80" alt="Charlie" loading="lazy" decoding="async">
+                <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&q=80" alt="Charlie relaxed during his Spain UK dog transport with Viva Españiel" loading="lazy" decoding="async">
                 <div class="gallery-overlay"><h4>Charlie</h4><p>Golden • Madrid → Edinburgh</p></div>
             </div>
             <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400&q=80" alt="Rocky" loading="lazy" decoding="async">
+                <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400&q=80" alt="Rocky transported safely door-to-door between Spain and the UK" loading="lazy" decoding="async">
                 <div class="gallery-overlay"><h4>Rocky</h4><p>Bulldog • Barcelona → Birmingham</p></div>
             </div>
         </div>
@@ -2032,6 +2407,16 @@
                     <div class="step" data-step="5"><div class="step-num">5</div><div class="step-label">Pay</div></div>
                 </div>
 
+                <!-- Route summary bar (steps 3–5) -->
+                <div class="route-summary-bar" id="routeSummaryBar">
+                    <div class="rsb-top-row">
+                        <span id="rsbDate" class="rsb-pill"></span>
+                        <span class="rsb-sep">·</span>
+                        <span id="rsbPrice" class="rsb-pill"></span>
+                    </div>
+                    <span id="rsbRoute"></span>
+                </div>
+
                 <!-- Step 1: Date Selection -->
                 <div class="booking-step active" id="step1">
                     <div class="direction-toggle">
@@ -2042,6 +2427,7 @@
                         <h3>🚐 When should we travel?</h3>
                         <p>We depart during the second week of each month</p>
                     </div>
+                    <div class="month-filter" id="monthFilter"></div>
                     <div class="date-grid" id="dateGrid">
                         <!-- Dates populated by JS -->
                     </div>
@@ -2051,11 +2437,11 @@
                 <!-- Step 2: Route -->
                 <div class="booking-step" id="step2">
                     <div class="form-group">
-                        <label>Your Spanish address (for Pick up / Drop off)</label>
+                        <label>Your Spanish Postcode / Town (for Pick up / Drop off)</label>
                         <input type="text" id="spainAddress" placeholder="e.g., Calle Mayor 1, Madrid">
                     </div>
                     <div class="form-group">
-                        <label id="addressLabel">Your UK address (for Pick up / Drop off)</label>
+                        <label id="addressLabel">Your UK Postcode / Town (for Pick up / Drop off)</label>
                         <input type="text" id="destination" placeholder="e.g., Manchester, SW1A 1AA">
                     </div>
                     <button class="btn btn-primary" onclick="calculateRoute()">Calculate Price</button>
@@ -2063,9 +2449,9 @@
                     <div class="price-breakdown" id="priceBreakdown" style="display:none;">
                         <div class="price-line"><span>Transport (Spain ↔ Dover)</span><span id="basePriceDisplay">£495.00</span></div>
                         <div class="price-line"><span>UK mileage (<span id="deliveryMiles">0</span> mi @ 50p)</span><span id="deliveryCost">£0.00</span></div>
-                        <div class="price-line total"><span>Total per pet</span><span class="value" id="totalPrice">£495.00</span></div>
-                        <div class="price-line" style="color:#2d6a4f;font-weight:600;"><span>Booking fee to secure spot</span><span id="depositDisplay">—</span></div>
-                        <div class="price-line" style="color:#888;font-size:13px;"><span>Balance on travel day</span><span id="balanceDisplay">—</span></div>
+                        <div class="price-line total"><span>Price per dog</span><span class="value" id="totalPrice">£495.00</span></div>
+                        <div class="price-line" style="color:#2d6a4f;font-weight:600;"><span>Deposit per dog</span><span id="depositDisplay">—</span></div>
+                        <div class="price-line" style="color:#888;font-size:13px;"><span>Balance per dog on travel day</span><span id="balanceDisplay">—</span></div>
                         <div class="btn-row">
                             <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
                             <button class="btn btn-primary" onclick="goToStep(3)">Continue</button>
@@ -2081,7 +2467,10 @@
                     </div>
                     <div class="form-group"><label>Email</label><input type="email" id="email" placeholder="john@example.com"></div>
                     <div class="form-group"><label>Phone</label><input type="tel" id="phone" placeholder="07700 900123"></div>
-                    <div class="form-group"><label>Dog's Name</label><input type="text" id="dogName" placeholder="Buddy"></div>
+                    <div class="crate-availability-hint" id="crateHint"></div>
+                    <div id="dogsContainer"></div>
+                    <button class="btn-add-dog" onclick="addDog()">+ Add another dog</button>
+                    <div class="dogs-total-note" id="dogsTotalNote" style="display:none;"></div>
                     <div class="btn-row">
                         <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
                         <button class="btn btn-primary" onclick="goToStep(4)">Review</button>
@@ -2107,9 +2496,12 @@
                             <span style="color:#666;">Customer</span>
                             <span style="display:flex;align-items:center;gap:10px;"><span id="summaryName">-</span><button onclick="goToStep(3)" style="font-size:11px;color:var(--primary);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;">Edit</button></span>
                         </div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:14px;">
-                            <span style="color:#666;">Dog</span>
-                            <span style="display:flex;align-items:center;gap:10px;"><span id="summaryDog">-</span><button onclick="goToStep(3)" style="font-size:11px;color:var(--primary);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;">Edit</button></span>
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:5px 0;font-size:14px;">
+                            <span style="color:#666;flex-shrink:0;padding-right:12px;" id="summaryDogLabel">Dog</span>
+                            <span style="display:flex;align-items:flex-start;gap:8px;text-align:right;">
+                                <span id="summaryDog">-</span>
+                                <button onclick="goToStep(3)" style="font-size:11px;color:var(--primary);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;white-space:nowrap;flex-shrink:0;">Edit</button>
+                            </span>
                         </div>
                     </div>
                     <div class="price-breakdown">
@@ -2141,7 +2533,7 @@
                             <span style="font-size:20px;">💳</span>
                             <strong style="font-size:14px;">Pay via PayPal</strong>
                         </div>
-                        <a id="paypalBtn" href="#" target="_blank" rel="noopener" style="display:block;background:#0070ba;color:white;text-align:center;padding:12px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;">Pay £95 with PayPal →</a>
+                        <a id="paypalBtn" href="#" target="_blank" rel="noopener" style="display:block;background:#0070ba;color:white;text-align:center;padding:12px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;">Pay with PayPal →</a>
                     </div>
 
                     <!-- Bank Transfer -->
@@ -2161,7 +2553,7 @@
                     </div>
                 </div>
             </div>
-            <div class="map-panel">
+            <div class="map-panel" id="mapPanel">
                 <div id="map"></div>
                 <div class="loading" id="loading"><div class="spinner"></div><span>Calculating...</span></div>
                 <div style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.55);color:white;font-size:11px;padding:4px 10px;border-radius:20px;pointer-events:none;white-space:nowrap;">Route shown for illustrative purposes only</div>
@@ -2203,6 +2595,17 @@
         </div>
     </section>
 
+    <section class="section faq-section" id="faq">
+        <div class="section-header">
+            <div class="subtitle">Got Questions?</div>
+            <h2>Frequently Asked Questions</h2>
+            <p>Everything you need to know about transporting your dog between Spain and the UK.</p>
+        </div>
+        <div class="faq-list" id="faqList">
+            <!-- populated by JS -->
+        </div>
+    </section>
+
     </main>
 
     <!-- Footer -->
@@ -2221,13 +2624,14 @@
             <div class="footer-column">
                 <h4>Support</h4>
                 <a href="#">Pet Passport Guide</a>
-                <a href="#">FAQ</a>
+                <a href="#faq">FAQ</a>
                 <a href="#">Contact</a>
             </div>
             <div class="footer-column">
                 <h4>Contact</h4>
                 <a href="#">hello@vivaespaniel.com</a>
                 <a href="#">+44 800 123 4567</a>
+                <a id="footerWhatsapp" href="#" target="_blank" rel="noopener noreferrer" style="display:none;color:#25d366;">💬 WhatsApp Us</a>
             </div>
         </div>
         <div class="footer-bottom">© 2026 Viva Españiel • Spain ↔ UK pet transport</div>
@@ -2265,7 +2669,7 @@
         async function initPage() {
             try {
                 const [{ data: settingsData }, { data: datesData }] = await Promise.all([
-                    _supabase.from('settings').select('key,value').in('key', ['base_price_gbp','per_mile_pence','booking_fee_gbp','paypal_email','paypal_link','bank_name','bank_sort_code','bank_account_number','bank_account_name']),
+                    _supabase.from('settings').select('key,value').in('key', ['base_price_gbp','per_mile_pence','booking_fee_gbp','paypal_email','paypal_link','bank_name','bank_sort_code','bank_account_number','bank_account_name','whatsapp_number','whatsapp_enabled']),
                     _supabase.from('travel_dates').select('*').eq('active', true).order('departure_date', { ascending: true })
                 ]);
                 if (settingsData) {
@@ -2280,6 +2684,17 @@
                         if (r.key === 'bank_account_number')  paymentSettings.bankAccountNumber = r.value;
                         if (r.key === 'bank_account_name')    paymentSettings.bankAccountName   = r.value;
                     });
+                    const waNumber  = settingsData.find(r => r.key === 'whatsapp_number')?.value  || '';
+                    const waEnabled = settingsData.find(r => r.key === 'whatsapp_enabled')?.value === 'true';
+                    if (waEnabled && waNumber) {
+                        const waUrl = `https://wa.me/${waNumber.replace(/\D/g, '')}`;
+                        const navEl    = document.getElementById('navWhatsapp');
+                        const footerEl = document.getElementById('footerWhatsapp');
+                        navEl.href    = waUrl;
+                        navEl.style.display = 'flex';
+                        footerEl.href = waUrl;
+                        footerEl.style.display = '';
+                    }
                 }
                 window._allDates = datesData || [];
             } catch (e) {
@@ -2293,16 +2708,18 @@
         async function loadSiteContent() {
             try {
                 const h = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY };
-                const [cr, tr, gr, pr] = await Promise.all([
+                const [cr, tr, gr, pr, fr] = await Promise.all([
                     fetch(`${SUPABASE_URL}/rest/v1/content?select=key,value`, { headers: h }),
                     fetch(`${SUPABASE_URL}/rest/v1/testimonials?active=eq.true&order=sort_order`, { headers: h }),
                     fetch(`${SUPABASE_URL}/rest/v1/gallery_items?active=eq.true&order=sort_order`, { headers: h }),
                     fetch(`${SUPABASE_URL}/rest/v1/pages?status=eq.live&order=sort_order&select=slug,nav_label,title`, { headers: h }),
+                    fetch(`${SUPABASE_URL}/rest/v1/faqs?active=eq.true&order=sort_order`, { headers: h }),
                 ]);
                 const content      = cr.ok ? await cr.json() : [];
                 const testimonials = tr.ok ? await tr.json() : [];
                 const gallery      = gr.ok ? await gr.json() : [];
                 const customPages  = pr.ok ? await pr.json() : [];
+                const faqs         = fr.ok ? await fr.json() : [];
 
                 // Inject live custom pages into nav after Testimonials
                 if (customPages.length) {
@@ -2331,6 +2748,19 @@
                 setText('heroHeadline', c.hero_headline);
                 setText('heroTagline',  c.hero_tagline);
                 setImg('heroImage',     c.hero_image_url);
+
+                if (c.google_rating)       document.getElementById('googleRatingTitle').textContent  = c.google_rating + ' Google Rating';
+                if (c.google_review_count) document.getElementById('googleReviewCount').textContent  = c.google_review_count + ' Reviews';
+                if (c.google_stars) {
+                    const n = Math.min(5, Math.max(0, parseInt(c.google_stars) || 5));
+                    document.getElementById('googleStars').textContent = '★'.repeat(n) + '☆'.repeat(5 - n);
+                }
+                const badge = document.getElementById('googleRatingBadge');
+                if (c.google_review_url) {
+                    badge.href = c.google_review_url;
+                    badge.dataset.url = c.google_review_url;
+                    badge.style.cursor = 'pointer';
+                }
 
                 setImg('aboutPhoto',    c.about_photo_url);
                 setText('aboutYears',   c.about_years);
@@ -2378,36 +2808,133 @@
                         </div>`
                     ).join('');
                 }
+
+                // Render FAQs
+                if (faqs.length > 0) {
+                    document.getElementById('faqList').innerHTML = faqs.map(f => `
+                        <div class="faq-item" onclick="toggleFaq(this)">
+                            <div class="faq-question">
+                                <span>${escHtml(f.question)}</span>
+                                <span class="faq-chevron">▼</span>
+                            </div>
+                            <div class="faq-answer"><div class="faq-answer-inner">${escHtml(f.answer)}</div></div>
+                        </div>
+                    `).join('');
+
+                    // FAQPage structured data for Google
+                    const faqSchema = {
+                        '@context': 'https://schema.org',
+                        '@type': 'FAQPage',
+                        mainEntity: faqs.map(f => ({
+                            '@type': 'Question',
+                            name: f.question,
+                            acceptedAnswer: { '@type': 'Answer', text: f.answer }
+                        }))
+                    };
+                    const schemaEl = document.createElement('script');
+                    schemaEl.type = 'application/ld+json';
+                    schemaEl.textContent = JSON.stringify(faqSchema);
+                    document.head.appendChild(schemaEl);
+                }
             } catch (e) {
                 console.warn('Could not load CMS content — using defaults');
             }
         }
 
+        let _selectedMonth = null; // 'YYYY-MM'
+
         function renderDateCards() {
-            const grid = document.getElementById('dateGrid');
+            const grid        = document.getElementById('dateGrid');
+            const filterWrap  = document.getElementById('monthFilter');
             const dbDirection = currentDirection.replace(/-/g, '_');
-            const relevantDates = (window._allDates || []).filter(d =>
-                (d.direction === dbDirection || d.direction === 'both') &&
-                (d.spots_available - d.spots_taken) > 0
+            const today       = new Date(new Date().toDateString());
+
+            // All dates matching direction (including full/past)
+            const allForDir = (window._allDates || []).filter(d =>
+                d.direction === dbDirection || d.direction === 'both'
             );
-            if (relevantDates.length === 0) {
-                grid.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">No upcoming dates available for this direction. Please <a href="#contact">contact us</a> directly.</p>';
+
+            if (allForDir.length === 0) {
+                filterWrap.innerHTML = '';
+                grid.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">No dates available for this direction yet. Please <a href="#contact">contact us</a> directly.</p>';
                 return;
             }
-            grid.innerHTML = relevantDates.map(d => {
-                const date   = new Date(d.departure_date);
-                const mon    = date.toLocaleString('en-GB', { month: 'short' });
-                const day    = date.getDate();
-                const year   = date.getFullYear();
-                const spots  = d.spots_available - d.spots_taken;
-                const label  = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-                return `<div class="date-card" data-date-id="${d.id}" onclick="selectDate(this,'${d.id}','${label}')">
+
+            // Build sorted unique month keys
+            const monthKeys = [...new Set(allForDir.map(d => d.departure_date.slice(0, 7)))].sort();
+
+            // Default to earliest month that has an available upcoming date; fallback to first month
+            if (!_selectedMonth || !monthKeys.includes(_selectedMonth)) {
+                const firstAvailMonth = monthKeys.find(mk => allForDir.some(d => {
+                    const dt = new Date(d.departure_date);
+                    const spotsLeft = (d.large_crates ?? 2) - (d.large_taken ?? 0) + (d.small_crates ?? 2) - (d.small_taken ?? 0);
+                    return d.departure_date.slice(0, 7) === mk && dt >= today && !d.manually_closed && spotsLeft > 0;
+                }));
+                _selectedMonth = firstAvailMonth || monthKeys[0];
+            }
+
+            // Render month pills
+            filterWrap.innerHTML = monthKeys.map(mk => {
+                const [y, m] = mk.split('-');
+                const label  = new Date(Number(y), Number(m) - 1, 1).toLocaleString('en-GB', { month: 'short', year: '2-digit' });
+                const isPast = new Date(Number(y), Number(m), 0) < today; // last day of month < today
+                return `<button class="month-pill${mk === _selectedMonth ? ' active' : ''}${isPast ? ' past-month' : ''}" onclick="selectMonth('${mk}')">${label}</button>`;
+            }).join('');
+
+            // Dates for selected month
+            const monthDates = allForDir.filter(d => d.departure_date.slice(0, 7) === _selectedMonth);
+
+            if (monthDates.length === 0) {
+                grid.innerHTML = '<p style="text-align:center;color:#666;padding:16px;">No dates this month.</p>';
+                return;
+            }
+
+            grid.innerHTML = monthDates.map(d => {
+                const date     = new Date(d.departure_date);
+                const mon      = date.toLocaleString('en-GB', { month: 'short' }).toUpperCase();
+                const day      = date.getDate();
+                const year     = date.getFullYear();
+                const label    = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+                const spotsLeft = Math.max(0, (d.large_crates ?? 2) - (d.large_taken ?? 0)) + Math.max(0, (d.small_crates ?? 2) - (d.small_taken ?? 0));
+                const isPast   = date < today;
+                const isFull   = d.manually_closed || spotsLeft === 0;
+
+                let spotsBadge, cardClass = '';
+                if (isPast) {
+                    spotsBadge = '<div class="date-spots past">Past</div>';
+                    cardClass  = 'unavailable';
+                } else if (isFull) {
+                    spotsBadge = '<div class="date-spots full">Full</div>';
+                    cardClass  = 'unavailable';
+                } else if (spotsLeft <= 2) {
+                    spotsBadge = `<div class="date-spots limited">${spotsLeft} spot${spotsLeft !== 1 ? 's' : ''} left</div>`;
+                } else {
+                    spotsBadge = `<div class="date-spots">${spotsLeft} spot${spotsLeft !== 1 ? 's' : ''} left</div>`;
+                }
+
+                const clickHandler = (isPast || isFull) ? '' : `onclick="selectDate(this,'${d.id}','${label}')"`;
+                return `<div class="date-card ${cardClass}" data-date-id="${d.id}" ${clickHandler}>
                     <div class="date-month">${mon}</div>
                     <div class="date-range">${day}</div>
                     <div class="date-year">${year}</div>
-                    <div class="date-spots ${spots <= 3 ? 'limited' : ''}">${spots} spot${spots !== 1 ? 's' : ''} left</div>
+                    ${spotsBadge}
                 </div>`;
             }).join('');
+        }
+
+        function selectMonth(mk) {
+            _selectedMonth = mk;
+            // Clear any previously selected date if it's not in this month
+            if (routeData.travelDateId) {
+                const d = (window._allDates || []).find(x => x.id === routeData.travelDateId);
+                if (d && d.departure_date.slice(0, 7) !== mk) {
+                    routeData.travelDate   = null;
+                    routeData.travelDateId = null;
+                    document.getElementById('dateNextBtn').disabled    = true;
+                    document.getElementById('dateNextBtn').textContent = 'Select a Travel Date';
+                }
+            }
+            renderDateCards();
         }
 
         function selectDate(el, id, display) {
@@ -2415,6 +2942,9 @@
             el.classList.add('selected');
             routeData.travelDate   = display;
             routeData.travelDateId = id;
+            const dateObj = (window._allDates || []).find(d => d.id === id);
+            routeData.availableLarge = dateObj ? Math.max(0, (dateObj.large_crates ?? 2) - (dateObj.large_taken ?? 0)) : 2;
+            routeData.availableSmall = dateObj ? Math.max(0, (dateObj.small_crates ?? 2) - (dateObj.small_taken ?? 0)) : 2;
             document.getElementById('dateNextBtn').disabled     = false;
             document.getElementById('dateNextBtn').textContent  = 'Continue →';
         }
@@ -2471,7 +3001,26 @@
                 map.getSource('route-uk').setData(emptyLine);
             }
         }
+        let dogEntries = [{ name: '', size: '' }];
+        renderDogs();
         initPage();
+
+        // ── FAQ accordion ────────────────────────────────────────────────────────
+        function toggleFaq(item) {
+            const isOpen = item.classList.contains('open');
+            // Close all open items
+            document.querySelectorAll('.faq-item.open').forEach(el => {
+                el.classList.remove('open');
+                el.querySelector('.faq-answer').style.maxHeight = null;
+            });
+            if (!isOpen) {
+                item.classList.add('open');
+                const answer = item.querySelector('.faq-answer');
+                answer.style.maxHeight = answer.scrollHeight + 'px';
+            }
+        }
+
+        function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
         // ── Mobile menu ──────────────────────────────────────────────────────────
         function toggleMobileMenu() {
@@ -2481,8 +3030,9 @@
         // ── Direction toggle ─────────────────────────────────────────────────────
         function setDirection(dir) {
             currentDirection = dir;
+            _selectedMonth   = null; // reset so default recalculates for new direction
             document.querySelectorAll('.direction-btn').forEach(b => b.classList.toggle('active', b.dataset.direction === dir));
-            document.getElementById('addressLabel').textContent = 'Your UK address (for Pick up / Drop off)';
+            document.getElementById('addressLabel').textContent = 'Your UK Postcode / Town (for Pick up / Drop off)';
             document.getElementById('priceBreakdown').style.display = 'none';
             renderDateCards();
         }
@@ -2514,7 +3064,7 @@
                 // UK route via edge function (pricing is based on Dover→UK mileage)
                 const res = await fetch(`${EDGE_BASE_URL}/route-proxy`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
                     body: JSON.stringify({ address: dest })
                 });
                 if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Route error'); }
@@ -2530,8 +3080,10 @@
                     destination:        { name: data.displayName, lat: data.lat, lng: data.lng },
                     spainDestination:   { name: spainDisplayName, lat: spainLat, lng: spainLng },
                     miles, total, bookingFee, balance,
+                    perDogTotal: total, perDogFee: bookingFee,
                     travelDate: routeData.travelDate, travelDateId: routeData.travelDateId
                 };
+                updateDogsTotal();
 
                 // Draw full route on map
                 clearMarkers();
@@ -2570,15 +3122,152 @@
         }
 
         // ── Step navigation ──────────────────────────────────────────────────────
+        // ── Multi-dog state ───────────────────────────────────────────────────────
+
+        function renderDogs() {
+            const showRemove = dogEntries.length > 1;
+            document.getElementById('dogsContainer').innerHTML = dogEntries.map((d, i) => `
+                <div class="dog-entry">
+                    <div class="dog-entry-header">
+                        <span class="dog-entry-label" id="dogLabel_${i}">Dog ${i + 1}${d.name ? ' \u2014 ' + d.name : ''}</span>
+                        ${showRemove ? `<button class="btn-remove-dog" onclick="removeDog(${i})" title="Remove">✕</button>` : ''}
+                    </div>
+                    <div class="form-group" style="margin-bottom:10px;">
+                        <label>Name</label>
+                        <input type="text" id="dogName_${i}" value="${(d.name||'').replace(/"/g,'&quot;')}" placeholder="${i === 0 ? 'e.g. Buddy' : 'Dog\'s name'}"
+                            oninput="dogEntries[${i}].name=this.value; const lbl=document.getElementById('dogLabel_${i}'); if(lbl) lbl.textContent='Dog ${i+1}' + (this.value ? ' \u2014 ' + this.value : '');">
+                    </div>
+                    <div class="form-group">
+                        <label>Size</label>
+                        <div class="size-pills">
+                            <button type="button" class="size-pill${d.size==='small'?' selected':''}" id="sizeSmall_${i}" onclick="selectSize(${i},'small')">
+                                <span class="size-pill-icon">🐕</span>
+                                <span class="size-pill-info">
+                                    <span class="size-pill-label">Small</span>
+                                    <span class="size-pill-height">Up to 48cm</span>
+                                </span>
+                                <span class="size-pill-check">✓</span>
+                            </button>
+                            <button type="button" class="size-pill${d.size==='large'?' selected':''}" id="sizeLarge_${i}" onclick="selectSize(${i},'large')">
+                                <span class="size-pill-icon">🐕‍🦺</span>
+                                <span class="size-pill-info">
+                                    <span class="size-pill-label">Large</span>
+                                    <span class="size-pill-height">48cm – 64cm</span>
+                                </span>
+                                <span class="size-pill-check">✓</span>
+                            </button>
+                        </div>
+                        ${i === 0 ? '<p class="size-hint">Measured floor to top of head while standing. Chihuahua, Pug, Dachshund → Small &nbsp;·&nbsp; Labrador, Spaniel, Shepherd → Large. Not sure? Go large.</p>' : ''}
+                    </div>
+                </div>
+            `).join('');
+            updateDogsTotal();
+            const maxDogs = Math.max(0, (routeData.availableLarge ?? 2)) + Math.max(0, (routeData.availableSmall ?? 2));
+            const addBtn  = document.querySelector('.btn-add-dog');
+            if (addBtn) addBtn.style.display = dogEntries.length >= maxDogs ? 'none' : '';
+            refreshSizePills();
+        }
+
+        function refreshSizePills() {
+            const largeDogs = dogEntries.filter(d => d.size === 'large').length;
+            const availLarge = routeData.availableLarge ?? 2;
+            const largeFull  = largeDogs >= availLarge;
+            dogEntries.forEach((d, i) => {
+                const btn = document.getElementById(`sizeLarge_${i}`);
+                if (!btn) return;
+                // Lock the Large button only for dogs not already assigned large
+                const locked = largeFull && d.size !== 'large';
+                btn.disabled = locked;
+                btn.classList.toggle('size-pill-disabled', locked);
+            });
+            // Update capacity hint
+            const hint = document.getElementById('crateHint');
+            if (hint) {
+                const availSmall = routeData.availableSmall ?? 2;
+                if (availLarge > 0 || availSmall > 0) {
+                    hint.textContent = `${availLarge} large crate${availLarge !== 1 ? 's' : ''} and ${availSmall} small crate${availSmall !== 1 ? 's' : ''} available on this date. Small dogs may use large crates if small ones are full.`;
+                    hint.style.display = 'block';
+                } else {
+                    hint.style.display = 'none';
+                }
+            }
+        }
+
+        function selectSize(i, size) {
+            // Save names before touching the DOM
+            dogEntries.forEach((d, idx) => { d.name = document.getElementById(`dogName_${idx}`)?.value || d.name; });
+            dogEntries[i].size = size;
+            document.getElementById(`sizeSmall_${i}`)?.classList.toggle('selected', size === 'small');
+            document.getElementById(`sizeLarge_${i}`)?.classList.toggle('selected', size === 'large');
+            updateDogsTotal();
+            refreshSizePills();
+        }
+
+        function addDog() {
+            const maxDogs = Math.max(0, (routeData.availableLarge ?? 2)) + Math.max(0, (routeData.availableSmall ?? 2));
+            if (dogEntries.length >= maxDogs) return;
+            dogEntries.forEach((d, i) => { d.name = document.getElementById(`dogName_${i}`)?.value || d.name; });
+            dogEntries.push({ name: '', size: '' });
+            renderDogs();
+        }
+
+        function removeDog(i) {
+            dogEntries.forEach((d, idx) => { d.name = document.getElementById(`dogName_${idx}`)?.value || d.name; });
+            dogEntries.splice(i, 1);
+            renderDogs();
+        }
+
+        function collectDogs() {
+            return dogEntries.map((d, i) => ({
+                name: document.getElementById(`dogName_${i}`)?.value.trim() || d.name,
+                size: d.size,
+            }));
+        }
+
+        function updateDogsTotal() {
+            const n = dogEntries.length;
+            const note = document.getElementById('dogsTotalNote');
+            if (!routeData.perDogTotal || n <= 1) { note.style.display = 'none'; return; }
+            const total = routeData.perDogTotal * n;
+            const fee   = routeData.perDogFee   * n;
+            note.textContent = `${n} dogs · Total £${total.toFixed(2)} · Deposit £${fee.toFixed(2)}`;
+            note.style.display = 'block';
+        }
+
         function goToStep(step) {
             if (step === 2 && !routeData.travelDate)  { alert('Please select a travel date'); return; }
             if (step === 3 && !routeData.miles)        { showError('Calculate price first'); return; }
             if (step === 4) {
-                const fields = ['firstName','lastName','email','phone','dogName'];
+                const fields = ['firstName','lastName','email','phone'];
                 if (fields.some(f => !document.getElementById(f).value.trim())) { alert('Please fill in all fields'); return; }
+                const dogs = collectDogs();
+                if (dogs.some(d => !d.name)) { alert('Please enter a name for each dog'); return; }
+                if (dogs.some(d => !d.size)) { alert('Please select a size for each dog'); return; }
+                // Crate validation
+                const largeDogs  = dogs.filter(d => d.size === 'large').length;
+                const smallDogs  = dogs.filter(d => d.size === 'small').length;
+                const availLarge = routeData.availableLarge ?? 2;
+                const availSmall = routeData.availableSmall ?? 2;
+                if (largeDogs > availLarge) {
+                    alert(`Only ${availLarge} large crate${availLarge !== 1 ? 's' : ''} available on this date. Please reduce large dogs.`);
+                    return;
+                }
+                const remainingLarge = availLarge - largeDogs;
+                if (smallDogs > availSmall + remainingLarge) {
+                    alert(`Not enough crate space for all dogs on this date (${availLarge} large, ${availSmall} small available).`);
+                    return;
+                }
+                // Scale totals by dog count
+                const n = dogs.length;
+                routeData.total      = routeData.perDogTotal * n;
+                routeData.bookingFee = routeData.perDogFee   * n;
+                routeData.balance    = routeData.total - routeData.bookingFee;
+                const dogLabel = dogs.length > 1 ? 'Dogs' : 'Dog';
+                const dogSummary = dogs.map(d => `${d.name} (${d.size === 'large' ? 'Large' : 'Small'})`).join(', ');
+                document.getElementById('summaryDogLabel').textContent = dogLabel;
                 document.getElementById('summaryDate').textContent    = routeData.travelDate;
                 document.getElementById('summaryName').textContent    = `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`;
-                document.getElementById('summaryDog').textContent     = document.getElementById('dogName').value;
+                document.getElementById('summaryDog').textContent     = dogSummary;
                 document.getElementById('summarySpain').textContent  = routeData.spainDestination?.name?.split(',')[0] || '—';
                 document.getElementById('summaryDest').textContent    = routeData.destination?.name?.split(',')[0] || '—';
                 document.getElementById('summaryTotal').textContent   = `£${routeData.total.toFixed(2)}`;
@@ -2589,10 +3278,21 @@
                 document.getElementById('confirmFee').textContent     = `£${routeData.bookingFee.toFixed(2)}`;
                 document.getElementById('confirmBalance').textContent = `£${routeData.balance.toFixed(2)}`;
                 // PayPal
-                const paypalLink = paymentSettings.paypalLink || paymentSettings.paypalEmail;
+                const depositAmt = routeData.bookingFee.toFixed(2);
                 const paypalBtn  = document.getElementById('paypalBtn');
+                paypalBtn.textContent = `Pay £${depositAmt} with PayPal →`;
+                let paypalLink = paymentSettings.paypalLink || paymentSettings.paypalEmail;
                 if (paypalLink) {
-                    paypalBtn.href = paypalLink.startsWith('http') ? paypalLink : `https://${paypalLink}`;
+                    // If it's a paypal.me username or URL, append the amount so the payment is pre-filled
+                    if (paypalLink.includes('paypal.me/')) {
+                        // Strip any existing amount from the URL then append current deposit
+                        paypalLink = paypalLink.replace(/\/[\d.]+$/, '');
+                        paypalBtn.href = `${paypalLink}/${depositAmt}`;
+                    } else if (!paypalLink.startsWith('http')) {
+                        paypalBtn.href = `https://paypal.me/${paypalLink}/${depositAmt}`;
+                    } else {
+                        paypalBtn.href = paypalLink;
+                    }
                     document.getElementById('paypalSection').style.display = 'block';
                 } else {
                     document.getElementById('paypalSection').style.display = 'none';
@@ -2600,7 +3300,7 @@
                 // Bank transfer
                 const b = paymentSettings;
                 const customerName = `${document.getElementById('firstName').value.trim()} ${document.getElementById('lastName').value.trim()}`;
-                const dogName = document.getElementById('dogName').value.trim();
+                const dogName = collectDogs()[0]?.name || '';
                 if (b.bankSortCode || b.bankAccountNumber) {
                     document.getElementById('bankDetails').innerHTML = `
                         <div><span style="color:#666;">Account name</span><br><strong>${b.bankAccountName || '—'}</strong></div>
@@ -2615,6 +3315,29 @@
             }
             document.querySelectorAll('.booking-step').forEach(s => s.classList.remove('active'));
             document.getElementById(`step${step}`).classList.add('active');
+            // Scroll the top of the booking widget into view, offset slightly below the sticky nav
+            const bookingEl = document.getElementById('booking');
+            if (bookingEl) {
+                const navHeight = document.querySelector('nav')?.offsetHeight || 60;
+                const top = bookingEl.getBoundingClientRect().top + window.scrollY - navHeight - 8;
+                window.scrollTo({ top, behavior: 'smooth' });
+            }
+            const hideMap = step >= 3;
+            document.getElementById('mapPanel').style.display = hideMap ? 'none' : '';
+            document.querySelector('.booking-container').classList.toggle('map-hidden', hideMap);
+            // Route summary bar
+            const rsb = document.getElementById('routeSummaryBar');
+            if (hideMap && routeData.travelDate) {
+                const dirLabel = currentDirection === 'uk-to-spain' ? '🇬🇧 → 🇪🇸' : '🇪🇸 → 🇬🇧';
+                const spainShort = (routeData.spainDestination?.name || document.getElementById('spainAddress').value || '').split(',')[0];
+                const ukShort    = (routeData.destination?.name    || document.getElementById('destination').value    || '').split(',')[0];
+                document.getElementById('rsbDate').textContent  = routeData.travelDate;
+                document.getElementById('rsbRoute').textContent = `${dirLabel} ${spainShort} ↔ ${ukShort}`;
+                document.getElementById('rsbPrice').textContent = routeData.total ? `£${routeData.total.toFixed(2)}` : '';
+                rsb.classList.add('visible');
+            } else {
+                rsb.classList.remove('visible');
+            }
             document.querySelectorAll('.step').forEach(s => {
                 const n = parseInt(s.dataset.step);
                 s.classList.remove('active','completed');
@@ -2631,7 +3354,7 @@
             try {
                 const res = await fetch(`${EDGE_BASE_URL}/submit-booking`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
                     body: JSON.stringify({
                         direction:          currentDirection.replace(/-/g, '_'),
                         travelDateId:       routeData.travelDateId,
@@ -2640,7 +3363,8 @@
                         lastName:           document.getElementById('lastName').value.trim(),
                         email:              document.getElementById('email').value.trim(),
                         phone:              document.getElementById('phone').value.trim(),
-                        dogName:            document.getElementById('dogName').value.trim(),
+                        dogs:               collectDogs(),
+                        dogName:            collectDogs()[0]?.name || '',
                         spainAddress:        document.getElementById('spainAddress').value.trim(),
                         spainAddressDisplay: routeData.spainDestination?.name || document.getElementById('spainAddress').value.trim(),
                         ukAddress:          document.getElementById('destination').value.trim(),
@@ -2655,7 +3379,7 @@
                 });
                 if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Submission failed'); }
                 const { reference } = await res.json();
-                showConfirmation(reference, document.getElementById('email').value.trim(), document.getElementById('dogName').value.trim());
+                showConfirmation(reference, document.getElementById('email').value.trim(), collectDogs()[0]?.name || '');
             } catch (e) {
                 alert('Sorry, there was a problem submitting your request. Please try again or contact us directly.');
                 btn.disabled    = false;
@@ -2673,7 +3397,9 @@
 
         function resetBooking() {
             document.getElementById('confirmOverlay').classList.remove('visible');
-            ['spainAddress','destination','firstName','lastName','email','phone','dogName'].forEach(id => {
+            dogEntries = [{ name: '', size: '' }];
+            renderDogs();
+            ['spainAddress','destination','firstName','lastName','email','phone'].forEach(id => {
                 const el = document.getElementById(id); if (el) el.value = '';
             });
             document.getElementById('priceBreakdown').style.display = 'none';
@@ -2690,10 +3416,14 @@
 
         // ── Keyboard + scroll ────────────────────────────────────────────────────
         document.getElementById('destination').addEventListener('keypress', e => { if (e.key === 'Enter') calculateRoute(); });
-        document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
-            e.preventDefault();
-            document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
-        }));
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            const href = a.getAttribute('href');
+            if (!href || href === '#') return;
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
     </script>
 </body>
 </html>

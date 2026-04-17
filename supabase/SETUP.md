@@ -23,7 +23,7 @@ In the dashboard go to **Settings → API**. You need:
 - **anon / public key** — the long JWT string under "Project API keys"
 
 Update **both** of these in:
-- `viva-espanol.html` — the `<script>` block near the top (lines with `SUPABASE_URL` and `SUPABASE_ANON_KEY`)
+- `pet-transport-to-spain.html` — the `<script>` block near the top (lines with `SUPABASE_URL` and `SUPABASE_ANON_KEY`)
 - `admin.html` — the same block at the top
 
 ## 4. Deploy the Edge Functions
@@ -50,11 +50,13 @@ Then deploy all functions:
 
 ```bash
 supabase functions deploy route-proxy
-supabase functions deploy submit-booking
-supabase functions deploy admin-auth
-supabase functions deploy admin-bookings
+supabase functions deploy submit-booking --no-verify-jwt
+supabase functions deploy admin-auth --no-verify-jwt
+supabase functions deploy admin-bookings --no-verify-jwt
 supabase functions deploy send-payment-details
 ```
+
+> **Note:** `admin-auth` and `admin-bookings` use a custom JWT (signed with `ADMIN_JWT_SECRET`), not the Supabase project JWT. The `--no-verify-jwt` flag tells Supabase to skip its gateway-level JWT check so the functions can handle their own auth.
 
 ## 5. Configure Resend
 

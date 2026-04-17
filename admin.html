@@ -192,6 +192,8 @@
         .btn-complete:hover { background: #16a34a; }
         .btn-cancel   { background: #fee2e2; color: #991b1b; }
         .btn-cancel:hover   { background: #fecaca; }
+        .btn-delete   { background: none; border: 1.5px solid #fca5a5 !important; color: #ef4444; }
+        .btn-delete:hover   { background: #fee2e2; }
         .btn-disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* ── Settings page ── */
@@ -286,11 +288,12 @@
         .dates-table { background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 20px; }
         .add-date-form { background: var(--card); border-radius: 12px; padding: 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
         .add-date-form h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 12px; align-items: end; }
+        .form-grid { display: grid; grid-template-columns: 160px 160px 100px 100px max-content; gap: 12px; align-items: end; }
         .form-field label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 5px; }
         .form-field input, .form-field select {
-            padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px;
-            font-size: 13px; width: 100%; transition: border-color 0.2s;
+            padding: 0 12px; border: 1.5px solid var(--border); border-radius: 8px;
+            font-size: 13px; width: 100%; height: 38px; box-sizing: border-box;
+            transition: border-color 0.2s;
         }
         .form-field input:focus, .form-field select:focus { outline: none; border-color: var(--primary); }
         .toggle-active { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; }
@@ -352,6 +355,9 @@
         <div class="nav-item" data-page="pages" onclick="showPage('pages',this)">
             <span class="icon">📄</span><span>Pages</span>
         </div>
+        <div class="nav-item" data-page="blog" onclick="showPage('blog',this)">
+            <span class="icon">✍️</span><span>Blog</span>
+        </div>
         <div class="nav-item" data-page="settings" onclick="showPage('settings',this)">
             <span class="icon">⚙️</span><span>Settings</span>
         </div>
@@ -409,8 +415,12 @@
                         </select>
                     </div>
                     <div class="form-field">
-                        <label>Spots available</label>
-                        <input type="number" id="newDateSpots" value="6" min="1" max="20">
+                        <label>Large crates <small style="color:var(--muted)">(64cm max)</small></label>
+                        <input type="number" id="newDateLarge" value="2" min="0" max="10">
+                    </div>
+                    <div class="form-field">
+                        <label>Small crates <small style="color:var(--muted)">(48cm max)</small></label>
+                        <input type="number" id="newDateSmall" value="2" min="0" max="10">
                     </div>
                     <button class="save-btn" onclick="addDate()">+ Add Date</button>
                 </div>
@@ -431,6 +441,20 @@
                 <div class="content-field"><label>Badge text</label><input type="text" id="cHeroBadge" class="content-input" placeholder="🇬🇧 UK ↔ Spain ↔ UK 🇪🇸"></div>
                 <div class="content-field"><label>Headline</label><input type="text" id="cHeroHeadline" class="content-input" placeholder="Safe Journeys for Your Furry Family"></div>
                 <div class="content-field"><label>Tagline</label><textarea id="cHeroTagline" class="content-textarea" rows="2"></textarea></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 120px;gap:12px;">
+                    <div class="content-field" style="margin:0"><label>Google rating <small style="color:var(--muted)">(e.g. 4.9)</small></label><input type="text" id="cGoogleRating" class="content-input" placeholder="4.9"></div>
+                    <div class="content-field" style="margin:0"><label>Review count <small style="color:var(--muted)">(e.g. 186)</small></label><input type="text" id="cGoogleReviewCount" class="content-input" placeholder="186"></div>
+                    <div class="content-field" style="margin:0"><label>Stars shown</label>
+                        <select id="cGoogleStars" class="content-input">
+                            <option value="1">★☆☆☆☆</option>
+                            <option value="2">★★☆☆☆</option>
+                            <option value="3">★★★☆☆</option>
+                            <option value="4">★★★★☆</option>
+                            <option value="5" selected>★★★★★</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="content-field"><label>Google reviews URL</label><input type="url" id="cGoogleReviewUrl" class="content-input" placeholder="https://g.page/r/..."></div>
                 <div class="content-field">
                     <label>Hero image</label>
                     <div class="img-upload-row">
@@ -442,7 +466,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="save-btn" onclick="saveContent({hero_badge:v('cHeroBadge'),hero_headline:v('cHeroHeadline'),hero_tagline:v('cHeroTagline')},'heroMsg')">Save Hero</button>
+                <button class="save-btn" onclick="saveContent({hero_badge:v('cHeroBadge'),hero_headline:v('cHeroHeadline'),hero_tagline:v('cHeroTagline'),google_rating:v('cGoogleRating'),google_review_count:v('cGoogleReviewCount'),google_stars:document.getElementById('cGoogleStars').value,google_review_url:v('cGoogleReviewUrl')},'heroMsg')">Save Hero</button>
                 <span class="save-msg" id="heroMsg"></span>
             </div>
 
@@ -512,6 +536,87 @@
                 <div class="content-field"><label>Meta description (shown in Google search results — 150-160 chars)</label><textarea id="cMetaDesc" class="content-textarea" rows="2" maxlength="160"></textarea></div>
                 <button class="save-btn" onclick="saveContent({footer_tagline:v('cFooterTagline'),meta_title:v('cMetaTitle'),meta_description:v('cMetaDesc')},'footerMsg')">Save</button>
                 <span class="save-msg" id="footerMsg"></span>
+            </div>
+
+            <!-- Email Templates -->
+            <div class="content-card">
+                <h3>✉️ Email Templates</h3>
+                <p style="font-size:13px;color:var(--muted);margin:-10px 0 18px;">Edit the text Jon's customers receive. Use these variables anywhere: <code style="background:#f4f5f7;padding:1px 5px;border-radius:4px;font-size:12px;">{first_name} {dog_name} {reference} {deposit} {balance} {direction} {travel_date}</code></p>
+
+                <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#999;margin-bottom:12px;">📬 Booking Request Received <span style="font-weight:400;text-transform:none;letter-spacing:0;">(sent automatically when customer submits)</span></p>
+                <div class="content-field">
+                    <label>Subject line</label>
+                    <input type="text" id="cEmailReqSubject" class="content-input">
+                </div>
+                <div class="content-field">
+                    <label>Intro paragraph</label>
+                    <textarea id="cEmailReqIntro" class="content-textarea" rows="3"></textarea>
+                </div>
+                <div class="content-field">
+                    <label>Footer note</label>
+                    <textarea id="cEmailReqFooter" class="content-textarea" rows="2"></textarea>
+                </div>
+                <button class="save-btn" onclick="saveContent({email_request_subject:v('cEmailReqSubject'),email_request_intro:v('cEmailReqIntro'),email_request_footer:v('cEmailReqFooter')},'emailReqMsg')">Save</button>
+                <span class="save-msg" id="emailReqMsg"></span>
+
+                <hr style="border:none;border-top:1px solid var(--border);margin:24px 0;">
+
+                <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#999;margin-bottom:12px;">💳 Payment Details / Booking Confirmed <span style="font-weight:400;text-transform:none;letter-spacing:0;">(sent manually from a booking in admin)</span></p>
+                <div class="content-field">
+                    <label>Subject line</label>
+                    <input type="text" id="cEmailPaySubject" class="content-input">
+                </div>
+                <div class="content-field">
+                    <label>Intro paragraph</label>
+                    <textarea id="cEmailPayIntro" class="content-textarea" rows="3"></textarea>
+                </div>
+                <div class="content-field">
+                    <label>Payment note <span style="font-weight:400;color:var(--muted)">(shown in the yellow warning box)</span></label>
+                    <textarea id="cEmailPayNote" class="content-textarea" rows="2"></textarea>
+                </div>
+                <div class="content-field">
+                    <label>Footer note</label>
+                    <textarea id="cEmailPayFooter" class="content-textarea" rows="2"></textarea>
+                </div>
+                <button class="save-btn" onclick="saveContent({email_payment_subject:v('cEmailPaySubject'),email_payment_intro:v('cEmailPayIntro'),email_payment_note:v('cEmailPayNote'),email_payment_footer:v('cEmailPayFooter')},'emailPayMsg')">Save</button>
+                <span class="save-msg" id="emailPayMsg"></span>
+            </div>
+        </div>
+
+        <!-- Edit date modal -->
+        <div class="item-modal-overlay" id="editDateOverlay" onclick="if(event.target===this)closeEditDate()">
+            <div class="item-modal">
+                <div class="item-modal-header">
+                    <h3>Edit Travel Date</h3>
+                    <button class="close-btn" onclick="closeEditDate()">✕</button>
+                </div>
+                <div class="form-field" style="margin-bottom:12px;">
+                    <label>Departure date</label>
+                    <input type="date" id="editDateVal">
+                </div>
+                <div class="form-field" style="margin-bottom:12px;">
+                    <label>Direction</label>
+                    <select id="editDateDir">
+                        <option value="spain_to_uk">Spain → UK</option>
+                        <option value="uk_to_spain">UK → Spain</option>
+                        <option value="both">Both</option>
+                    </select>
+                </div>
+                <div class="form-grid" style="margin-bottom:12px;">
+                    <div class="form-field">
+                        <label>Large crates <small style="color:var(--muted)">(64cm max)</small></label>
+                        <input type="number" id="editDateLarge" min="0" max="10">
+                    </div>
+                    <div class="form-field">
+                        <label>Small crates <small style="color:var(--muted)">(48cm max)</small></label>
+                        <input type="number" id="editDateSmall" min="0" max="10">
+                    </div>
+                </div>
+                <div class="item-modal-footer">
+                    <button class="save-btn" style="flex:1;" onclick="saveEditDate()">Save changes</button>
+                    <button class="btn-modal-cancel" onclick="closeEditDate()">Cancel</button>
+                </div>
+                <p id="editDateMsg" style="font-size:13px;margin-top:8px;display:none;"></p>
             </div>
         </div>
 
@@ -613,6 +718,7 @@
                             <div id="peHeroEmpty" style="width:100%;height:80px;background:#f4f5f7;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#aaa;margin-bottom:10px;">No image</div>
                             <input type="file" id="peHeroFile" accept="image/*" style="display:none" onchange="peUploadHero(this)">
                             <button class="upload-btn" style="width:100%;" onclick="document.getElementById('peHeroFile').click()">Upload image</button>
+                            <button id="peHeroRemoveBtn" class="upload-btn" style="width:100%;color:#ef4444;border-color:#fca5a5;margin-top:6px;display:none;" onclick="peRemoveHero()">✕ Remove image</button>
                         </div>
 
                         <!-- YouTube -->
@@ -645,6 +751,97 @@
             </div>
         </div>
 
+        <!-- ── Blog editor overlay ── -->
+        <div id="blogEditorOverlay" style="display:none;position:fixed;inset:0;background:#f4f5f7;z-index:700;overflow-y:auto;">
+            <div style="max-width:900px;margin:0 auto;padding:24px 20px 60px;">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;background:white;border-radius:12px;padding:16px 20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                    <button onclick="closeBlogEditor()" style="background:none;border:1.5px solid #e0e0e0;border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600;">← Back</button>
+                    <h2 id="beTitle" style="flex:1;font-size:17px;font-weight:700;"></h2>
+                    <a id="bePreviewLink" href="#" target="_blank" style="font-size:13px;color:#888;text-decoration:none;display:none;">Preview ↗</a>
+                    <button onclick="saveBlogPost()" id="beSaveBtn" style="background:var(--primary);color:white;border:none;border-radius:8px;padding:9px 22px;font-size:14px;font-weight:700;cursor:pointer;">Save</button>
+                </div>
+                <p id="beMsg" style="display:none;background:#fee;border-radius:8px;padding:10px 14px;font-size:13px;color:#c00;margin-bottom:16px;"></p>
+
+                <div style="display:grid;grid-template-columns:1fr 280px;gap:20px;">
+                    <!-- Left: title, slug, excerpt, body -->
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                            <div class="content-field">
+                                <label>Post title</label>
+                                <input type="text" id="bePostTitle" class="content-input" placeholder="e.g. Moving back to the UK with your dog" oninput="onBeTitleInput(this.value)">
+                            </div>
+                            <div class="content-field" style="margin-bottom:0;">
+                                <label>URL slug <small style="color:#888;text-transform:none;letter-spacing:0;">(auto-generated, editable)</small></label>
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <span style="font-size:13px;color:#888;white-space:nowrap;">blog.html?post=</span>
+                                    <input type="text" id="beSlug" class="content-input" placeholder="moving-back-to-uk-with-dog" style="font-family:monospace;font-size:13px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                            <div class="content-field" style="margin-bottom:0;">
+                                <label>Excerpt <small style="color:#888;text-transform:none;letter-spacing:0;">(shown on blog listing page)</small></label>
+                                <textarea id="beExcerpt" class="content-textarea" rows="3" placeholder="A short summary of what this post is about…"></textarea>
+                            </div>
+                        </div>
+
+                        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                            <div class="content-field" style="margin-bottom:12px;">
+                                <label>Post content</label>
+                            </div>
+                            <div id="beEditorWrap"><div style="min-height:400px;border-radius:8px;overflow:hidden;"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Right: sidebar -->
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <!-- Publish -->
+                        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                            <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:12px;">Status</div>
+                            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+                                <input type="checkbox" id="bePublished" style="width:16px;height:16px;accent-color:var(--primary);">
+                                <span style="font-size:14px;font-weight:600;">Published</span>
+                            </label>
+                            <p style="font-size:11px;color:#888;margin-top:6px;">Published posts are visible on the public blog.</p>
+                            <div id="bePublishedAtWrap" style="margin-top:12px;display:none;">
+                                <label style="font-size:12px;font-weight:600;color:#555;display:block;margin-bottom:4px;">Publish date</label>
+                                <input type="date" id="bePublishedAt" class="content-input" style="font-size:13px;">
+                            </div>
+                        </div>
+
+                        <!-- Hero image -->
+                        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                            <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:12px;">Hero image</div>
+                            <img id="beHeroPreview" src="" style="width:100%;height:100px;object-fit:cover;border-radius:8px;display:none;margin-bottom:10px;">
+                            <div id="beHeroEmpty" style="width:100%;height:80px;background:#f4f5f7;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#aaa;margin-bottom:10px;">No image</div>
+                            <input type="file" id="beHeroFile" accept="image/*" style="display:none" onchange="beUploadHero(this)">
+                            <button class="upload-btn" style="width:100%;" onclick="document.getElementById('beHeroFile').click()">Upload image</button>
+                            <button id="beHeroRemoveBtn" class="upload-btn" style="width:100%;color:#ef4444;border-color:#fca5a5;margin-top:6px;display:none;" onclick="beRemoveHero()">✕ Remove image</button>
+                        </div>
+
+                        <!-- SEO -->
+                        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                            <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:12px;">SEO</div>
+                            <div class="content-field">
+                                <label>Meta title</label>
+                                <input type="text" id="beMetaTitle" class="content-input" placeholder="Defaults to post title">
+                            </div>
+                            <div class="content-field" style="margin-bottom:0;">
+                                <label>Meta description</label>
+                                <textarea id="beMetaDesc" class="content-textarea" rows="3" placeholder="Short description for search engines…"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Delete -->
+                        <div id="beDeleteWrap" style="display:none;">
+                            <button onclick="deleteBlogPost()" style="width:100%;background:none;border:1.5px solid #fca5a5;color:#ef4444;border-radius:8px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;">Delete this post</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- ── Pages page ── -->
         <div id="page-pages" class="page">
             <div class="page-header">
@@ -653,6 +850,16 @@
             </div>
             <div id="pagesList" style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;"></div>
             <button id="addPageBtn" class="btn-add-item" onclick="openPageEditor(null)">+ Add page</button>
+        </div>
+
+        <!-- ── Blog page ── -->
+        <div id="page-blog" class="page">
+            <div class="page-header">
+                <h1>Blog</h1>
+                <p>Write posts to improve SEO and help customers. Published posts appear at <strong>vivaespaniel.com/blog.html</strong>.</p>
+            </div>
+            <div id="blogList" style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;"></div>
+            <button class="btn-add-item" onclick="openBlogEditor(null)">+ New post</button>
         </div>
 
         <!-- ── Settings page ── -->
@@ -845,6 +1052,7 @@ function showPage(page, el) {
     if (page === 'settings') loadSettings();
     if (page === 'content')  loadContent();
     if (page === 'pages')    loadPages();
+    if (page === 'blog')     loadBlog();
 }
 
 // ── Bookings ─────────────────────────────────────────────────────────────────
@@ -974,10 +1182,14 @@ function renderDetailPanel(b) {
         </div>
 
         <div class="detail-section">
-            <h3>Dog</h3>
-            <div class="detail-row"><span class="label">Name</span><span class="val">${b.dog_name}</span></div>
-            <div class="detail-row"><span class="label">Breed</span><span class="val">${b.breed_display || b.breed || '—'}</span></div>
-            <div class="detail-row"><span class="label">Size</span><span class="val">${b.size || '—'}</span></div>
+            <h3>Dog${Array.isArray(b.dogs) && b.dogs.length > 1 ? `s (${b.dogs.length})` : ''}</h3>
+            ${Array.isArray(b.dogs) && b.dogs.length
+                ? b.dogs.map((d, i) => `
+                    <div class="detail-row"><span class="label">Dog ${i+1}</span><span class="val">${escHtml(d.name)} · ${d.size === 'large' ? 'Large (up to 64cm)' : 'Small (up to 48cm)'}</span></div>
+                  `).join('')
+                : `<div class="detail-row"><span class="label">Name</span><span class="val">${b.dog_name}</span></div>
+                   <div class="detail-row"><span class="label">Size</span><span class="val">${b.size || '—'}</span></div>`
+            }
         </div>
 
         <div class="detail-section">
@@ -1057,6 +1269,7 @@ function renderDetailActions(status, id) {
     if (!['completed','cancelled'].includes(status)) {
         html += `<button class="action-btn btn-cancel" onclick="cancelBooking('${id}')">✕ Cancel</button>`;
     }
+    html += `<button class="action-btn btn-delete" onclick="deleteBooking('${id}')">🗑 Delete Booking</button>`;
     actions.innerHTML = html || '<p style="font-size:13px;color:var(--muted);">No further actions available.</p>';
 }
 
@@ -1109,6 +1322,16 @@ async function cancelBooking(id) {
     await updateStatus(id, 'cancelled');
 }
 
+async function deleteBooking(id) {
+    if (!confirm('Permanently delete this booking? It cannot be recovered.')) return;
+    const res = await adminFetch(`/bookings/${id}`, { method: 'DELETE' });
+    if (!res.ok) { const d = await res.json(); alert(d.error || 'Delete failed'); return; }
+    allBookings = allBookings.filter(b => b.id !== id);
+    closeDetailPanel();
+    renderBookingsTable(allBookings, currentFilter);
+    renderStats(allBookings);
+}
+
 function updateLocalBooking(changes) {
     const idx = allBookings.findIndex(b => b.id === currentBooking?.id);
     if (idx !== -1) allBookings[idx] = { ...allBookings[idx], ...changes };
@@ -1126,25 +1349,35 @@ async function loadDates() {
     }
     wrap.innerHTML = `
         <table>
-            <thead><tr><th>Date</th><th>Direction</th><th>Spots</th><th>Taken</th><th>Active</th><th></th></tr></thead>
+            <thead><tr><th>Date</th><th>Direction</th><th>Large</th><th>Small</th><th>Status</th><th></th></tr></thead>
             <tbody>
-                ${dates.map(d => `
-                    <tr>
+                ${dates.map(d => {
+                    const largeFree = Math.max(0, (d.large_crates ?? 2) - (d.large_taken ?? 0));
+                    const smallFree = Math.max(0, (d.small_crates ?? 2) - (d.small_taken ?? 0));
+                    const isFull    = d.manually_closed || (largeFree === 0 && smallFree === 0);
+                    const isPast    = new Date(d.departure_date) < new Date(new Date().toDateString());
+                    const statusBadge = d.manually_closed
+                        ? '<span style="font-size:11px;background:#fee2e2;color:#ef4444;padding:2px 7px;border-radius:10px;font-weight:600;">Closed</span>'
+                        : isFull
+                        ? '<span style="font-size:11px;background:#fee2e2;color:#ef4444;padding:2px 7px;border-radius:10px;font-weight:600;">Full</span>'
+                        : isPast
+                        ? '<span style="font-size:11px;background:#f3f4f6;color:#9ca3af;padding:2px 7px;border-radius:10px;font-weight:600;">Past</span>'
+                        : d.active
+                        ? '<span style="font-size:11px;background:#dcfce7;color:#16a34a;padding:2px 7px;border-radius:10px;font-weight:600;">Active</span>'
+                        : '<span style="font-size:11px;background:#f3f4f6;color:#6b7280;padding:2px 7px;border-radius:10px;font-weight:600;">Hidden</span>';
+                    return `
+                    <tr style="opacity:${isPast ? '0.55' : '1'}">
                         <td>${new Date(d.departure_date).toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' })}</td>
                         <td><span class="direction-label dir-${d.direction}">${{ uk_to_spain: '🇬🇧 → 🇪🇸', spain_to_uk: '🇪🇸 → 🇬🇧', both: '🇬🇧 ↔ 🇪🇸' }[d.direction]}</span></td>
-                        <td>${d.spots_available}</td>
-                        <td>${d.spots_taken}</td>
-                        <td>
-                            <label class="toggle-active">
-                                <input type="checkbox" ${d.active ? 'checked' : ''} onchange="toggleDateActive('${d.id}', this.checked)">
-                                ${d.active ? 'Active' : 'Hidden'}
-                            </label>
+                        <td style="color:${largeFree===0?'#ef4444':'inherit'}">${largeFree} / ${d.large_crates ?? 2}</td>
+                        <td style="color:${smallFree===0?'#ef4444':'inherit'}">${smallFree} / ${d.small_crates ?? 2}</td>
+                        <td>${statusBadge}</td>
+                        <td style="white-space:nowrap;">
+                            <button class="action-btn" style="padding:5px 10px;font-size:12px;background:${d.manually_closed ? '#dcfce7' : '#fee2e2'};color:${d.manually_closed ? '#16a34a' : '#dc2626'};" onclick="toggleDateClosed('${d.id}', ${!d.manually_closed})">${d.manually_closed ? 'Reopen' : 'Mark Full'}</button>
+                            <button class="action-btn" style="padding:5px 10px;font-size:12px;background:#f3f4f6;color:#374151;" onclick="openEditDate('${d.id}')">Edit</button>
+                            <button class="action-btn" style="padding:5px 10px;font-size:12px;background:none;border:1.5px solid #fca5a5;color:#ef4444;" onclick="deleteDate('${d.id}')">Delete</button>
                         </td>
-                        <td>
-                            <button class="icon-btn" onclick="deleteDate('${d.id}')" title="Delete">🗑️</button>
-                        </td>
-                    </tr>
-                `).join('')}
+                    </tr>`; }).join('')}
             </tbody>
         </table>`;
 }
@@ -1152,9 +1385,10 @@ async function loadDates() {
 async function addDate() {
     const val   = document.getElementById('newDateVal').value;
     const dir   = document.getElementById('newDateDir').value;
-    const spots = parseInt(document.getElementById('newDateSpots').value);
+    const large = parseInt(document.getElementById('newDateLarge').value) || 2;
+    const small = parseInt(document.getElementById('newDateSmall').value) || 2;
     if (!val) { alert('Please select a date'); return; }
-    const res = await adminFetch('/dates', { method: 'POST', body: { departure_date: val, direction: dir, spots_available: spots, active: true } });
+    const res = await adminFetch('/dates', { method: 'POST', body: { departure_date: val, direction: dir, large_crates: large, small_crates: small, active: true } });
     if (!res.ok) { const e = await res.json(); alert(e.error || 'Failed'); return; }
     const msg = document.getElementById('addDateMsg');
     msg.style.display = 'block'; setTimeout(() => { msg.style.display = 'none'; }, 2500);
@@ -1165,10 +1399,67 @@ async function toggleDateActive(id, active) {
     await adminFetch(`/dates/${id}`, { method: 'PATCH', body: { active } });
 }
 
+async function toggleDateClosed(id, closed) {
+    const res = await adminFetch(`/dates/${id}`, { method: 'PATCH', body: { manually_closed: closed } });
+    if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        alert('Error: ' + (err.error || `HTTP ${res.status}`));
+        return;
+    }
+    loadDates();
+}
+
 async function deleteDate(id) {
     if (!confirm('Delete this travel date?')) return;
     await adminFetch(`/dates/${id}`, { method: 'DELETE' });
     loadDates();
+}
+
+let _editDateId = null;
+
+async function openEditDate(id) {
+    const res  = await adminFetch('/dates');
+    const dates = await res.json();
+    const d    = dates.find(x => x.id === id);
+    if (!d) { alert('Date not found'); return; }
+    _editDateId = id;
+    document.getElementById('editDateVal').value   = d.departure_date.slice(0, 10);
+    document.getElementById('editDateDir').value   = d.direction;
+    document.getElementById('editDateLarge').value = d.large_crates ?? 2;
+    document.getElementById('editDateSmall').value = d.small_crates ?? 2;
+    const msg = document.getElementById('editDateMsg');
+    msg.style.display = 'none';
+    document.getElementById('editDateOverlay').classList.add('open');
+}
+
+function closeEditDate() {
+    document.getElementById('editDateOverlay').classList.remove('open');
+    _editDateId = null;
+}
+
+async function saveEditDate() {
+    if (!_editDateId) return;
+    const val   = document.getElementById('editDateVal').value;
+    const dir   = document.getElementById('editDateDir').value;
+    const large = parseInt(document.getElementById('editDateLarge').value) || 0;
+    const small = parseInt(document.getElementById('editDateSmall').value) || 0;
+    if (!val) { alert('Please select a date'); return; }
+    const msg = document.getElementById('editDateMsg');
+    const res = await adminFetch(`/dates/${_editDateId}`, {
+        method: 'PATCH',
+        body: { departure_date: val, direction: dir, large_crates: large, small_crates: small },
+    });
+    if (!res.ok) {
+        const e = await res.json();
+        msg.textContent = e.error || 'Failed to save';
+        msg.style.color = 'var(--primary)';
+        msg.style.display = 'block';
+        return;
+    }
+    msg.textContent = 'Saved!';
+    msg.style.color = '#22c55e';
+    msg.style.display = 'block';
+    setTimeout(() => { closeEditDate(); loadDates(); }, 800);
 }
 
 // ── Settings ──────────────────────────────────────────────────────────────────
@@ -1268,9 +1559,13 @@ async function loadContent() {
     const get = k => cmsContent[k] || '';
 
     // Hero
-    document.getElementById('cHeroBadge').value    = get('hero_badge');
-    document.getElementById('cHeroHeadline').value = get('hero_headline');
-    document.getElementById('cHeroTagline').value  = get('hero_tagline');
+    document.getElementById('cHeroBadge').value        = get('hero_badge');
+    document.getElementById('cHeroHeadline').value     = get('hero_headline');
+    document.getElementById('cHeroTagline').value      = get('hero_tagline');
+    document.getElementById('cGoogleRating').value     = get('google_rating');
+    document.getElementById('cGoogleReviewCount').value= get('google_review_count');
+    document.getElementById('cGoogleStars').value      = get('google_stars') || '5';
+    document.getElementById('cGoogleReviewUrl').value  = get('google_review_url');
     setPreview('prevHeroImage', get('hero_image_url'));
 
     // About
@@ -1294,6 +1589,15 @@ async function loadContent() {
     document.getElementById('cFooterTagline').value = get('footer_tagline');
     document.getElementById('cMetaTitle').value     = get('meta_title');
     document.getElementById('cMetaDesc').value      = get('meta_description');
+
+    // Email templates
+    document.getElementById('cEmailReqSubject').value = get('email_request_subject');
+    document.getElementById('cEmailReqIntro').value   = get('email_request_intro');
+    document.getElementById('cEmailReqFooter').value  = get('email_request_footer');
+    document.getElementById('cEmailPaySubject').value = get('email_payment_subject');
+    document.getElementById('cEmailPayIntro').value   = get('email_payment_intro');
+    document.getElementById('cEmailPayNote').value    = get('email_payment_note');
+    document.getElementById('cEmailPayFooter').value  = get('email_payment_footer');
 }
 
 function setPreview(id, url) {
@@ -1481,6 +1785,7 @@ function openItemModal(type, id) {
                     <div>
                         <input type="file" id="miAvatarFile" accept="image/*" style="display:none" onchange="handleModalUpload(this,'miAvatarPreview','avatar_url')">
                         <button class="upload-btn" onclick="document.getElementById('miAvatarFile').click()">Upload avatar</button>
+                        <button class="upload-btn" id="miAvatarRemoveBtn" style="color:#ef4444;border-color:#fca5a5;margin-top:6px;${t?.avatar_url ? '' : 'display:none;'}" onclick="removeModalImage('miAvatarPreview','avatar_url','miAvatarRemoveBtn')">✕ Remove</button>
                     </div>
                 </div>
             </div>
@@ -1491,6 +1796,7 @@ function openItemModal(type, id) {
                     <div>
                         <input type="file" id="miPhotoFile" accept="image/*" style="display:none" onchange="handleModalUpload(this,'miPhotoPreview','photo_url')">
                         <button class="upload-btn" onclick="document.getElementById('miPhotoFile').click()">Upload photo</button>
+                        <button class="upload-btn" id="miPhotoRemoveBtn" style="color:#ef4444;border-color:#fca5a5;margin-top:6px;${t?.photo_url ? '' : 'display:none;'}" onclick="removeModalImage('miPhotoPreview','photo_url','miPhotoRemoveBtn')">✕ Remove</button>
                     </div>
                 </div>
             </div>
@@ -1519,6 +1825,7 @@ function openItemModal(type, id) {
                     <div>
                         <input type="file" id="miGalleryFile" accept="image/*" style="display:none" onchange="handleModalUpload(this,'miGalleryPreview','image_url')">
                         <button class="upload-btn" onclick="document.getElementById('miGalleryFile').click()">Upload photo</button>
+                        <button class="upload-btn" id="miGalleryRemoveBtn" style="color:#ef4444;border-color:#fca5a5;margin-top:6px;${g?.image_url ? '' : 'display:none;'}" onclick="removeModalImage('miGalleryPreview','image_url','miGalleryRemoveBtn')">✕ Remove</button>
                     </div>
                 </div>
             </div>
@@ -1529,6 +1836,21 @@ function openItemModal(type, id) {
 
 let modalUploadedUrls = {};
 
+async function adminDeleteMedia(url) {
+    if (!url || !url.includes('/site-media/')) return;
+    try { await adminFetch('/media', { method: 'DELETE', body: { url } }); }
+    catch (e) { console.warn('Storage delete failed:', e.message); }
+}
+
+function removeModalImage(previewId, key, removeBtnId) {
+    const img = document.getElementById(previewId);
+    const oldUrl = key in modalUploadedUrls ? modalUploadedUrls[key] : img.getAttribute('src');
+    adminDeleteMedia(oldUrl);
+    modalUploadedUrls[key] = '';
+    img.src = '';
+    document.getElementById(removeBtnId).style.display = 'none';
+}
+
 async function handleModalUpload(input, previewId, key) {
     const file = input.files[0]; if (!file) return;
     const btn = input.nextElementSibling;
@@ -1538,6 +1860,8 @@ async function handleModalUpload(input, previewId, key) {
         modalUploadedUrls[key || previewId] = url;
         document.getElementById(previewId).src = url;
         btn.textContent = 'Change photo';
+        const removeBtn = document.getElementById(previewId.replace('Preview', 'RemoveBtn'));
+        if (removeBtn) removeBtn.style.display = 'block';
     } catch (err) {
         alert('Upload failed: ' + err.message);
         btn.textContent = 'Upload photo';
@@ -1567,26 +1891,34 @@ async function saveItemModal() {
             location:   v('miLocation'),
             quote:      v('miQuote'),
             stars:      parseInt(document.getElementById('miStars').value),
-            avatar_url: modalUploadedUrls['avatar_url'] || existing?.avatar_url || '',
-            photo_url:  modalUploadedUrls['photo_url']  || existing?.photo_url  || '',
+            avatar_url: 'avatar_url' in modalUploadedUrls ? modalUploadedUrls['avatar_url'] : (existing?.avatar_url || ''),
+            photo_url:  'photo_url'  in modalUploadedUrls ? modalUploadedUrls['photo_url']  : (existing?.photo_url  || ''),
             video_url:           v('miVideoUrl'),
             story_text:          v('miStoryText'),
             case_study_enabled:  document.getElementById('miCaseStudyEnabled')?.checked || false,
             active:              true,
         };
         if (!id) body.sort_order = cmsTestimonials.length + 1;
+    } else if (type === 'faq') {
+        body = {
+            question: v('miFaqQuestion'),
+            answer:   v('miFaqAnswer'),
+            active:   true,
+        };
+        if (!id) body.sort_order = cmsFaqs.length + 1;
     } else {
         body = {
             dog_name:  v('miDogName'),
             route:     v('miRoute'),
-            image_url: modalUploadedUrls['image_url'] || (id ? cmsGallery.find(g=>g.id===id)?.image_url : '') || '',
+            image_url: 'image_url' in modalUploadedUrls ? modalUploadedUrls['image_url'] : ((id ? cmsGallery.find(g=>g.id===id)?.image_url : '') || ''),
             active:    true,
         };
         if (!id) body.sort_order = cmsGallery.length + 1;
     }
 
     try {
-        const path   = `/${type === 'testimonial' ? 'testimonials' : 'gallery'}${id ? '/'+id : ''}`;
+        const pathMap = { testimonial: 'testimonials', faq: 'faqs', gallery: 'gallery' };
+        const path   = `/${pathMap[type]}${id ? '/'+id : ''}`;
         const method = id ? 'PATCH' : 'POST';
         const res    = await adminFetch(path, { method, body });
         const data   = await res.json();
@@ -1595,10 +1927,13 @@ async function saveItemModal() {
         // Refresh lists
         const tr = await adminFetch('/testimonials');
         const gr = await adminFetch('/gallery');
+        const fr = await adminFetch('/faqs');
         cmsTestimonials = await tr.json();
         cmsGallery      = await gr.json();
+        cmsFaqs         = await fr.json();
         renderTestimonialsList();
         renderGalleryList();
+        renderFaqsList();
         closeItemModal();
     } catch (err) {
         msg.textContent = 'Error: ' + err.message; msg.style.color = 'var(--primary)'; msg.style.display = 'block';
@@ -1607,19 +1942,19 @@ async function saveItemModal() {
 
 async function deleteContentItem(table, id) {
     if (!confirm('Delete this item?')) return;
-    const path = `/${table}/${id}`;
-    await adminFetch(path, { method: 'DELETE' });
-    const tr = await adminFetch('/testimonials');
-    const gr = await adminFetch('/gallery');
+    await adminFetch(`/${table}/${id}`, { method: 'DELETE' });
+    const [tr, gr, fr] = await Promise.all([adminFetch('/testimonials'), adminFetch('/gallery'), adminFetch('/faqs')]);
     cmsTestimonials = await tr.json();
     cmsGallery      = await gr.json();
+    cmsFaqs         = await fr.json();
     renderTestimonialsList();
     renderGalleryList();
+    renderFaqsList();
 }
 
 function closeItemModal() {
     document.getElementById('itemModalOverlay').classList.remove('open');
-    modalUploadedUrl = null;
+    modalUploadedUrls = {};
     editingItem = null;
 }
 
@@ -1696,10 +2031,11 @@ function openPageEditor(id) {
 
     // Hero image
     peHeroUrl = p?.hero_image_url || '';
-    const preview = document.getElementById('peHeroPreview');
-    const empty   = document.getElementById('peHeroEmpty');
-    if (peHeroUrl) { preview.src = peHeroUrl; preview.style.display = 'block'; empty.style.display = 'none'; }
-    else           { preview.style.display = 'none'; empty.style.display = 'flex'; }
+    const preview   = document.getElementById('peHeroPreview');
+    const empty     = document.getElementById('peHeroEmpty');
+    const removeBtn = document.getElementById('peHeroRemoveBtn');
+    if (peHeroUrl) { preview.src = peHeroUrl; preview.style.display = 'block'; empty.style.display = 'none'; removeBtn.style.display = 'block'; }
+    else           { preview.style.display = 'none'; empty.style.display = 'flex'; removeBtn.style.display = 'none'; }
 
     // Preview link
     const previewLink = document.getElementById('pePreviewLink');
@@ -1758,6 +2094,7 @@ async function peUploadHero(input) {
         const preview = document.getElementById('peHeroPreview');
         preview.src = peHeroUrl; preview.style.display = 'block';
         document.getElementById('peHeroEmpty').style.display = 'none';
+        document.getElementById('peHeroRemoveBtn').style.display = 'block';
         btn.textContent = 'Change image';
     } catch (err) {
         alert('Upload failed: ' + err.message);
@@ -1765,6 +2102,15 @@ async function peUploadHero(input) {
     } finally {
         btn.disabled = false; input.value = '';
     }
+}
+
+function peRemoveHero() {
+    adminDeleteMedia(peHeroUrl);
+    peHeroUrl = '';
+    document.getElementById('peHeroPreview').style.display = 'none';
+    document.getElementById('peHeroEmpty').style.display = 'flex';
+    document.getElementById('peHeroRemoveBtn').style.display = 'none';
+    document.getElementById('peHeroFile').nextElementSibling.textContent = 'Upload image';
 }
 
 async function savePage() {
@@ -1816,6 +2162,200 @@ async function deletePage() {
     } catch (err) {
         const msg = document.getElementById('peMsg');
         msg.textContent = err.message; msg.style.display = 'block';
+    }
+}
+
+// ── Blog ──────────────────────────────────────────────────────────────────────
+let blogPosts = [];
+let editingBlogId = null;
+let beQuill = null;
+let beHeroUrl = '';
+let beSlugManuallyEdited = false;
+
+async function loadBlog() {
+    try {
+        const res = await adminFetch('/blog');
+        blogPosts = await res.json();
+    } catch { blogPosts = []; }
+    renderBlogList();
+}
+
+function renderBlogList() {
+    const list = document.getElementById('blogList');
+    if (!blogPosts.length) {
+        list.innerHTML = '<p style="color:#888;font-size:14px;">No posts yet. Write your first one!</p>';
+        return;
+    }
+    list.innerHTML = blogPosts.map(p => {
+        const dateStr = p.published_at ? new Date(p.published_at).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : 'Not set';
+        const statusDot = p.published ? '#22c55e' : '#9ca3af';
+        const statusLabel = p.published ? 'Published' : 'Draft';
+        return `<div class="page-row">
+            <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;background:${p.published ? '#f0fdf4' : '#f4f5f7'};color:${p.published ? '#16a34a' : '#888'};border:1px solid ${p.published ? '#bbf7d0' : '#e0e0e0'};">
+                <span style="width:6px;height:6px;border-radius:50%;background:${statusDot};display:inline-block;"></span>${statusLabel}
+            </span>
+            <div style="flex:1;">
+                <div style="font-weight:700;font-size:14px;">${escHtml(p.title || '(untitled)')}</div>
+                <div style="font-size:12px;color:#888;">${dateStr} · blog.html?post=${escHtml(p.slug)}</div>
+            </div>
+            <a href="blog.html?post=${p.slug}" target="_blank" style="font-size:12px;color:#888;text-decoration:none;">Preview ↗</a>
+            <button class="btn-edit-item" onclick="openBlogEditor('${p.id}')">Edit</button>
+        </div>`;
+    }).join('');
+}
+
+function openBlogEditor(id) {
+    editingBlogId = id;
+    beSlugManuallyEdited = false;
+    const overlay = document.getElementById('blogEditorOverlay');
+    overlay.style.display = 'block';
+    overlay.scrollTop = 0;
+
+    const p = id ? blogPosts.find(x => x.id === id) : null;
+    document.getElementById('beTitle').textContent = id ? 'Edit post' : 'New post';
+    document.getElementById('bePostTitle').value   = p?.title || '';
+    document.getElementById('beSlug').value        = p?.slug || '';
+    document.getElementById('beExcerpt').value     = p?.excerpt || '';
+    document.getElementById('beMetaTitle').value   = p?.meta_title || '';
+    document.getElementById('beMetaDesc').value    = p?.meta_description || '';
+    document.getElementById('bePublished').checked = p?.published || false;
+    document.getElementById('beDeleteWrap').style.display = id ? 'block' : 'none';
+    document.getElementById('beMsg').style.display = 'none';
+
+    // Published date
+    const pubAtWrap = document.getElementById('bePublishedAtWrap');
+    const pubAtInput = document.getElementById('bePublishedAt');
+    pubAtWrap.style.display = p?.published ? 'block' : 'none';
+    if (p?.published_at) pubAtInput.value = p.published_at.slice(0, 10);
+
+    document.getElementById('bePublished').onchange = function() {
+        pubAtWrap.style.display = this.checked ? 'block' : 'none';
+        if (this.checked && !pubAtInput.value) pubAtInput.value = new Date().toISOString().slice(0, 10);
+    };
+
+    // Hero image
+    beHeroUrl = p?.hero_image_url || '';
+    const preview = document.getElementById('beHeroPreview');
+    const empty   = document.getElementById('beHeroEmpty');
+    const removeBtn = document.getElementById('beHeroRemoveBtn');
+    if (beHeroUrl) { preview.src = beHeroUrl; preview.style.display = 'block'; empty.style.display = 'none'; removeBtn.style.display = 'block'; }
+    else           { preview.style.display = 'none'; empty.style.display = 'flex'; removeBtn.style.display = 'none'; }
+
+    // Preview link
+    const previewLink = document.getElementById('bePreviewLink');
+    if (id && p?.slug) { previewLink.href = `blog.html?post=${p.slug}`; previewLink.style.display = 'inline'; }
+    else               { previewLink.style.display = 'none'; }
+
+    // Quill
+    beQuill = null;
+    const wrap = document.getElementById('beEditorWrap');
+    wrap.innerHTML = '<div style="min-height:400px;border-radius:8px;overflow:hidden;"></div>';
+    setTimeout(() => {
+        beQuill = new Quill(wrap.firstElementChild, {
+            theme: 'snow',
+            modules: { toolbar: [
+                [{ header: [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline'],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['blockquote', 'link', 'image'],
+                ['clean']
+            ]},
+        });
+        if (p?.body_html) beQuill.clipboard.dangerouslyPasteHTML(p.body_html);
+    }, 50);
+}
+
+function closeBlogEditor() {
+    document.getElementById('blogEditorOverlay').style.display = 'none';
+    beQuill = null;
+}
+
+function onBeTitleInput(val) {
+    if (!beSlugManuallyEdited) document.getElementById('beSlug').value = toSlug(val);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('beSlug')?.addEventListener('input', () => { beSlugManuallyEdited = true; });
+});
+
+async function beUploadHero(input) {
+    const file = input.files[0]; if (!file) return;
+    const btn = input.nextElementSibling;
+    btn.textContent = 'Uploading…'; btn.disabled = true;
+    try {
+        beHeroUrl = await adminUpload(file);
+        const preview = document.getElementById('beHeroPreview');
+        preview.src = beHeroUrl; preview.style.display = 'block';
+        document.getElementById('beHeroEmpty').style.display = 'none';
+        document.getElementById('beHeroRemoveBtn').style.display = 'block';
+        btn.textContent = 'Change image';
+    } catch (err) {
+        alert('Upload failed: ' + err.message);
+        btn.textContent = 'Upload image';
+    } finally {
+        btn.disabled = false; input.value = '';
+    }
+}
+
+function beRemoveHero() {
+    adminDeleteMedia(beHeroUrl);
+    beHeroUrl = '';
+    document.getElementById('beHeroPreview').style.display = 'none';
+    document.getElementById('beHeroEmpty').style.display = 'flex';
+    document.getElementById('beHeroRemoveBtn').style.display = 'none';
+    document.getElementById('beHeroFile').nextElementSibling.textContent = 'Upload image';
+}
+
+async function saveBlogPost() {
+    const btn = document.getElementById('beSaveBtn');
+    const msg = document.getElementById('beMsg');
+    msg.style.display = 'none';
+    btn.textContent = 'Saving…'; btn.disabled = true;
+
+    const published   = document.getElementById('bePublished').checked;
+    const publishedAt = document.getElementById('bePublishedAt').value;
+
+    const body = {
+        title:            document.getElementById('bePostTitle').value.trim(),
+        slug:             document.getElementById('beSlug').value.trim(),
+        excerpt:          document.getElementById('beExcerpt').value.trim(),
+        published,
+        published_at:     published && publishedAt ? new Date(publishedAt).toISOString() : null,
+        hero_image_url:   beHeroUrl || null,
+        body_html:        beQuill ? beQuill.root.innerHTML : '',
+        meta_title:       document.getElementById('beMetaTitle').value.trim(),
+        meta_description: document.getElementById('beMetaDesc').value.trim(),
+    };
+
+    if (!body.title) { msg.textContent = 'Title is required.'; msg.style.display = 'block'; btn.textContent = 'Save'; btn.disabled = false; return; }
+    if (!body.slug)  { msg.textContent = 'Slug is required.';  msg.style.display = 'block'; btn.textContent = 'Save'; btn.disabled = false; return; }
+
+    try {
+        const path   = editingBlogId ? `/blog/${editingBlogId}` : '/blog';
+        const method = editingBlogId ? 'PATCH' : 'POST';
+        const res    = await adminFetch(path, { method, body });
+        const data   = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Save failed');
+        await loadBlog();
+        closeBlogEditor();
+    } catch (err) {
+        msg.textContent = err.message; msg.style.display = 'block';
+    } finally {
+        btn.textContent = 'Save'; btn.disabled = false;
+    }
+}
+
+async function deleteBlogPost() {
+    if (!editingBlogId) return;
+    const p = blogPosts.find(x => x.id === editingBlogId);
+    if (!confirm(`Delete "${p?.title || 'this post'}"? This cannot be undone.`)) return;
+    try {
+        await adminFetch(`/blog/${editingBlogId}`, { method: 'DELETE' });
+        await loadBlog();
+        closeBlogEditor();
+    } catch (err) {
+        document.getElementById('beMsg').textContent = err.message;
+        document.getElementById('beMsg').style.display = 'block';
     }
 }
 

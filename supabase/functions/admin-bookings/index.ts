@@ -25,12 +25,16 @@ async function verifyToken(req: Request): Promise<boolean> {
       'raw', new TextEncoder().encode(ADMIN_JWT_SECRET),
       { name: 'HMAC', hash: 'SHA-256' }, false, ['verify']
     )
-    const sigPad = sigB64.replace(/-/g, '+').replace(/_/g, '/')
-    const sigBuf = Uint8Array.from(atob(sigPad + '=='.slice((sigPad.length + 3) % 4 || 4)), c => c.charCodeAt(0))
+    const b64ToBytes = (b64url: string) => {
+      const b64 = b64url.replace(/-/g, '+').replace(/_/g, '/')
+      const padded = b64 + '='.repeat((4 - b64.length % 4) % 4)
+      return Uint8Array.from(atob(padded), c => c.charCodeAt(0))
+    }
+    const sigBuf = b64ToBytes(sigB64)
     const valid = await crypto.subtle.verify('HMAC', key, sigBuf, new TextEncoder().encode(data))
     if (!valid) return false
 
-    const payload = JSON.parse(atob(payloadB64.replace(/-/g, '+').replace(/_/g, '/')))
+    const payload = JSON.parse(new TextDecoder().decode(b64ToBytes(payloadB64)))
     if (payload.exp && payload.exp < Date.now() / 1000) return false
     return payload.role === 'admin'
   } catch {
@@ -78,6 +82,13 @@ serve(async (req) => {
       return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
 
+    // DELETE /bookings/:id
+    if (req.method === 'DELETE' && bookingIdMatch) {
+      const { error } = await supabase.from('bookings').delete().eq('id', bookingIdMatch[1])
+      if (error) throw error
+      return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+
     // PATCH /bookings/:id
     if (req.method === 'PATCH' && bookingIdMatch) {
       const body = await req.json()
@@ -119,6 +130,10 @@ serve(async (req) => {
     // POST /dates
     if (req.method === 'POST' && path === '/dates') {
       const body = await req.json()
+      // Derive spots_available from crate counts if provided
+      if (body.large_crates !== undefined || body.small_crates !== undefined) {
+        body.spots_available = (body.large_crates ?? 2) + (body.small_crates ?? 2)
+      }
       const { data, error } = await supabase.from('travel_dates').insert(body).select().single()
       if (error) throw error
       return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
@@ -128,14 +143,19 @@ serve(async (req) => {
     const dateIdMatch = path.match(/^\/dates\/([^/]+)$/)
     if (req.method === 'PATCH' && dateIdMatch) {
       const body = await req.json()
-      const allowed = ['departure_date', 'direction', 'spots_available', 'active', 'notes']
+      const allowed = ['departure_date', 'direction', 'spots_available', 'active', 'notes', 'large_crates', 'small_crates', 'manually_closed']
       const update: Record<string, unknown> = {}
       for (const key of allowed) {
         if (body[key] !== undefined) update[key] = body[key]
       }
-      const { data, error } = await supabase.from('travel_dates').update(update).eq('id', dateIdMatch[1]).select().single()
+      // Keep spots_available in sync with crate counts
+      if (update.large_crates !== undefined || update.small_crates !== undefined) {
+        const { data: current } = await supabase.from('travel_dates').select('large_crates,small_crates').eq('id', dateIdMatch[1]).single()
+        update.spots_available = (Number(update.large_crates ?? current?.large_crates ?? 2)) + (Number(update.small_crates ?? current?.small_crates ?? 2))
+      }
+      const { data, error } = await supabase.from('travel_dates').update(update).eq('id', dateIdMatch[1]).select()
       if (error) throw error
-      return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+      return new Response(JSON.stringify(data?.[0] ?? {}), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
 
     // DELETE /dates/:id
@@ -225,6 +245,37 @@ serve(async (req) => {
       }
     }
 
+    // GET /faqs
+    if (req.method === 'GET' && path === '/faqs') {
+      const { data, error } = await supabase.from('faqs').select('*').order('sort_order')
+      if (error) throw error
+      return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+
+    // POST /faqs
+    if (req.method === 'POST' && path === '/faqs') {
+      const body = await req.json()
+      const { data, error } = await supabase.from('faqs').insert(body).select().single()
+      if (error) throw error
+      return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+
+    // PATCH /faqs/:id  |  DELETE /faqs/:id
+    const faqIdMatch = path.match(/^\/faqs\/([^/]+)$/)
+    if (faqIdMatch) {
+      if (req.method === 'PATCH') {
+        const body = await req.json()
+        const { data, error } = await supabase.from('faqs').update(body).eq('id', faqIdMatch[1]).select().single()
+        if (error) throw error
+        return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+      }
+      if (req.method === 'DELETE') {
+        const { error } = await supabase.from('faqs').delete().eq('id', faqIdMatch[1])
+        if (error) throw error
+        return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+      }
+    }
+
     // GET /pages
     if (req.method === 'GET' && path === '/pages') {
       const { data, error } = await supabase.from('pages').select('*').order('sort_order')
@@ -254,6 +305,62 @@ serve(async (req) => {
         if (error) throw error
         return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
       }
+    }
+
+    // GET /blog  — list all posts (admin: all; public via RLS would use anon key directly)
+    if (req.method === 'GET' && path === '/blog') {
+      const { data, error } = await supabase.from('blog_posts').select('*').order('created_at', { ascending: false })
+      if (error) throw error
+      return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+
+    // POST /blog
+    if (req.method === 'POST' && path === '/blog') {
+      const body = await req.json()
+      if (body.published && !body.published_at) body.published_at = new Date().toISOString()
+      const { data, error } = await supabase.from('blog_posts').insert(body).select().single()
+      if (error) throw error
+      return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 201 })
+    }
+
+    // PATCH /blog/:id  |  DELETE /blog/:id
+    const blogIdMatch = path.match(/^\/blog\/([^/]+)$/)
+    if (blogIdMatch) {
+      if (req.method === 'PATCH') {
+        const body = await req.json()
+        const allowed = ['title', 'slug', 'excerpt', 'body_html', 'hero_image_url', 'published', 'published_at', 'meta_title', 'meta_description']
+        const update: Record<string, unknown> = { updated_at: new Date().toISOString() }
+        for (const key of allowed) {
+          if (body[key] !== undefined) update[key] = body[key]
+        }
+        if (update.published && !update.published_at) {
+          const { data: cur } = await supabase.from('blog_posts').select('published_at').eq('id', blogIdMatch[1]).single()
+          if (!cur?.published_at) update.published_at = new Date().toISOString()
+        }
+        const { data, error } = await supabase.from('blog_posts').update(update).eq('id', blogIdMatch[1]).select().single()
+        if (error) throw error
+        return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+      }
+      if (req.method === 'DELETE') {
+        const { error } = await supabase.from('blog_posts').delete().eq('id', blogIdMatch[1])
+        if (error) throw error
+        return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+      }
+    }
+
+    // DELETE /media  — body: { url: string }
+    if (req.method === 'DELETE' && path === '/media') {
+      const body = await req.json()
+      const url: string = body.url || ''
+      const match = url.match(/\/site-media\/(.+)$/)
+      if (!match) {
+        return new Response(JSON.stringify({ error: 'Invalid media URL' }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400
+        })
+      }
+      const { error } = await supabase.storage.from('site-media').remove([match[1]])
+      if (error) throw error
+      return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
 
     return new Response(JSON.stringify({ error: 'Not found' }), {

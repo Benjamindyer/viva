@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/pet-transport-to-spain.html" }
+  ]
+}

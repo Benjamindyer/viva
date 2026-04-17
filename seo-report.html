@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Competitor SEO Analysis — Viva Españiel</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #c84b31; --amber: #ffb319; --green: #2d6a4f;
+    --dark: #0f0f0f; --mid: #1e1e1e; --card: #252525;
+    --border: #333; --text: #e8e8e8; --muted: #888;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--dark); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; padding: 40px 32px; max-width: 1100px; margin: 0 auto; }
+
+  .masthead { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid var(--red); padding-bottom: 16px; margin-bottom: 40px; }
+  .masthead h1 { font-family: 'Playfair Display', serif; font-size: 2.4rem; line-height: 1.1; }
+  .masthead h1 span { color: var(--amber); }
+  .masthead .meta { text-align: right; color: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 1.8; }
+
+  .section-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--red); margin-bottom: 16px; }
+  h2.section-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 20px; }
+
+  /* PROGRESS BANNER */
+  .progress-banner { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--green); border-radius: 4px; padding: 20px 24px; margin-bottom: 48px; }
+  .progress-banner h3 { font-size: 13px; font-weight: 600; color: #52b788; margin-bottom: 12px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 1px; text-transform: uppercase; }
+  .progress-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .progress-item { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; line-height: 1.5; }
+  .progress-item .tick { color: #52b788; font-size: 14px; flex-shrink: 0; }
+
+  /* COMPETITOR GRID */
+  .competitor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 48px; }
+  .comp-card { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 20px; position: relative; overflow: hidden; }
+  .comp-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .comp-card.tier1::before { background: var(--red); }
+  .comp-card.tier2::before { background: var(--amber); }
+  .comp-card.tier3::before { background: var(--green); }
+  .comp-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 3px; }
+  .comp-domain { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); margin-bottom: 10px; }
+  .comp-title-tag { background: #1a1a1a; border: 1px solid var(--border); border-radius: 3px; padding: 6px 10px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--amber); margin-bottom: 12px; line-height: 1.5; }
+  .comp-facts { list-style: none; }
+  .comp-facts li { font-size: 12px; color: #bbb; padding: 3px 0; border-bottom: 1px solid #2a2a2a; line-height: 1.4; }
+  .comp-facts li:last-child { border: none; }
+  .comp-facts li strong { color: var(--text); }
+  .tier-badge { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 9px; font-weight: 600; padding: 2px 7px; border-radius: 2px; margin-bottom: 8px; }
+  .tier1 .tier-badge { background: rgba(200,75,49,0.2); color: var(--red); border: 1px solid var(--red); }
+  .tier2 .tier-badge { background: rgba(255,179,25,0.15); color: var(--amber); border: 1px solid var(--amber); }
+  .tier3 .tier-badge { background: rgba(45,106,79,0.2); color: #52b788; border: 1px solid #52b788; }
+
+  /* KEYWORD TABLE */
+  .kw-section { margin-bottom: 48px; }
+  .kw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .kw-col h3 { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .kw-tag { display: inline-block; background: var(--card); border: 1px solid var(--border); border-radius: 3px; padding: 5px 10px; margin: 4px 4px 4px 0; font-size: 11.5px; font-family: 'IBM Plex Mono', monospace; }
+  .kw-tag.high { border-color: #e74c3c; color: #e74c3c; }
+  .kw-tag.med { border-color: var(--amber); color: var(--amber); }
+  .kw-tag.low { border-color: #52b788; color: #52b788; }
+  .kw-tag.gap { border-color: #7b68ee; color: #9b8ef0; background: rgba(123,104,238,0.08); }
+  .kw-legend { display: flex; gap: 20px; margin-bottom: 16px; flex-wrap: wrap; }
+  .kw-legend span { font-size: 11px; font-family: 'IBM Plex Mono', monospace; display: flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+  /* SEO GAPS */
+  .gap-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 48px; }
+  .gap-card { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 18px; }
+  .gap-card h4 { font-size: 13.5px; font-weight: 600; margin-bottom: 8px; }
+  .gap-card p { font-size: 12px; color: #aaa; line-height: 1.6; }
+  .gap-card .impact { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; margin-top: 10px; display: block; }
+  .gap-card.win .impact { color: #52b788; }
+  .gap-card.medium .impact { color: var(--amber); }
+  .gap-card.high-effort .impact { color: var(--red); }
+
+  /* VIVA AUDIT */
+  .audit-table { width: 100%; border-collapse: collapse; margin-bottom: 48px; font-size: 12.5px; }
+  .audit-table th { text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); padding: 10px 14px; border-bottom: 2px solid var(--border); }
+  .audit-table td { padding: 11px 14px; border-bottom: 1px solid #2a2a2a; vertical-align: top; line-height: 1.5; }
+  .audit-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .status-ok { color: #52b788; font-weight: 600; font-size: 10px; font-family: 'IBM Plex Mono', monospace; }
+  .status-warn { color: var(--amber); font-weight: 600; font-size: 10px; font-family: 'IBM Plex Mono', monospace; }
+  .status-bad { color: var(--red); font-weight: 600; font-size: 10px; font-family: 'IBM Plex Mono', monospace; }
+  .mono { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #aaa; }
+
+  /* ACTIONS */
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .action-card { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 20px; }
+  .action-num { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #333; line-height: 1; margin-bottom: 8px; }
+  .action-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .action-card p { font-size: 12px; color: #999; line-height: 1.6; }
+  .action-card p em { color: #ccc; font-style: italic; }
+  .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 3px 8px; border-radius: 2px; margin-top: 10px; }
+  .action-card.quick .tag { background: rgba(45,106,79,0.25); color: #52b788; }
+  .action-card.content .tag { background: rgba(255,179,25,0.15); color: var(--amber); }
+  .action-card.critical .tag { background: rgba(200,75,49,0.2); color: var(--red); }
+
+  @media (max-width: 800px) {
+    .competitor-grid { grid-template-columns: 1fr 1fr; }
+    .gap-grid { grid-template-columns: 1fr; }
+    .kw-grid { grid-template-columns: 1fr; }
+    .actions { grid-template-columns: 1fr; }
+    .progress-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <h1>Competitor SEO<br><span>Intelligence Report</span></h1>
+  <div class="meta">
+    VIVA ESPAÑIEL<br>
+    APRIL 2026 (v2)<br>
+    SPAIN ↔ UK DOG TRANSPORT
+  </div>
+</div>
+
+<!-- PROGRESS SINCE LAST REPORT -->
+<div class="section-label">Progress Since v1</div>
+<h2 class="section-title">What's Been Fixed</h2>
+<div class="progress-banner">
+  <h3>Actions completed from previous report</h3>
+  <div class="progress-grid">
+    <div class="progress-item"><span class="tick">✓</span><span>H1 now leads with keyword: "Dog Transport Spain ↔ UK — Safe, Personal, Door-to-Door"</span></div>
+    <div class="progress-item"><span class="tick">✓</span><span>Title rewritten keyword-first: "Dog Transport Spain to UK | Viva Españiel — Door-to-Door, DEFRA Compliant"</span></div>
+    <div class="progress-item"><span class="tick">✓</span><span>Meta description updated — names Andalucia, Costa del Sol, DEFRA, personal service</span></div>
+    <div class="progress-item"><span class="tick">✓</span><span>Schema extended: Service schema, AggregateRating (4.9 / 186 reviews), areaServed with Malaga &amp; Alicante</span></div>
+    <div class="progress-item"><span class="tick">✓</span><span>robots.txt created — admin blocked, AI crawlers explicitly allowed, sitemap referenced</span></div>
+    <div class="progress-item"><span class="tick">✓</span><span>sitemap.xml created and linked from robots.txt</span></div>
+    <div class="progress-item"><span class="tick">✓</span><span>OG + Twitter card meta tags added to main page</span></div>
+    <div class="progress-item"><span class="tick">✓</span><span>Blog section created (blog.html) — unlocks content/keyword strategy</span></div>
+    <div class="progress-item"><span class="tick">✓</span><span>H2 on main page updated to include keyword: "Why Families Trust Our Spain–UK Dog Transport"</span></div>
+  </div>
+</div>
+
+<!-- §01 COMPETITORS -->
+<div class="section-label">§01 — Competitor Landscape</div>
+<h2 class="section-title">Who You're Up Against</h2>
+<div class="competitor-grid">
+
+  <div class="comp-card tier1">
+    <span class="tier-badge">BIGGEST THREAT</span>
+    <div class="comp-name">Paw2Door</div>
+    <div class="comp-domain">paw2door.com</div>
+    <div class="comp-title-tag">SEO title: "Luxury pet transport between the UK and Spain"</div>
+    <ul class="comp-facts">
+      <li><strong>USP:</strong> 5,000+ pets, ~600 5★ Facebook reviews, "No.1 rated in Spain"</li>
+      <li><strong>Capacity:</strong> Max 10 pets per journey</li>
+      <li><strong>Tech:</strong> GPS geolocation tracker, infrared cameras in cabin</li>
+      <li><strong>Social proof:</strong> Online group so customers follow the journey live</li>
+      <li><strong>Routes:</strong> Spain ↔ UK + France</li>
+    </ul>
+  </div>
+
+  <div class="comp-card tier1">
+    <span class="tier-badge">BIGGEST THREAT</span>
+    <div class="comp-name">Golden Paws</div>
+    <div class="comp-domain">goldenpawspettransport.co.uk</div>
+    <div class="comp-title-tag">SEO title: "Pet Transport Across the UK and Europe"</div>
+    <ul class="comp-facts">
+      <li><strong>USP:</strong> DEFRA + OCA dual licensed, monthly "Adventures"</li>
+      <li><strong>Capacity:</strong> Max 7–9 animals, individual crates</li>
+      <li><strong>Area:</strong> Andalucia ↔ UK — direct overlap with Viva</li>
+      <li><strong>Extras:</strong> AHC service £190/cert, home pickup included</li>
+      <li><strong>Tech:</strong> Live cameras, FaceTime updates, WhatsApp</li>
+    </ul>
+  </div>
+
+  <div class="comp-card tier2">
+    <span class="tier-badge">COMPETITOR</span>
+    <div class="comp-name">OhMyDog Travel</div>
+    <div class="comp-domain">omdtravel.com</div>
+    <div class="comp-title-tag">SEO title: "Animal transport between the UK and Spain"</div>
+    <ul class="comp-facts">
+      <li><strong>USP:</strong> Spain→UK in under 24h via air+road hybrid</li>
+      <li><strong>Pivot:</strong> Moving entirely to air-ground from June 2026</li>
+      <li><strong>Experience:</strong> 9 years, 220+ reviews</li>
+      <li><strong>Extras:</strong> GPS, vet beds, temp control, shared + private trips</li>
+    </ul>
+  </div>
+
+  <div class="comp-card tier2">
+    <span class="tier-badge">COMPETITOR</span>
+    <div class="comp-name">The Transpawter</div>
+    <div class="comp-domain">thetranspawter.com</div>
+    <div class="comp-title-tag">SEO title: "Luxury Pet Transport in Western Europe"</div>
+    <ul class="comp-facts">
+      <li><strong>USP:</strong> Spans Spain, UK, Ireland + EU — wider network</li>
+      <li><strong>Capacity:</strong> Max 10 pets, DEFRA certified drivers</li>
+      <li><strong>Pricing:</strong> Frequent passenger discounts, group deals</li>
+    </ul>
+  </div>
+
+  <div class="comp-card tier2">
+    <span class="tier-badge">COMPETITOR</span>
+    <div class="comp-name">European Pet Transport</div>
+    <div class="comp-domain">europeanpettransport.com</div>
+    <div class="comp-title-tag">SEO title: "Luxury UK–Spain Pet Transport — Free AHC"</div>
+    <ul class="comp-facts">
+      <li><strong>USP:</strong> FREE Animal Health Certificate if booked 1 month early</li>
+      <li><strong>Capacity:</strong> Max 5 pets — ultra-exclusive positioning</li>
+      <li><strong>Price:</strong> From £695</li>
+      <li><strong>Base:</strong> Manchester &amp; Alicante</li>
+    </ul>
+  </div>
+
+  <div class="comp-card tier3">
+    <span class="tier-badge">INDIRECT</span>
+    <div class="comp-name">Transfur Animals</div>
+    <div class="comp-domain">transfuranimals.com</div>
+    <div class="comp-title-tag">SEO title: "Pet Transport to Spain — 20+ Years Experience"</div>
+    <ul class="comp-facts">
+      <li><strong>USP:</strong> 20 years, 10,000+ pets, air freight specialists</li>
+      <li><strong>Niche:</strong> Air cargo — different market from road transport</li>
+      <li><strong>SEO:</strong> Very strong — individual pages per route &amp; destination</li>
+      <li><strong>Note:</strong> Targets one-way relocators, not expat lifestyle</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- §02 KEYWORDS -->
+<div class="section-label">§02 — Keyword Intelligence</div>
+<h2 class="section-title">What People Are Searching For</h2>
+<div class="kw-section">
+  <div class="kw-legend">
+    <span><span class="dot" style="background:#e74c3c"></span>High volume / competitive</span>
+    <span><span class="dot" style="background:#ffb319"></span>Medium — worth targeting</span>
+    <span><span class="dot" style="background:#52b788"></span>Long-tail — easier wins</span>
+    <span><span class="dot" style="background:#9b8ef0"></span>Gap — competitors miss this</span>
+  </div>
+  <div class="kw-grid">
+    <div class="kw-col">
+      <h3>Transactional (buy intent)</h3>
+      <span class="kw-tag high">pet transport Spain UK</span>
+      <span class="kw-tag high">dog transport Spain to UK</span>
+      <span class="kw-tag high">dog transport UK to Spain</span>
+      <span class="kw-tag high">luxury pet transport Spain</span>
+      <span class="kw-tag med">door to door dog transport Spain</span>
+      <span class="kw-tag med">DEFRA approved pet transport Spain</span>
+      <span class="kw-tag med">pet transport Andalucia UK</span>
+      <span class="kw-tag med">dog transport service Spain</span>
+      <span class="kw-tag low">dog transport Malaga UK</span>
+      <span class="kw-tag low">dog transport Alicante UK</span>
+      <span class="kw-tag low">dog transport Costa del Sol UK</span>
+      <span class="kw-tag low">pet courier Spain UK</span>
+      <span class="kw-tag gap">dog transport Spain expat moving back</span>
+      <span class="kw-tag gap">dog transport Spain retired expat UK</span>
+    </div>
+    <div class="kw-col">
+      <h3>Informational (research intent)</h3>
+      <span class="kw-tag high">how to transport dog from Spain to UK</span>
+      <span class="kw-tag high">taking dog to Spain from UK 2026</span>
+      <span class="kw-tag high">animal health certificate Spain</span>
+      <span class="kw-tag med">pet transport Spain cost how much</span>
+      <span class="kw-tag med">DEFRA pet transport Spain requirements</span>
+      <span class="kw-tag med">tapeworm treatment dog UK re-entry</span>
+      <span class="kw-tag med">dog travel crate size road transport</span>
+      <span class="kw-tag low">how long does dog transport Spain UK take</span>
+      <span class="kw-tag low">is road transport safe for dogs</span>
+      <span class="kw-tag low">pet transport Spain reviews</span>
+      <span class="kw-tag gap">moving back to UK from Spain with dog</span>
+      <span class="kw-tag gap">Brexit pet travel Spain what changed</span>
+      <span class="kw-tag gap">small dog transport Spain UK</span>
+      <span class="kw-tag gap">what happens to my dog during transport</span>
+    </div>
+  </div>
+</div>
+
+<!-- §03 GAPS -->
+<div class="section-label">§03 — Opportunity Gaps</div>
+<h2 class="section-title">Where Competitors Are Weak</h2>
+<div class="gap-grid">
+  <div class="gap-card win">
+    <h4>The "moving back to UK" angle</h4>
+    <p>Every competitor targets expats going TO Spain. The return journey — people moving back home, snowbirds, or those after Brexit changes — is massively underserved. Blog is now live — this should be the first post.</p>
+    <span class="impact">★★★ QUICK WIN — blog post needed</span>
+  </div>
+  <div class="gap-card win">
+    <h4>Specific city/region pages</h4>
+    <p>Nobody owns "dog transport Malaga UK", "dog transport Costa del Sol UK" or "pet transport Murcia". The CMS custom pages feature can generate these — 200 words + booking form each, near-zero competition.</p>
+    <span class="impact">★★★ QUICK WIN — use CMS pages</span>
+  </div>
+  <div class="gap-card win">
+    <h4>Blog: AHC + tapeworm guides</h4>
+    <p>Transfur dominates informational content but it's air-focused. A road-transport AHC walkthrough and tapeworm treatment explainer fills a real gap. Blog infrastructure is ready — publish these first.</p>
+    <span class="impact">★★★ QUICK WIN — blog is live, write it</span>
+  </div>
+  <div class="gap-card medium">
+    <h4>Breed-specific content</h4>
+    <p>"Transport Labrador Spain UK", "small dog transport Spain", "Spaniel transport Spain" — all uncontested. Competitors use generic crate language; nobody targets by breed.</p>
+    <span class="impact">★★ MEDIUM TERM</span>
+  </div>
+  <div class="gap-card medium">
+    <h4>Transparent pricing page</h4>
+    <p>Every competitor hides pricing behind a contact form. A page with real price ranges ranks for "pet transport Spain cost" and builds trust — customers hate chasing quotes.</p>
+    <span class="impact">★★ MEDIUM TERM</span>
+  </div>
+  <div class="gap-card high-effort">
+    <h4>Google Business Profile</h4>
+    <p>Paw2Door's "600 Facebook reviews" is their biggest weapon. Getting Viva Españiel on Google Maps with reviews puts Jon directly in local/map pack results — which Google heavily prioritises.</p>
+    <span class="impact">★ HIGH EFFORT / HIGH REWARD</span>
+  </div>
+</div>
+
+<!-- §04 VIVA AUDIT -->
+<div class="section-label">§04 — Viva Españiel Self-Audit (v2)</div>
+<h2 class="section-title">Current SEO Health Check</h2>
+<table class="audit-table">
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Current State</th>
+      <th>Status</th>
+      <th>Recommendation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Page title</strong></td>
+      <td class="mono">Dog Transport Spain to UK | Viva Españiel — Door-to-Door, DEFRA Compliant</td>
+      <td><span class="status-ok">FIXED ✓</span></td>
+      <td>Keyword-first, DEFRA mentioned, brand at end. Solid.</td>
+    </tr>
+    <tr>
+      <td><strong>Meta description</strong></td>
+      <td class="mono">"Trusted dog transport between Spain and the UK. Door-to-door from Andalucia, Costa del Sol &amp; beyond…"</td>
+      <td><span class="status-ok">FIXED ✓</span></td>
+      <td>Names regions, DEFRA, personal service. Good length. Consider adding a CTA ("Get a quote").</td>
+    </tr>
+    <tr>
+      <td><strong>H1 tag</strong></td>
+      <td class="mono">"Dog Transport Spain ↔ UK — Safe, Personal, Door-to-Door"</td>
+      <td><span class="status-ok">FIXED ✓</span></td>
+      <td>Contains primary keyword, "personal" differentiator. Perfect.</td>
+    </tr>
+    <tr>
+      <td><strong>H2 tags</strong></td>
+      <td class="mono">"Why Families Trust Our Spain–UK Dog Transport"</td>
+      <td><span class="status-ok">IMPROVED ✓</span></td>
+      <td>Main H2 is keyword-rich. Others ("Happy Arrivals", "Book Your Dog's Journey") are weaker but acceptable.</td>
+    </tr>
+    <tr>
+      <td><strong>Schema markup</strong></td>
+      <td>LocalBusiness + Service + AggregateRating (4.9/186 reviews)</td>
+      <td><span class="status-ok">UPGRADED ✓</span></td>
+      <td>areaServed includes Malaga, Alicante, Costa del Sol, Andalucia. AggregateRating enables star snippets in search results. Excellent.</td>
+    </tr>
+    <tr>
+      <td><strong>OG / Twitter cards</strong></td>
+      <td>Full og:title, og:description, og:image, twitter:card</td>
+      <td><span class="status-ok">ADDED ✓</span></td>
+      <td>Present and correct. Will render well when shared on social.</td>
+    </tr>
+    <tr>
+      <td><strong>robots.txt</strong></td>
+      <td>Present — admin blocked, AI crawlers explicitly allowed</td>
+      <td><span class="status-ok">ADDED ✓</span></td>
+      <td>Good. Sitemap URL referenced. AI crawler allowlist is a nice forward-thinking touch.</td>
+    </tr>
+    <tr>
+      <td><strong>sitemap.xml</strong></td>
+      <td>Exists — homepage only</td>
+      <td><span class="status-warn">INCOMPLETE</span></td>
+      <td>Add blog.html and testimonial.html. Regional landing pages (once created) must also be added here.</td>
+    </tr>
+    <tr>
+      <td><strong>Canonical URL</strong></td>
+      <td class="mono">https://vivaespaniel.com/</td>
+      <td><span class="status-ok">GOOD</span></td>
+      <td>Confirmed. blog.html and testimonial.html also have correct canonicals set.</td>
+    </tr>
+    <tr>
+      <td><strong>Page URL</strong></td>
+      <td class="mono">/pet-transport-to-spain.html</td>
+      <td><span class="status-ok">GOOD</span></td>
+      <td>Keyword in URL — solid. Keep it.</td>
+    </tr>
+    <tr>
+      <td><strong>Image alt text</strong></td>
+      <td class="mono">Hero: "Happy dog" / Trust icons: "Vet", "Van", "GPS", "Walk"</td>
+      <td><span class="status-warn">IMPROVE</span></td>
+      <td>These are weak. Use: "Dog safely transported Spain to UK", "DEFRA-approved dog transport van", "Climate-controlled pet transport vehicle", "Live GPS tracking during dog transport", "Rest stop on Spain UK dog transport journey". Jon Brown's photo alt is already good.</td>
+    </tr>
+    <tr>
+      <td><strong>Blog — title</strong></td>
+      <td class="mono">"Blog — Viva Españiel"</td>
+      <td><span class="status-warn">IMPROVE</span></td>
+      <td>No keyword. Change to: "Dog Transport Guides &amp; Tips | Viva Españiel Blog"</td>
+    </tr>
+    <tr>
+      <td><strong>Blog — meta description</strong></td>
+      <td class="mono">"Advice, guides and stories about dog transport between Spain and the UK…"</td>
+      <td><span class="status-warn">IMPROVE</span></td>
+      <td>Decent but generic. Add specific topics: AHC guidance, tapeworm rules, expat moving tips.</td>
+    </tr>
+    <tr>
+      <td><strong>Blog — H1</strong></td>
+      <td class="mono">"Dog Transport Tips &amp; Guides"</td>
+      <td><span class="status-warn">IMPROVE</span></td>
+      <td>Missing "Spain" and "UK". Change to: "Dog Transport Spain &amp; UK — Guides, Tips &amp; Advice"</td>
+    </tr>
+    <tr>
+      <td><strong>Blog — JS rendering</strong></td>
+      <td>Posts loaded dynamically from Supabase via JS</td>
+      <td><span class="status-warn">WATCH</span></td>
+      <td>Google can render JS but it's slower to index than static HTML. Individual post URLs are query-string based (?post=slug) which Google does index but ranks lower than clean paths like /blog/slug. Acceptable for now — revisit if posts don't appear in Search Console within 6–8 weeks of publishing.</td>
+    </tr>
+    <tr>
+      <td><strong>page.html — title</strong></td>
+      <td class="mono">Set dynamically: p.meta_title || "${p.title} — Viva Españiel"</td>
+      <td><span class="status-ok">DONE ✓</span></td>
+      <td>JS already updates document.title from CMS data on load. Ensure each CMS page has a title filled in the admin — the code handles it correctly.</td>
+    </tr>
+    <tr>
+      <td><strong>page.html — meta description</strong></td>
+      <td class="mono">Set dynamically from p.meta_description if present</td>
+      <td><span class="status-ok">DONE ✓</span></td>
+      <td>JS already updates meta description from CMS data. Ensure each regional landing page has a meta_description filled in the admin.</td>
+    </tr>
+    <tr>
+      <td><strong>Blog content</strong></td>
+      <td>Infrastructure live, posts not yet visible</td>
+      <td><span class="status-warn">ACTION NEEDED</span></td>
+      <td>The blog provides zero SEO value without content. Publish the first 3 posts (see §05 below).</td>
+    </tr>
+    <tr>
+      <td><strong>Google Search Console</strong></td>
+      <td>Not verifiable from code</td>
+      <td><span class="status-warn">VERIFY</span></td>
+      <td>If not yet submitted, do it now. sitemap.xml is ready. This starts the indexing clock.</td>
+    </tr>
+    <tr>
+      <td><strong>Backlinks</strong></td>
+      <td>None found</td>
+      <td><span class="status-bad">MISSING</span></td>
+      <td>Now the on-page work is largely done, backlinks are the biggest remaining lever. Expat Spain blogs, Facebook groups, pet relocation directories.</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- §05 ACTION PLAN -->
+<div class="section-label">§05 — Action Plan (v2)</div>
+<h2 class="section-title">What to Do Next, in Order</h2>
+<div class="actions">
+  <div class="action-card critical">
+    <div class="action-num">01</div>
+    <h4>Fix page.html — dynamic title &amp; meta</h4>
+    <p>The CMS page template has a blank meta description and a static generic title. The JS that loads page content from Supabase must also call <em>document.title = page.title</em> and update the meta description tag. Without this, all regional landing pages are invisible to Google — they all look like the same blank page.</p>
+    <span class="tag">CRITICAL — 1 HOUR</span>
+  </div>
+  <div class="action-card quick">
+    <div class="action-num">02</div>
+    <h4>Update sitemap.xml</h4>
+    <p>Add blog.html and testimonial.html entries. Resubmit to Google Search Console. Each new CMS page created should also be manually added — or consider generating the sitemap automatically from the Supabase pages table.</p>
+    <span class="tag">QUICK WIN — 30 MINS</span>
+  </div>
+  <div class="action-card quick">
+    <div class="action-num">03</div>
+    <h4>Fix blog title, meta &amp; H1</h4>
+    <p>Update blog.html title to <em>"Dog Transport Guides &amp; Tips | Viva Españiel Blog"</em>, meta description to mention AHC, tapeworm rules, expat tips, and H1 to <em>"Dog Transport Spain &amp; UK — Guides, Tips &amp; Advice"</em>. Five minutes of changes, real ranking impact.</p>
+    <span class="tag">QUICK WIN — 15 MINS</span>
+  </div>
+  <div class="action-card quick">
+    <div class="action-num">04</div>
+    <h4>Fix image alt texts</h4>
+    <p>Hero: <em>"Dog safely transported Spain to UK by Viva Españiel"</em>. Trust icons: <em>"DEFRA-approved pet transport"</em>, <em>"Climate-controlled dog transport van"</em>, <em>"Live GPS tracking for dog transport"</em>, <em>"Rest stop on Spain UK dog transport journey"</em>.</p>
+    <span class="tag">QUICK WIN — 30 MINS</span>
+  </div>
+  <div class="action-card content">
+    <div class="action-num">05</div>
+    <h4>Write first 3 blog posts</h4>
+    <p>In order of impact: (1) <em>"Moving back to the UK from Spain with your dog — the complete guide"</em> — nobody owns this keyword. (2) <em>"Animal Health Certificate for dogs: what you need in 2026"</em>. (3) <em>"Tapeworm treatment requirements for dogs re-entering the UK"</em>. Each 600–800 words, link to booking form throughout.</p>
+    <span class="tag">CONTENT — HALF DAY</span>
+  </div>
+  <div class="action-card content">
+    <div class="action-num">06</div>
+    <h4>Create 3–4 regional landing pages via CMS</h4>
+    <p>Use the custom pages CMS to create pages for Malaga, Alicante, Costa del Sol, Marbella. 200 words + booking form each. Will rank for <em>"dog transport [city] UK"</em> with near-zero competition — but only after Action 01 (page.html meta fix) is done.</p>
+    <span class="tag">CONTENT — HALF DAY</span>
+  </div>
+  <div class="action-card content">
+    <div class="action-num">07</div>
+    <h4>Build backlinks</h4>
+    <p>On-page is now largely sorted — backlinks are the biggest remaining lever. Target: British expat Facebook groups in Spain (get featured/recommended), expat Spain directories, pet relocation listing sites. Even 5–10 quality links will move rankings significantly.</p>
+    <span class="tag">OUTREACH — ONGOING</span>
+  </div>
+  <div class="action-card content">
+    <div class="action-num">08</div>
+    <h4>Own "personal" vs everyone else's "luxury"</h4>
+    <p>Every competitor brands as "luxury". Viva Españiel can own a different word: <em>personal</em>. One driver, Jon knows your dog by name, you talk to the same person start to finish. Reinforce this in every blog post, landing page, and meta description. Google's E-E-A-T rewards it.</p>
+    <span class="tag">POSITIONING — ONGOING</span>
+  </div>
+</div>
+
+<!-- §06 METHODOLOGY -->
+<div class="section-label" style="margin-top:48px;">§06 — How This Report Was Made</div>
+<h2 class="section-title">Research Instructions Used</h2>
+<div class="gap-card" style="margin-bottom:48px;">
+  <p style="margin-bottom:12px;color:#ddd;"><strong>Purpose:</strong> Capture the exact process used so this report can be repeated or updated later.</p>
+  <ol style="padding-left:20px;color:#bbb;line-height:1.8;font-size:13px;">
+    <li>Research direct competitors in UK ↔ Spain dog transport (Golden Paws, Paw2Door, OhMyDog, The Transpawter, European Pet Transport, Transfur Animals).</li>
+    <li>Extract homepage SEO positioning where available (title themes, service claims, trust signals, and route focus).</li>
+    <li>Identify recurring keywords used by competitors (luxury, door-to-door, DEFRA, AHC, live tracking, etc.).</li>
+    <li>Audit all HTML files in the project root: pet-transport-to-spain.html, blog.html, page.html, testimonial.html — checking title, meta description, H1/H2, schema, canonical, image alt texts.</li>
+    <li>Check sitemap.xml and robots.txt for completeness and correctness.</li>
+    <li>Build keyword clusters by intent: transactional terms, informational terms, and underserved gap terms.</li>
+    <li>Map competitor weaknesses and rank opportunities by speed-to-impact (quick wins vs medium-term vs high-effort).</li>
+    <li>Compare current state against v1 report to track progress and update action plan accordingly.</li>
+  </ol>
+</div>
+
+</body>
+</html>

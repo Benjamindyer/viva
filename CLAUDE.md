@@ -4,8 +4,8 @@ Dog transport service website — Spain ↔ UK.
 
 ## Project structure
 
-- `viva-espanol.html` — main public site (the product)
-- `index.html` — redirect to `viva-espanol.html`
+- `pet-transport-to-spain.html` — main public site (the product)
+- `index.html` — redirect to `pet-transport-to-spain.html`
 - `admin.html` — admin dashboard (login-protected)
 - `supabase/` — backend (Edge Functions + DB migrations)
 
@@ -34,7 +34,7 @@ Migrations in `supabase/migrations/` — run in order via Supabase SQL Editor.
 
 ## Key conventions
 
-- Supabase credentials (`SUPABASE_URL`, `SUPABASE_ANON_KEY`) are set at the top of both `viva-espanol.html` and `admin.html`
+- Supabase credentials (`SUPABASE_URL`, `SUPABASE_ANON_KEY`) are set at the top of both `pet-transport-to-spain.html` and `admin.html`
 - Secrets (API keys, passwords) are configured via `supabase secrets set`, never hardcoded
 - All styles are inline `<style>` blocks inside each HTML file — no separate CSS files
 - All JS is inline `<script>` blocks inside each HTML file — no separate JS files

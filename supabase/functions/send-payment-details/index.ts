@@ -58,19 +58,42 @@ serve(async (req) => {
       .from('bookings').select('*').eq('id', bookingId).single()
     if (bookingError || !booking) throw new Error('Booking not found')
 
-    // Fetch PayPal settings
-    const { data: settings } = await supabase
+    // Fetch PayPal settings + email template blocks in one query
+    const { data: settingsAndContent } = await supabase
       .from('settings').select('key, value').in('key', ['paypal_email', 'paypal_link'])
-    const paypalEmail = settings?.find(s => s.key === 'paypal_email')?.value || ''
-    const paypalLink = settings?.find(s => s.key === 'paypal_link')?.value || ''
+    const paypalEmail = settingsAndContent?.find(s => s.key === 'paypal_email')?.value || ''
+    const paypalLink  = settingsAndContent?.find(s => s.key === 'paypal_link')?.value  || ''
+
+    const { data: templateRows } = await supabase
+      .from('content')
+      .select('key,value')
+      .in('key', ['email_payment_subject', 'email_payment_intro', 'email_payment_note', 'email_payment_footer'])
+    const tpl: Record<string, string> = Object.fromEntries((templateRows || []).map(r => [r.key, r.value]))
 
     const resendKey = Deno.env.get('RESEND_API_KEY')
     if (!resendKey) throw new Error('RESEND_API_KEY not configured')
 
-    const directionLabel = booking.direction === 'spain_to_uk' ? 'Spain → UK' : 'UK → Spain'
+    const directionLabel   = booking.direction === 'spain_to_uk' ? 'Spain → UK' : 'UK → Spain'
     const depositFormatted = `£${Number(booking.deposit_gbp).toFixed(2)}`
     const balanceFormatted = `£${Number(booking.balance_gbp).toFixed(2)}`
-    const totalFormatted = `£${Number(booking.total_price_gbp).toFixed(2)}`
+    const totalFormatted   = `£${Number(booking.total_price_gbp).toFixed(2)}`
+
+    const vars: Record<string, string> = {
+      first_name:  booking.first_name,
+      dog_name:    booking.dog_name,
+      reference:   booking.reference,
+      deposit:     depositFormatted,
+      balance:     balanceFormatted,
+      direction:   directionLabel,
+      travel_date: booking.travel_date_display || 'TBC',
+    }
+    const fill = (key: string, fallback: string) =>
+      (tpl[key] || fallback).replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? `{${k}}`)
+
+    const emailSubject = fill('email_payment_subject', `Your Viva Españiel booking is confirmed — ${booking.reference}`)
+    const emailIntro   = fill('email_payment_intro',   `Jon has reviewed your booking request for ${booking.dog_name} and is pleased to confirm it. To secure your spot, please pay the 50% deposit using the details below.`)
+    const emailNote    = fill('email_payment_note',    `Please include your reference number ${booking.reference} as the PayPal payment note. Your spot is not confirmed until the deposit is received.`)
+    const emailFooter  = fill('email_payment_footer',  `The balance of ${balanceFormatted} is collected on delivery of ${booking.dog_name}. Any questions? Reply to this email and Jon will be in touch.`)
 
     const paypalSection = paypalLink
       ? `<a href="${paypalLink}" style="display:inline-block;background:#0070ba;color:white;padding:14px 28px;text-decoration:none;border-radius:8px;font-weight:700;font-size:16px;margin:10px 0;">Pay Deposit via PayPal — ${depositFormatted}</a>`
@@ -85,7 +108,7 @@ serve(async (req) => {
         <div style="padding:30px;background:#fff;">
           <h2 style="color:#1a1a2e;">Great news — your booking is confirmed!</h2>
           <p>Hi ${booking.first_name},</p>
-          <p>Jon has reviewed your booking request for <strong>${booking.dog_name}</strong> and is pleased to confirm it. To secure your spot, please pay the 50% deposit using the details below.</p>
+          <p>${emailIntro}</p>
 
           <div style="background:#f8f9fa;border-radius:12px;padding:20px;margin:20px 0;">
             <p style="margin:0 0 6px;font-size:12px;color:#999;text-transform:uppercase;letter-spacing:1px;">Your reference</p>
@@ -106,11 +129,10 @@ serve(async (req) => {
           </div>
 
           <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:15px;font-size:13px;margin-top:20px;">
-            <strong>Important:</strong> Please include your reference number <strong>${booking.reference}</strong> as the PayPal payment note. Your spot is not confirmed until the deposit is received.
+            <strong>Important:</strong> ${emailNote}
           </div>
 
-          <p style="margin-top:20px;color:#666;font-size:14px;">The balance of ${balanceFormatted} is collected on delivery of ${booking.dog_name}.</p>
-          <p style="color:#666;font-size:14px;">Any questions? Reply to this email and Jon will be in touch.</p>
+          <p style="margin-top:20px;color:#666;font-size:14px;">${emailFooter}</p>
         </div>
         <div style="background:#f8f9fa;padding:20px;text-align:center;font-size:12px;color:#999;">
           © 2026 Viva Españiel · Spain ↔ UK dog transport
@@ -124,7 +146,7 @@ serve(async (req) => {
         from: 'Viva Españiel <bookings@vivaespaniel.com>',
         reply_to: 'farmerpalma@gmail.com',
         to: [booking.email],
-        subject: `Your Viva Españiel booking is confirmed — ${booking.reference}`,
+        subject: emailSubject,
         html,
       }),
     })

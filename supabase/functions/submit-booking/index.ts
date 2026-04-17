@@ -51,14 +51,22 @@ serve(async (req) => {
     const {
       direction, travelDateId, travelDateDisplay,
       firstName, lastName, email, phone,
-      dogName, breed, breedDisplay, size,
+      dogName, breed, breedDisplay,
+      dogs: dogsRaw,
       spainAddress, spainAddressDisplay,
       ukAddress, ukAddressDisplay, milesFromDover,
       basePriceGbp, mileageCostGbp, totalPriceGbp, depositGbp, balanceGbp,
     } = body
 
+    // Normalise dogs array — fall back to single-dog payload for backwards compat
+    const dogs: { name: string; size: string }[] = Array.isArray(dogsRaw) && dogsRaw.length
+      ? dogsRaw
+      : [{ name: dogName || '', size: body.size || '' }]
+
+    const primaryDogName = dogs[0]?.name || dogName || ''
+
     // Validate required fields
-    if (!direction || !email || !firstName || !lastName || !dogName || !totalPriceGbp) {
+    if (!direction || !email || !firstName || !lastName || !primaryDogName || !totalPriceGbp) {
       throw new Error('Missing required booking fields')
     }
 
@@ -71,8 +79,10 @@ serve(async (req) => {
       if (!existing) break
     }
 
-    // Insert booking
-    const { error: insertError } = await supabase.from('bookings').insert({
+    // Insert booking and keep id for potential rollback if crate claim fails
+    const { data: insertedBooking, error: insertError } = await supabase
+      .from('bookings')
+      .insert({
       reference,
       direction,
       travel_date_id: travelDateId || null,
@@ -81,10 +91,11 @@ serve(async (req) => {
       last_name: lastName,
       email,
       phone,
-      dog_name: dogName,
+      dog_name: primaryDogName,
       breed,
       breed_display: breedDisplay,
-      size,
+      size: dogs[0]?.size || '',
+      dogs: dogs,
       spain_address: spainAddress,
       spain_address_display: spainAddressDisplay,
       uk_address: ukAddress,
@@ -97,12 +108,31 @@ serve(async (req) => {
       balance_gbp: balanceGbp,
       status: 'pending',
     })
+      .select('id')
+      .single()
 
     if (insertError) throw new Error(insertError.message)
+    if (!insertedBooking?.id) throw new Error('Booking insert failed: missing booking id')
 
-    // Increment spots_taken on the travel date
+    // Claim crates on the travel date
     if (travelDateId) {
-      await supabase.rpc('increment_spots_taken', { date_id: travelDateId })
+      const largeDogs = dogs.filter(d => d.size === 'large').length
+      const smallDogs = dogs.filter(d => d.size !== 'large').length
+      try {
+        const { data: claimed, error: claimError } = await supabase.rpc('claim_crates', {
+          p_date_id: travelDateId,
+          p_large_count: largeDogs,
+          p_small_count: smallDogs,
+        })
+        if (claimError) throw claimError
+        if (claimed === false) {
+          await supabase.from('bookings').delete().eq('id', insertedBooking.id)
+          throw new Error('Sorry, not enough crate spaces available on this date for your dogs. Please choose another date or contact us.')
+        }
+      } catch (claimErr) {
+        await supabase.from('bookings').delete().eq('id', insertedBooking.id)
+        throw claimErr
+      }
     }
 
     // Send emails (best-effort — don't fail the booking if email fails)
@@ -111,6 +141,29 @@ serve(async (req) => {
 
     if (resendKey) {
       const directionLabel = direction === 'spain_to_uk' ? 'Spain → UK' : 'UK → Spain'
+
+      // Fetch editable email template blocks
+      const { data: templateRows } = await supabase
+        .from('content')
+        .select('key,value')
+        .in('key', ['email_request_subject', 'email_request_intro', 'email_request_footer'])
+      const tpl: Record<string, string> = Object.fromEntries((templateRows || []).map(r => [r.key, r.value]))
+
+      const vars: Record<string, string> = {
+        first_name: firstName,
+        dog_name:   primaryDogName,
+        reference,
+        deposit:    `£${Number(depositGbp).toFixed(2)}`,
+        balance:    `£${Number(balanceGbp).toFixed(2)}`,
+        direction:  directionLabel,
+        travel_date: travelDateDisplay || 'TBC',
+      }
+      const fill = (key: string, fallback: string) =>
+        (tpl[key] || fallback).replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? `{${k}}`)
+
+      const customerSubject = fill('email_request_subject', `Booking request received — ${reference}`)
+      const customerIntro   = fill('email_request_intro',   `We've received your booking request for ${primaryDogName}. Jon will review your details and be in touch within 24 hours to confirm and send payment instructions.`)
+      const customerFooter  = fill('email_request_footer',  'Please do not make any travel arrangements until you receive confirmation from Jon.')
 
       // Email to customer
       const customerHtml = `
@@ -122,7 +175,7 @@ serve(async (req) => {
           <div style="padding:30px;background:#fff;">
             <h2 style="color:#1a1a2e;">Booking Request Received</h2>
             <p>Hi ${firstName},</p>
-            <p>We've received your booking request for <strong>${dogName}</strong>. Jon will review your details and be in touch within 24 hours to confirm and send PayPal payment instructions.</p>
+            <p>${customerIntro}</p>
             <div style="background:#f8f9fa;border-radius:12px;padding:20px;margin:20px 0;">
               <p style="margin:0 0 8px;font-size:14px;color:#666;">Your reference number</p>
               <p style="margin:0;font-size:28px;font-weight:700;color:#c84b31;letter-spacing:2px;">${reference}</p>
@@ -130,14 +183,14 @@ serve(async (req) => {
             <table style="width:100%;border-collapse:collapse;font-size:14px;">
               <tr><td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Direction</td><td style="padding:8px 0;text-align:right;border-bottom:1px solid #eee;">${directionLabel}</td></tr>
               <tr><td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Travel date</td><td style="padding:8px 0;text-align:right;border-bottom:1px solid #eee;">${travelDateDisplay || 'TBC'}</td></tr>
-              <tr><td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Dog</td><td style="padding:8px 0;text-align:right;border-bottom:1px solid #eee;">${dogName}</td></tr>
+              <tr><td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Dog${dogs.length > 1 ? 's' : ''}</td><td style="padding:8px 0;text-align:right;border-bottom:1px solid #eee;">${dogs.map(d => `${d.name} (${d.size})`).join(', ')}</td></tr>
               <tr><td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Spanish address</td><td style="padding:8px 0;text-align:right;border-bottom:1px solid #eee;">${spainAddressDisplay || spainAddress || '—'}</td></tr>
               <tr><td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">UK address</td><td style="padding:8px 0;text-align:right;border-bottom:1px solid #eee;">${ukAddressDisplay || ukAddress}</td></tr>
               <tr><td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Total</td><td style="padding:8px 0;text-align:right;font-weight:700;border-bottom:1px solid #eee;">£${Number(totalPriceGbp).toFixed(2)}</td></tr>
               <tr><td style="padding:8px 0;color:#2d6a4f;">Deposit due (50%)</td><td style="padding:8px 0;text-align:right;color:#2d6a4f;font-weight:600;">£${Number(depositGbp).toFixed(2)}</td></tr>
               <tr><td style="padding:8px 0;color:#666;">Balance on delivery</td><td style="padding:8px 0;text-align:right;color:#666;">£${Number(balanceGbp).toFixed(2)}</td></tr>
             </table>
-            <p style="margin-top:20px;color:#666;font-size:14px;">Please do not make any travel arrangements until you receive payment confirmation from Jon.</p>
+            <p style="margin-top:20px;color:#666;font-size:14px;">${customerFooter}</p>
             <p style="color:#666;font-size:14px;">Any questions? Reply to this email or contact us directly.</p>
           </div>
           <div style="background:#f8f9fa;padding:20px;text-align:center;font-size:12px;color:#999;">
@@ -157,7 +210,7 @@ serve(async (req) => {
               <tr><td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;width:40%;">Customer</td><td style="padding:8px 0;border-bottom:1px solid #eee;">${firstName} ${lastName}</td></tr>
               <tr><td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Email</td><td style="padding:8px 0;border-bottom:1px solid #eee;"><a href="mailto:${email}">${email}</a></td></tr>
               <tr><td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Phone</td><td style="padding:8px 0;border-bottom:1px solid #eee;">${phone || 'Not provided'}</td></tr>
-              <tr><td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Dog</td><td style="padding:8px 0;border-bottom:1px solid #eee;">${dogName} · ${breedDisplay || breed || 'Unknown breed'} · ${size || 'Unknown size'}</td></tr>
+              <tr><td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Dog${dogs.length > 1 ? `s (${dogs.length})` : ''}</td><td style="padding:8px 0;border-bottom:1px solid #eee;">${dogs.map(d => `${d.name} · ${d.size}`).join('<br>')}</td></tr>
               <tr><td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Direction</td><td style="padding:8px 0;border-bottom:1px solid #eee;">${directionLabel}</td></tr>
               <tr><td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Travel date</td><td style="padding:8px 0;border-bottom:1px solid #eee;">${travelDateDisplay || 'TBC'}</td></tr>
               <tr><td style="padding:8px 0;color:#666;border-bottom:1px solid #eee;">Spanish address</td><td style="padding:8px 0;border-bottom:1px solid #eee;">${spainAddressDisplay || spainAddress || '—'}</td></tr>
@@ -173,7 +226,7 @@ serve(async (req) => {
         </div>`
 
       await Promise.allSettled([
-        sendEmail(email, `Booking request received — ${reference}`, customerHtml, resendKey),
+        sendEmail(email, customerSubject, customerHtml, resendKey),
         sendEmail(jonEmail, `New booking request: ${reference} — ${firstName} ${lastName} — £${Number(totalPriceGbp).toFixed(2)}`, jonHtml, resendKey),
       ])
     }

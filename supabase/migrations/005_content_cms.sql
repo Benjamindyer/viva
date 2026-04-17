@@ -39,12 +39,15 @@ ALTER TABLE testimonials  ENABLE ROW LEVEL SECURITY;
 ALTER TABLE gallery_items ENABLE ROW LEVEL SECURITY;
 
 -- Public can read all (no sensitive data in these tables)
-CREATE POLICY "Public read content"
-    ON content FOR SELECT TO anon USING (true);
-CREATE POLICY "Public read testimonials"
-    ON testimonials FOR SELECT TO anon USING (active = true);
-CREATE POLICY "Public read gallery"
-    ON gallery_items FOR SELECT TO anon USING (active = true);
+DO $$ BEGIN
+  CREATE POLICY "Public read content" ON content FOR SELECT TO anon USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+  CREATE POLICY "Public read testimonials" ON testimonials FOR SELECT TO anon USING (active = true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+  CREATE POLICY "Public read gallery" ON gallery_items FOR SELECT TO anon USING (active = true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 -- Seed default content (from current hardcoded HTML)
 INSERT INTO content (key, value) VALUES
