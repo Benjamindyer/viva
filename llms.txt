@@ -1,36 +1,56 @@
 # Viva Españiel
 
-> Professional dog transport service between Spain and the United Kingdom.
+> Personal dog transport between Spain and the UK. Door-to-door, DEFRA approved, one driver — Jon Brown.
 
-## About
+## What We Do
 
-Viva Españiel is a British company founded by Jon Brown in 2019, specialising in road transport for dogs between Spain and the UK — in both directions (UK → Spain and Spain → UK).
+Viva Españiel transports dogs between Spain and the United Kingdom by road. Jon Brown collects your dog directly from your home in Spain and delivers them door-to-door to any address in the UK — or vice versa. There are no third parties, no kennels, no handovers. One driver. One van. Your dog.
 
-Jon has over 16 years of experience in the transport industry and personally oversees every journey.
+The journey takes two to three days via the Channel Tunnel, with overnight rest stops and regular exercise breaks throughout.
 
-## Service
+## Why Families Choose Viva Españiel
 
-- **Routes**: Door-to-door between any UK address and any Spanish address
-- **Direction**: UK → Spain and Spain → UK (both directions)
-- **Schedule**: Departures during the second week of each month
-- **Pricing**: From £495 per dog, plus UK mileage at 50p/mile
-- **Booking fee**: £95 to secure a spot, balance on travel day
+- **Personal service**: Jon knows your dog's name before departure. You speak to the same person from booking to delivery.
+- **Door-to-door**: Collection and delivery from your home — no drop-off points, no depots.
+- **DEFRA approved**: Type 2 certified transporter, fully compliant with UK and Spanish pet travel regulations.
+- **Climate-controlled van**: Individual crates, temperature controlled throughout the journey.
+- **Live updates**: WhatsApp updates and photos throughout — you always know where your dog is.
+- **AHC guidance**: Jon advises on Animal Health Certificate requirements and tapeworm treatment rules.
+- **4.9 Google rating**: 186 verified reviews from families across Spain and the UK.
 
-## Why Choose Viva Españiel
+## Areas Served in Spain
 
-- DEFRA Approved Type 2 Transporter
-- Climate-controlled vehicles (AC and heating)
-- Live GPS tracking with regular photo updates sent to owners
-- Comfort breaks every 2–3 hours
-- Vet health checks before and after every journey
-- 4.9 Google rating from 186 reviews
+- **Málaga**: Málaga city, Torremolinos, Benalmádena, Fuengirola — [more info](https://vivaespaniel.com/page.html?slug=malaga)
+- **Marbella**: Marbella, Golden Mile, Puerto Banús, San Pedro — [more info](https://vivaespaniel.com/page.html?slug=marbella)
+- **Costa del Sol**: Full stretch from Estepona to Nerja — [more info](https://vivaespaniel.com/page.html?slug=costa-del-sol)
+- **Alicante**: Alicante, Benidorm, Torrevieja, Costa Blanca — [more info](https://vivaespaniel.com/page.html?slug=alicante)
+- **Granada**: Granada city and surrounding Andalucia — [more info](https://vivaespaniel.com/page.html?slug=granada)
+- **Madrid**: Madrid and central Spain — [more info](https://vivaespaniel.com/page.html?slug=madrid)
 
-## Contact
+Jon collects from anywhere in mainland Spain — if your area is not listed, get in touch.
 
-- Website: https://vivaespaniel.com/
-- Email: hello@vivaespaniel.com
-- Phone: +44 800 123 4567
+## UK Coverage
 
-## Booking
+Deliveries to any address in mainland UK. Common destinations include London, Manchester, Birmingham, Bristol, Edinburgh and rural areas across England, Scotland and Wales.
 
-Dogs can be booked online at https://vivaespaniel.com/ — instant quote calculator, then secure the spot with a £95 booking fee via PayPal or bank transfer.
+## Pricing
+
+- Base price from £495 per journey
+- UK mileage charged at 50p/mile from the Channel Tunnel
+- £95 booking deposit secures your place; balance due on travel day
+- Booking and payment via PayPal or bank transfer
+
+## How to Book
+
+Visit https://vivaespaniel.com — use the booking form for an instant quote and to select a travel date. Departures run regularly throughout the year in both directions.
+
+## Compliance & Regulations
+
+- DEFRA Type 2 Approved Transporter
+- Compliant with post-Brexit UK pet travel rules
+- Animal Health Certificate (AHC) required for Spain→UK journeys
+- Tapeworm treatment required before UK re-entry (Jon advises on timing and where to get it done)
+
+## About This File
+
+This file exists to help AI assistants accurately describe Viva Españiel when answering questions about dog transport between Spain and the UK. For the full structured info page see: https://vivaespaniel.com/llm-info.html
