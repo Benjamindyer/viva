@@ -2207,6 +2207,45 @@
         }
 
         /* Footer */
+        /* Areas We Serve */
+        .areas-section { background: #f8f9fa; }
+        .areas-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .area-card {
+            background: white;
+            border: 1px solid #e8e8e8;
+            border-radius: 12px;
+            padding: 24px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.25s;
+            display: block;
+        }
+        .area-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 20px rgba(200,75,49,0.1);
+            transform: translateY(-2px);
+        }
+        .area-flag { font-size: 28px; margin-bottom: 10px; }
+        .area-card h3 { font-size: 18px; margin-bottom: 6px; color: var(--dark); }
+        .area-card p { font-size: 13px; color: #666; line-height: 1.5; margin-bottom: 14px; }
+        .area-link {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        @media (max-width: 768px) {
+            .areas-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .areas-grid { grid-template-columns: 1fr; }
+        }
+
         footer {
             background: var(--dark);
             color: white;
@@ -2618,6 +2657,52 @@
         </div>
     </section>
 
+    <!-- Areas We Serve -->
+    <section class="section areas-section">
+        <div class="section-header">
+            <h2>Areas We Serve in Spain</h2>
+            <p>Door-to-door collection from across Spain — wherever you are, Jon comes to you</p>
+        </div>
+        <div class="areas-grid">
+            <a href="page.html?slug=malaga" class="area-card">
+                <div class="area-flag">🇪🇸</div>
+                <h3>Málaga</h3>
+                <p>Málaga city, Torremolinos, Benalmádena & the Costa del Sol</p>
+                <span class="area-link">Dog transport Málaga ↔ UK →</span>
+            </a>
+            <a href="page.html?slug=marbella" class="area-card">
+                <div class="area-flag">🇪🇸</div>
+                <h3>Marbella</h3>
+                <p>Marbella, Golden Mile, Puerto Banús & San Pedro</p>
+                <span class="area-link">Dog transport Marbella ↔ UK →</span>
+            </a>
+            <a href="page.html?slug=costa-del-sol" class="area-card">
+                <div class="area-flag">🇪🇸</div>
+                <h3>Costa del Sol</h3>
+                <p>Estepona to Nerja — the full Costa del Sol stretch</p>
+                <span class="area-link">Dog transport Costa del Sol ↔ UK →</span>
+            </a>
+            <a href="page.html?slug=alicante" class="area-card">
+                <div class="area-flag">🇪🇸</div>
+                <h3>Alicante</h3>
+                <p>Alicante, Benidorm, Torrevieja & the Costa Blanca</p>
+                <span class="area-link">Dog transport Alicante ↔ UK →</span>
+            </a>
+            <a href="page.html?slug=granada" class="area-card">
+                <div class="area-flag">🇪🇸</div>
+                <h3>Granada</h3>
+                <p>Granada city & surrounding Andalucia</p>
+                <span class="area-link">Dog transport Granada ↔ UK →</span>
+            </a>
+            <a href="page.html?slug=madrid" class="area-card">
+                <div class="area-flag">🇪🇸</div>
+                <h3>Madrid</h3>
+                <p>Madrid & central Spain</p>
+                <span class="area-link">Dog transport Madrid ↔ UK →</span>
+            </a>
+        </div>
+    </section>
+
     <!-- Booking -->
     <section class="booking-section" id="booking">
         <div class="section-header">
@@ -2853,6 +2938,15 @@
                 <a href="#">Pet Passport Guide</a>
                 <a href="#faq">FAQ</a>
                 <a href="#">Contact</a>
+            </div>
+            <div class="footer-column">
+                <h4>Areas We Serve</h4>
+                <a href="page.html?slug=malaga">Dog Transport Málaga</a>
+                <a href="page.html?slug=marbella">Dog Transport Marbella</a>
+                <a href="page.html?slug=costa-del-sol">Dog Transport Costa del Sol</a>
+                <a href="page.html?slug=alicante">Dog Transport Alicante</a>
+                <a href="page.html?slug=granada">Dog Transport Granada</a>
+                <a href="page.html?slug=madrid">Dog Transport Madrid</a>
             </div>
             <div class="footer-column">
                 <h4>Contact</h4>
