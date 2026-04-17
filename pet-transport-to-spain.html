@@ -284,6 +284,143 @@
             .qb-cta { width: 100%; text-align: center; padding: 14px; border-radius: 10px; margin-left: 0; margin-top: 4px; }
         }
 
+        /* Van Status Strip */
+        .van-status-strip {
+            padding: 0 20px 24px;
+        }
+        .vss-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .vss-scene {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            height: 60px;
+        }
+        .vss-endpoint {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            width: 48px;
+        }
+        .vss-endpoint-flag { font-size: 26px; line-height: 1; }
+        .vss-endpoint-label {
+            font-size: 9px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.65);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        .vss-road-track {
+            flex: 1;
+            position: relative;
+            height: 22px;
+            background: rgba(0,0,0,0.45);
+            border-radius: 4px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.08);
+        }
+        .vss-road-track::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 8px;
+            right: 8px;
+            height: 2px;
+            transform: translateY(-50%);
+            background: repeating-linear-gradient(90deg, rgba(255,255,255,0.3) 0, rgba(255,255,255,0.3) 14px, transparent 14px, transparent 24px);
+        }
+        .vss-van-wrap {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            transition: left 2.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            user-select: none;
+            z-index: 2;
+        }
+        .vss-van-scene {
+            display: flex;
+            align-items: flex-end;
+            gap: 5px;
+        }
+        .vss-parked-dog {
+            font-size: 22px;
+            line-height: 1;
+            transition: opacity 0.4s, transform 0.4s;
+        }
+        .vss-van-wrap.moving .vss-parked-dog {
+            opacity: 0;
+            transform: translateX(10px);
+        }
+        .vss-van-icon {
+            font-size: 30px;
+            line-height: 1;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+            transition: transform 0.6s ease;
+        }
+        .vss-van-wrap.flipped .vss-van-icon {
+            transform: scaleX(-1);
+        }
+        .vss-wheels {
+            display: flex;
+            gap: 9px;
+            margin-top: -3px;
+        }
+        .vss-wheel {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.6);
+            border-top-color: var(--secondary);
+        }
+        .vss-van-wrap.moving .vss-wheel {
+            animation: vssWheelSpin 0.45s linear infinite;
+        }
+        @keyframes vssWheelSpin {
+            to { transform: rotate(360deg); }
+        }
+        .vss-statusbar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .vss-pulse {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            flex-shrink: 0;
+            transition: background 0.5s;
+        }
+        .vss-pulse.active {
+            background: #4ade80;
+            animation: vssPulse 1.8s ease-in-out infinite;
+        }
+        @keyframes vssPulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(74,222,128,0.5); }
+            50% { opacity: 0.75; box-shadow: 0 0 0 5px rgba(74,222,128,0); }
+        }
+        .vss-status-text {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.8);
+            letter-spacing: 0.2px;
+        }
+        @media (max-width: 600px) {
+            .vss-endpoint-flag { font-size: 20px; }
+            .vss-van-icon { font-size: 24px; }
+            .vss-parked-dog { font-size: 18px; }
+            .vss-status-text { font-size: 11px; }
+        }
+
         .nav-whatsapp {
             display: none;
             align-items: center;
@@ -2338,6 +2475,38 @@
             </div>
         </div>
 
+        <!-- Van Status Scene -->
+        <div class="van-status-strip">
+            <div class="vss-inner">
+                <div class="vss-scene">
+                    <div class="vss-endpoint">
+                        <span class="vss-endpoint-flag">🇬🇧</span>
+                        <span class="vss-endpoint-label">UK</span>
+                    </div>
+                    <div class="vss-road-track" id="vssTrack">
+                        <div class="vss-van-wrap" id="vssVan" style="left:8%">
+                            <div class="vss-van-scene">
+                                <span class="vss-parked-dog">🐕</span>
+                                <div class="vss-van-icon">🚐</div>
+                            </div>
+                            <div class="vss-wheels">
+                                <div class="vss-wheel"></div>
+                                <div class="vss-wheel"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vss-endpoint">
+                        <span class="vss-endpoint-flag">🇪🇸</span>
+                        <span class="vss-endpoint-label">Spain</span>
+                    </div>
+                </div>
+                <div class="vss-statusbar">
+                    <span class="vss-pulse" id="vssPulse"></span>
+                    <span class="vss-status-text" id="vssStatusText">Checking journey status…</span>
+                </div>
+            </div>
+        </div>
+
         <!-- Quick Book Bar -->
         <div class="quick-book-bar">
             <div class="qb-inner">
@@ -2724,6 +2893,84 @@
         // ── Supabase client ──────────────────────────────────────────────────────
         const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // ── Van status scene ────────────────────────────────────────────────────
+        function updateVanStatus() {
+            const van        = document.getElementById('vssVan');
+            const statusText = document.getElementById('vssStatusText');
+            const pulse      = document.getElementById('vssPulse');
+            if (!van || !statusText) return;
+
+            const dates = (window._allDates || []).filter(d => d.active !== false);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Find nearest journey: active (within last 3 days) or next upcoming
+            let best = null, bestDiff = Infinity;
+            for (const d of dates) {
+                const dep = new Date(d.departure_date);
+                dep.setHours(0, 0, 0, 0);
+                const diff = Math.round((dep - today) / 86400000);
+                if (diff >= -3 && diff < bestDiff) { best = d; bestDiff = diff; }
+            }
+            if (!best) {
+                const future = dates
+                    .filter(d => { const dep = new Date(d.departure_date); dep.setHours(0,0,0,0); return dep >= today; })
+                    .sort((a, b) => new Date(a.departure_date) - new Date(b.departure_date));
+                if (future.length) {
+                    best = future[0];
+                    const dep = new Date(best.departure_date);
+                    dep.setHours(0, 0, 0, 0);
+                    bestDiff = Math.round((dep - today) / 86400000);
+                }
+            }
+
+            if (!best) {
+                van.style.left = '50%';
+                statusText.textContent = 'New journeys coming soon — enquire to register interest 🐾';
+                return;
+            }
+
+            const spainToUk = best.direction === 'spain_to_uk';
+            const days = bestDiff;
+            const depLabel = new Date(best.departure_date + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+            let pos, msg, moving = false;
+
+            if (days > 13) {
+                pos = spainToUk ? 92 : 8;
+                msg = `Van is ready — next run departs ${depLabel} 🏡`;
+            } else if (days > 6) {
+                pos = spainToUk ? 88 : 12;
+                msg = `Preparing for departure on ${depLabel} — van checks underway 📋`;
+            } else if (days > 1) {
+                pos = spainToUk ? 83 : 17;
+                msg = `Departing ${depLabel} — final preparations underway 🔧`;
+            } else if (days === 1) {
+                pos = spainToUk ? 80 : 20;
+                msg = 'Pickups begin tomorrow — get ready! 🐶';
+            } else if (days === 0) {
+                pos = spainToUk ? 75 : 25;
+                msg = 'Pickups underway — Jon is collecting pups today! 🐾';
+                moving = true;
+            } else if (days === -1) {
+                pos = 50;
+                msg = 'Currently crossing — Jon & the pups are mid-journey 🌊';
+                moving = true;
+            } else if (days === -2) {
+                pos = spainToUk ? 25 : 75;
+                msg = 'Final deliveries today — almost home! 🏠';
+                moving = true;
+            } else {
+                pos = spainToUk ? 8 : 92;
+                msg = 'Journey complete — pups safely delivered! ✅';
+            }
+
+            if (spainToUk) { van.classList.add('flipped'); } else { van.classList.remove('flipped'); }
+            van.style.left = pos + '%';
+            if (moving) { van.classList.add('moving'); pulse.classList.add('active'); }
+            else { van.classList.remove('moving'); pulse.classList.remove('active'); }
+            statusText.textContent = msg;
+        }
+
         // ── Page init: fetch settings + dates from Supabase ─────────────────────
         async function initPage() {
             try {
@@ -2756,9 +3003,11 @@
                     }
                 }
                 window._allDates = datesData || [];
+                updateVanStatus();
             } catch (e) {
                 console.warn('Could not load Supabase data — using defaults');
                 window._allDates = [];
+                updateVanStatus();
             }
             renderDateCards();
             loadSiteContent();
