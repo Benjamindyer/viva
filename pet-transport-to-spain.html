@@ -157,6 +157,133 @@
             transform: scale(1.05);
         }
 
+        /* Quick Book Bar */
+        .quick-book-bar {
+            position: relative;
+            z-index: 100;
+            background: white;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+            padding: 14px 20px;
+            margin-top: 62px;
+        }
+
+        .qb-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            background: #f5f5f5;
+            border-radius: 14px;
+            padding: 6px;
+            gap: 0;
+        }
+
+        .qb-field {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 20px;
+            flex: 1;
+        }
+
+        .qb-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #999;
+            white-space: nowrap;
+        }
+
+        .qb-toggle {
+            display: flex;
+            gap: 4px;
+        }
+
+        .qb-toggle-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            background: transparent;
+            color: #555;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .qb-toggle-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .qb-divider {
+            width: 1px;
+            height: 32px;
+            background: #e0e0e0;
+            flex-shrink: 0;
+        }
+
+        .qb-counter {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .qb-counter-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            background: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .qb-counter-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+        .qb-counter-val {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+            min-width: 18px;
+            text-align: center;
+        }
+
+        .qb-cta {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 14px 28px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s, transform 0.15s;
+            flex-shrink: 0;
+            margin-left: 6px;
+        }
+
+        .qb-cta:hover { background: var(--primary-dark); transform: scale(1.02); }
+
+        @media (max-width: 700px) {
+            .quick-book-bar { padding: 12px 16px; margin-top: 60px; }
+            .qb-inner { flex-direction: column; align-items: stretch; padding: 10px; gap: 4px; }
+            .qb-field { padding: 6px 8px; justify-content: space-between; }
+            .qb-divider { display: none; }
+            .qb-cta { width: 100%; text-align: center; padding: 14px; border-radius: 10px; margin-left: 0; margin-top: 4px; }
+        }
+
         .nav-whatsapp {
             display: none;
             align-items: center;
@@ -228,12 +355,12 @@
 
         /* Hero Section */
         .hero {
-            min-height: 100vh;
+            min-height: calc(100vh - 130px);
             background: linear-gradient(135deg, rgba(200, 75, 49, 0.9) 0%, rgba(255, 179, 25, 0.9) 100%),
                         url('https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1920&q=80') center/cover;
             display: flex;
             align-items: center;
-            padding: 100px 20px 60px;
+            padding: 50px 20px 60px;
         }
 
         .hero-content {
@@ -2168,6 +2295,29 @@
         <a href="blog.html" onclick="toggleMobileMenu()">Blog</a>
     </div>
 
+    <!-- Quick Book Bar -->
+    <div class="quick-book-bar">
+        <div class="qb-inner">
+            <div class="qb-field">
+                <span class="qb-label">Direction</span>
+                <div class="qb-toggle">
+                    <button class="qb-toggle-btn active" id="qbBtnUkSpain" onclick="qbSetDir('uk-to-spain')">🇬🇧 UK → Spain</button>
+                    <button class="qb-toggle-btn" id="qbBtnSpainUk" onclick="qbSetDir('spain-to-uk')">🇪🇸 Spain → UK</button>
+                </div>
+            </div>
+            <div class="qb-divider"></div>
+            <div class="qb-field">
+                <span class="qb-label">Dogs</span>
+                <div class="qb-counter">
+                    <button class="qb-counter-btn" onclick="qbChangeDogs(-1)" aria-label="Remove a dog">−</button>
+                    <span class="qb-counter-val" id="qbDogCount">1</span>
+                    <button class="qb-counter-btn" onclick="qbChangeDogs(1)" aria-label="Add a dog">+</button>
+                </div>
+            </div>
+            <button class="qb-cta" onclick="qbSearch()">Check Dates →</button>
+        </div>
+    </div>
+
     <!-- Hero -->
     <section class="hero">
         <div class="hero-content">
@@ -2931,6 +3081,26 @@
         }
 
         // ── Direction toggle ─────────────────────────────────────────────────────
+        // ── Quick Book Bar ───────────────────────────────────────────────────────
+        let _qbDir  = 'uk-to-spain';
+        let _qbDogs = 1;
+
+        function qbSetDir(dir) {
+            _qbDir = dir;
+            document.getElementById('qbBtnUkSpain').classList.toggle('active', dir === 'uk-to-spain');
+            document.getElementById('qbBtnSpainUk').classList.toggle('active', dir === 'spain-to-uk');
+        }
+
+        function qbChangeDogs(delta) {
+            _qbDogs = Math.min(4, Math.max(1, _qbDogs + delta));
+            document.getElementById('qbDogCount').textContent = _qbDogs;
+        }
+
+        function qbSearch() {
+            setDirection(_qbDir);
+            document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+        }
+
         function setDirection(dir) {
             currentDirection = dir;
             _selectedMonth   = null; // reset so default recalculates for new direction
