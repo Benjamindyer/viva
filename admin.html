@@ -470,30 +470,14 @@
                 <span class="save-msg" id="heroMsg"></span>
             </div>
 
-            <!-- About -->
+            <!-- Man / Plan / Van -->
             <div class="content-card">
-                <h3>👤 About Jon</h3>
-                <div class="content-field">
-                    <label>Jon's photo</label>
-                    <div class="img-upload-row">
-                        <img id="prevAboutPhoto" src="" class="img-preview img-preview-round" alt="Jon">
-                        <div>
-                            <input type="file" id="fileAboutPhoto" accept="image/*" style="display:none" onchange="handleUpload(this,'prevAboutPhoto','about_photo_url')">
-                            <button class="upload-btn" onclick="document.getElementById('fileAboutPhoto').click()">Upload new photo</button>
-                            <div style="font-size:11px;color:var(--muted);margin-top:4px;">Square crop works best</div>
-                        </div>
-                    </div>
-                </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                    <div class="content-field"><label>Subtitle</label><input type="text" id="cAboutSubtitle" class="content-input" placeholder="Meet The Founder"></div>
-                    <div class="content-field"><label>Name</label><input type="text" id="cAboutName" class="content-input" placeholder="Jon Brown"></div>
-                </div>
-                <div class="content-field"><label>Years experience badge</label><input type="text" id="cAboutYears" class="content-input" style="width:120px;" placeholder="16+"></div>
-                <div class="content-field"><label>Bio paragraph 1</label><textarea id="cAboutBio1" class="content-textarea" rows="3"></textarea></div>
-                <div class="content-field"><label>Bio paragraph 2</label><textarea id="cAboutBio2" class="content-textarea" rows="3"></textarea></div>
-                <div class="content-field"><label>Pull quote (shown in box)</label><textarea id="cAboutQuote" class="content-textarea" rows="3"></textarea></div>
-                <button class="save-btn" onclick="saveContent({about_subtitle:v('cAboutSubtitle'),about_name:v('cAboutName'),about_years:v('cAboutYears'),about_bio1:v('cAboutBio1'),about_bio2:v('cAboutBio2'),about_quote:v('cAboutQuote')},'aboutMsg')">Save About</button>
-                <span class="save-msg" id="aboutMsg"></span>
+                <h3>🧑‍✈️ The Man / Plan / Van</h3>
+                <div class="content-field"><label>The Man — description</label><textarea id="cMvpManDesc" class="content-textarea" rows="3"></textarea></div>
+                <div class="content-field"><label>The Plan — description</label><textarea id="cMvpPlanDesc" class="content-textarea" rows="3"></textarea></div>
+                <div class="content-field"><label>The Van — description</label><textarea id="cMvpVanDesc" class="content-textarea" rows="3"></textarea></div>
+                <button class="save-btn" onclick="saveContent({mvp_man_desc:v('cMvpManDesc'),mvp_plan_desc:v('cMvpPlanDesc'),mvp_van_desc:v('cMvpVanDesc')},'mvpMsg')">Save</button>
+                <span class="save-msg" id="mvpMsg"></span>
             </div>
 
             <!-- Trust cards -->
@@ -1568,14 +1552,10 @@ async function loadContent() {
     document.getElementById('cGoogleReviewUrl').value  = get('google_review_url');
     setPreview('prevHeroImage', get('hero_image_url'));
 
-    // About
-    setPreview('prevAboutPhoto', get('about_photo_url'));
-    document.getElementById('cAboutSubtitle').value = get('about_subtitle');
-    document.getElementById('cAboutName').value     = get('about_name');
-    document.getElementById('cAboutYears').value    = get('about_years');
-    document.getElementById('cAboutBio1').value     = get('about_bio1');
-    document.getElementById('cAboutBio2').value     = get('about_bio2');
-    document.getElementById('cAboutQuote').value    = get('about_quote');
+    // Man / Plan / Van
+    document.getElementById('cMvpManDesc').value  = get('mvp_man_desc');
+    document.getElementById('cMvpPlanDesc').value = get('mvp_plan_desc');
+    document.getElementById('cMvpVanDesc').value  = get('mvp_van_desc');
 
     // Trust cards
     renderTrustCards();

@@ -2256,19 +2256,19 @@
             <a href="page.html?slug=the-man" class="mvp-card">
                 <div class="mvp-icon">🧑‍✈️</div>
                 <h3>The Man</h3>
-                <p>One driver. Jon knows your dog's name before departure. You speak to the same person from first enquiry to doorstep delivery — not a call centre, not a relay of strangers.</p>
+                <p id="mvpManDesc">One driver. Jon knows your dog's name before departure. You speak to the same person from first enquiry to doorstep delivery — not a call centre, not a relay of strangers.</p>
                 <span class="mvp-link">Meet Jon →</span>
             </a>
             <a href="page.html?slug=the-plan" class="mvp-card">
                 <div class="mvp-icon">📋</div>
                 <h3>The Plan</h3>
-                <p>Transparent pricing. DEFRA compliant. AHC paperwork guidance included. No hidden costs, no nasty surprises at the border. You know exactly what you're paying and why.</p>
+                <p id="mvpPlanDesc">Transparent pricing. DEFRA compliant. AHC paperwork guidance included. No hidden costs, no nasty surprises at the border. You know exactly what you're paying and why.</p>
                 <span class="mvp-link">See the plan →</span>
             </a>
             <a href="page.html?slug=the-van" class="mvp-card">
                 <div class="mvp-icon">🚐</div>
                 <h3>The Van</h3>
-                <p>Climate-controlled, GPS tracked, individual crates, regular rest stops. Your dog travels in comfort — not in a cage in the dark — with updates sent throughout the journey.</p>
+                <p id="mvpVanDesc">Climate-controlled, GPS tracked, individual crates, regular rest stops. Your dog travels in comfort — not in a cage in the dark — with updates sent throughout the journey.</p>
                 <span class="mvp-link">See the van →</span>
             </a>
         </div>
@@ -2667,13 +2667,9 @@
                     badge.style.cursor = 'pointer';
                 }
 
-                setImg('aboutPhoto',    c.about_photo_url);
-                setText('aboutYears',   c.about_years);
-                setText('aboutSubtitle', c.about_subtitle);
-                setText('aboutName',    c.about_name);
-                setText('aboutBio1',    c.about_bio1);
-                setText('aboutBio2',    c.about_bio2);
-                setText('aboutQuote',   c.about_quote);
+                setText('mvpManDesc',  c.mvp_man_desc);
+                setText('mvpPlanDesc', c.mvp_plan_desc);
+                setText('mvpVanDesc',  c.mvp_van_desc);
 
                 for (let i = 1; i <= 4; i++) {
                     setText(`trust${i}Title`, c[`trust_${i}_title`]);
