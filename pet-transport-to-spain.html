@@ -362,10 +362,9 @@
             font-size: 30px;
             line-height: 1;
             filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
-            transition: transform 0.6s ease;
         }
-        .vss-van-wrap.flipped .vss-van-icon {
-            transform: scaleX(-1);
+        .vss-van-wrap.flipped {
+            transform: translate(-50%, -50%) scaleX(-1);
         }
         .vss-wheels {
             display: flex;
@@ -2960,11 +2959,15 @@
                 msg = 'Final deliveries today — almost home! 🏠';
                 moving = true;
             } else {
-                pos = spainToUk ? 8 : 92;
+                pos = spainToUk ? -8 : 108;
                 msg = 'Journey complete — pups safely delivered! ✅';
             }
 
-            if (spainToUk) { van.classList.add('flipped'); } else { van.classList.remove('flipped'); }
+            // Flip the whole van+dog: face backwards when stationary (ready to depart / just arrived),
+            // face forwards when actively on the road
+            const isActive = days >= -2 && days <= 0;
+            const shouldFlip = isActive ? spainToUk : !spainToUk;
+            if (shouldFlip) { van.classList.add('flipped'); } else { van.classList.remove('flipped'); }
             van.style.left = pos + '%';
             if (moving) { van.classList.add('moving'); pulse.classList.add('active'); }
             else { van.classList.remove('moving'); pulse.classList.remove('active'); }
