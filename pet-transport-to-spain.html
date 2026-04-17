@@ -61,8 +61,9 @@
       ]
     }
     </script>
-    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" />
-    <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+    <link rel="preconnect" href="https://geztmwtgnbgrobtblotp.supabase.co">
+    <link rel="preconnect" href="https://api.mapbox.com">
+    <link rel="dns-prefetch" href="https://api.mapbox.com">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
       // ── Supabase config ──────────────────────────────────────────────────────
@@ -3353,32 +3354,31 @@
         }
 
         // ── Map ──────────────────────────────────────────────────────────────────
-        mapboxgl.accessToken = MAPBOX_TOKEN;
-        const map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v12',
-            center: [-2, 48],
-            zoom: 5
-        });
-        map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
-
-        let mapLoaded = false;
-        let markers = [];
-
+        let map, mapLoaded = false, markers = [];
         const emptyLine = { type: 'Feature', geometry: { type: 'LineString', coordinates: [] } };
 
-        map.on('load', () => {
-            mapLoaded = true;
-            map.addSource('route-spain', { type: 'geojson', data: emptyLine });
-            map.addLayer({ id: 'route-spain', type: 'line', source: 'route-spain',
-                layout: { 'line-join': 'round', 'line-cap': 'round' },
-                paint: { 'line-color': '#c84b31', 'line-width': 4 } });
-            map.addSource('route-uk', { type: 'geojson', data: emptyLine });
-            map.addLayer({ id: 'route-uk', type: 'line', source: 'route-uk',
-                layout: { 'line-join': 'round', 'line-cap': 'round' },
-                paint: { 'line-color': '#c84b31', 'line-width': 4 } });
-            initMap();
-        });
+        function _setupMapbox() {
+            mapboxgl.accessToken = MAPBOX_TOKEN;
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v12',
+                center: [-2, 48],
+                zoom: 5
+            });
+            map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
+            map.on('load', () => {
+                mapLoaded = true;
+                map.addSource('route-spain', { type: 'geojson', data: emptyLine });
+                map.addLayer({ id: 'route-spain', type: 'line', source: 'route-spain',
+                    layout: { 'line-join': 'round', 'line-cap': 'round' },
+                    paint: { 'line-color': '#c84b31', 'line-width': 4 } });
+                map.addSource('route-uk', { type: 'geojson', data: emptyLine });
+                map.addLayer({ id: 'route-uk', type: 'line', source: 'route-uk',
+                    layout: { 'line-join': 'round', 'line-cap': 'round' },
+                    paint: { 'line-color': '#c84b31', 'line-width': 4 } });
+                initMap();
+            });
+        }
 
         function clearMarkers() {
             markers.forEach(m => m.remove());
@@ -3847,6 +3847,32 @@
                 document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
             });
         });
+
+        // ── Lazy-load Mapbox when booking section approaches viewport ─────────────
+        (function() {
+            let mapboxLoaded = false;
+            function loadMapbox() {
+                if (mapboxLoaded) return;
+                mapboxLoaded = true;
+                const css = document.createElement('link');
+                css.rel = 'stylesheet';
+                css.href = 'https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css';
+                document.head.appendChild(css);
+                const js = document.createElement('script');
+                js.src = 'https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js';
+                js.onload = _setupMapbox;
+                document.head.appendChild(js);
+            }
+            const bookingEl = document.getElementById('booking');
+            if ('IntersectionObserver' in window && bookingEl) {
+                const obs = new IntersectionObserver((entries) => {
+                    if (entries[0].isIntersecting) { obs.disconnect(); loadMapbox(); }
+                }, { rootMargin: '300px' });
+                obs.observe(bookingEl);
+            } else {
+                loadMapbox();
+            }
+        })();
     </script>
 </body>
 </html>
