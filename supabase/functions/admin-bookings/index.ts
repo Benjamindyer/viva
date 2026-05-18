@@ -245,6 +245,47 @@ serve(async (req) => {
       }
     }
 
+    // GET /hero-images
+    if (req.method === 'GET' && path === '/hero-images') {
+      const { data, error } = await supabase.from('hero_images').select('*').order('sort_order')
+      if (error) throw error
+      return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+
+    // POST /hero-images
+    if (req.method === 'POST' && path === '/hero-images') {
+      const body = await req.json()
+      const allowed = ['image_url', 'alt_text', 'caption', 'sort_order', 'active']
+      const insert: Record<string, unknown> = {}
+      for (const key of allowed) {
+        if (body[key] !== undefined) insert[key] = body[key]
+      }
+      const { data, error } = await supabase.from('hero_images').insert(insert).select().single()
+      if (error) throw error
+      return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 201 })
+    }
+
+    // PATCH /hero-images/:id  |  DELETE /hero-images/:id
+    const heroIdMatch = path.match(/^\/hero-images\/([^/]+)$/)
+    if (heroIdMatch) {
+      if (req.method === 'PATCH') {
+        const body = await req.json()
+        const allowed = ['image_url', 'alt_text', 'caption', 'sort_order', 'active']
+        const update: Record<string, unknown> = {}
+        for (const key of allowed) {
+          if (body[key] !== undefined) update[key] = body[key]
+        }
+        const { data, error } = await supabase.from('hero_images').update(update).eq('id', heroIdMatch[1]).select().single()
+        if (error) throw error
+        return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+      }
+      if (req.method === 'DELETE') {
+        const { error } = await supabase.from('hero_images').delete().eq('id', heroIdMatch[1])
+        if (error) throw error
+        return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+      }
+    }
+
     // GET /faqs
     if (req.method === 'GET' && path === '/faqs') {
       const { data, error } = await supabase.from('faqs').select('*').order('sort_order')
