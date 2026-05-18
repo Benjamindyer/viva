@@ -73,6 +73,94 @@
         .nav-links a:hover { color: var(--secondary); }
         nav.scrolled .nav-links a:hover { color: var(--primary); }
 
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Nav dropdown (Areas) */
+        .nav-item-dropdown { position: relative; }
+
+        .nav-dropdown-trigger {
+            background: none; border: none; padding: 0; margin: 0;
+            cursor: pointer; font-family: inherit;
+            color: rgba(255,255,255,0.9);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            font-weight: 500; font-size: 14px;
+            display: inline-flex; align-items: center; gap: 5px;
+            transition: color 0.2s;
+        }
+
+        nav.scrolled .nav-dropdown-trigger { color: #555; text-shadow: none; }
+        .nav-dropdown-trigger:hover,
+        .nav-item-dropdown.open .nav-dropdown-trigger,
+        .nav-item-dropdown:hover .nav-dropdown-trigger {
+            color: var(--secondary); outline: none;
+        }
+        nav.scrolled .nav-dropdown-trigger:hover,
+        nav.scrolled .nav-item-dropdown.open .nav-dropdown-trigger,
+        nav.scrolled .nav-item-dropdown:hover .nav-dropdown-trigger {
+            color: var(--primary);
+        }
+
+        .nav-dropdown-trigger .caret {
+            width: 10px; height: 10px;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-item-dropdown.open .nav-dropdown-trigger .caret,
+        .nav-item-dropdown:hover .nav-dropdown-trigger .caret {
+            transform: rotate(180deg);
+        }
+
+        .nav-dropdown-menu {
+            position: absolute; top: 100%; left: 0;
+            margin: 0; padding: 8px 0;
+            min-width: 220px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.08);
+            list-style: none;
+            opacity: 0; visibility: hidden;
+            transform: translateY(-4px);
+            transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0.18s;
+            z-index: 1100;
+        }
+
+        .nav-item-dropdown.open .nav-dropdown-menu,
+        .nav-item-dropdown:hover .nav-dropdown-menu,
+        .nav-item-dropdown:focus-within .nav-dropdown-menu {
+            opacity: 1; visibility: visible;
+            transform: translateY(0);
+            transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s;
+        }
+
+        .nav-dropdown-menu::before {
+            content: ''; position: absolute;
+            top: -12px; left: 0; right: 0; height: 12px;
+        }
+
+        .nav-dropdown-menu li { list-style: none; }
+
+        .nav-dropdown-menu a {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 18px;
+            color: #444; font-size: 14px; font-weight: 500;
+            text-decoration: none;
+            text-shadow: none;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .nav-dropdown-menu a:hover,
+        .nav-dropdown-menu a:focus-visible {
+            background: rgba(200, 75, 49, 0.08);
+            color: var(--primary);
+            outline: none;
+        }
+
+        .nav-dropdown-menu .flag { font-size: 15px; line-height: 1; }
+
         .nav-cta {
             background: var(--primary); color: white;
             padding: 10px 20px; border-radius: 25px;
@@ -81,6 +169,146 @@
         }
 
         .nav-cta:hover { background: var(--primary-dark); }
+
+        /* Mobile menu button */
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            width: 42px; height: 42px;
+            padding: 8px;
+            cursor: pointer;
+            color: white;
+            border-radius: 8px;
+            transition: background 0.2s, color 0.2s;
+            position: relative;
+            z-index: 1101;
+        }
+
+        nav.scrolled .mobile-menu-btn { color: var(--dark); }
+
+        .mobile-menu-btn:hover { background: rgba(255,255,255,0.15); }
+        nav.scrolled .mobile-menu-btn:hover { background: rgba(0,0,0,0.05); }
+        .mobile-menu-btn:focus-visible {
+            outline: 2px solid var(--secondary); outline-offset: 2px;
+        }
+
+        .mobile-menu-btn svg { display: block; width: 24px; height: 24px; }
+        .mobile-menu-btn .icon-close { display: none; }
+        .mobile-menu-btn[aria-expanded="true"] .icon-open { display: none; }
+        .mobile-menu-btn[aria-expanded="true"] .icon-close { display: block; }
+
+        .mobile-menu-backdrop {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.4);
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+            z-index: 1050;
+        }
+        .mobile-menu-backdrop.active {
+            opacity: 1; visibility: visible;
+            transition: opacity 0.25s ease, visibility 0s;
+        }
+
+        .mobile-menu {
+            position: fixed; top: 0; right: 0; bottom: 0;
+            width: min(340px, 88vw);
+            background: white;
+            box-shadow: -8px 0 28px rgba(0,0,0,0.15);
+            transform: translateX(100%);
+            transition: transform 0.25s ease;
+            z-index: 1060;
+            display: flex; flex-direction: column;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
+
+        .mobile-menu.active { transform: translateX(0); }
+
+        .mobile-menu-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .mobile-menu-header .logo {
+            font-size: 18px; font-weight: 700;
+            color: var(--primary); text-decoration: none;
+            text-shadow: none;
+        }
+
+        .mobile-menu-list { list-style: none; margin: 0; padding: 8px 0; flex: 1; }
+
+        .mobile-menu-list > li > a,
+        .mobile-menu-group-toggle {
+            display: flex; align-items: center; justify-content: space-between;
+            width: 100%;
+            padding: 14px 22px;
+            color: #2a2a2a;
+            font-weight: 500; font-size: 16px;
+            text-decoration: none;
+            text-shadow: none;
+            border-bottom: 1px solid #f5f5f5;
+            background: transparent; border: none;
+            border-bottom: 1px solid #f5f5f5;
+            font-family: inherit; text-align: left;
+            cursor: pointer;
+        }
+
+        .mobile-menu-list > li > a:hover,
+        .mobile-menu-list > li > a:focus-visible,
+        .mobile-menu-group-toggle:hover,
+        .mobile-menu-group-toggle:focus-visible {
+            background: rgba(200, 75, 49, 0.06);
+            color: var(--primary);
+            outline: none;
+        }
+
+        .mobile-menu-group-toggle .caret {
+            width: 14px; height: 14px; color: #888;
+            transition: transform 0.2s ease;
+        }
+        .mobile-menu-group.open .mobile-menu-group-toggle .caret {
+            transform: rotate(180deg);
+        }
+
+        .mobile-menu-group-items {
+            list-style: none; margin: 0; padding: 0;
+            max-height: 0; overflow: hidden;
+            background: #fafafa;
+            transition: max-height 0.25s ease;
+        }
+        .mobile-menu-group.open .mobile-menu-group-items { max-height: 600px; }
+
+        .mobile-menu-group-items a {
+            display: block;
+            padding: 12px 22px 12px 38px;
+            color: #555; font-size: 15px;
+            text-decoration: none;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .mobile-menu-group-items a:hover,
+        .mobile-menu-group-items a:focus-visible {
+            background: rgba(200, 75, 49, 0.06);
+            color: var(--primary);
+            outline: none;
+        }
+
+        .mobile-menu-footer {
+            padding: 18px 20px 28px;
+            display: flex; flex-direction: column; gap: 10px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .mobile-menu-footer .nav-whatsapp,
+        .mobile-menu-footer .nav-cta {
+            display: flex !important;
+            justify-content: center; align-items: center; gap: 8px;
+            width: 100%;
+            padding: 12px 18px;
+            font-size: 15px;
+            text-shadow: none;
+        }
+
+        body.menu-open { overflow: hidden; }
 
         /* ── Hero ── */
         .hero {
@@ -206,10 +434,21 @@
         .nav-whatsapp:hover { background: #1ebe5d; }
         .nav-whatsapp svg { flex-shrink: 0; }
 
+        @media (max-width: 960px) {
+            nav > .nav-links,
+            nav > .nav-actions {
+                display: none !important;
+            }
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
         @media (max-width: 600px) {
             .hero { height: 45vh; }
             .hero-title { font-size: 26px; }
-            .nav-links { display: none; }
         }
     </style>
 </head>
@@ -219,15 +458,68 @@
         <a href="pet-transport-to-spain.html" class="nav-logo">🐕 Viva Españiel</a>
         <ul class="nav-links" id="navLinks">
             <li><a href="pet-transport-to-spain.html#about">About</a></li>
-            <li><a href="pet-transport-to-spain.html#trust">Why Us</a></li>
+            <li class="nav-item-dropdown" id="areasDropdown">
+                <button type="button" class="nav-dropdown-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="areasMenu">
+                    Areas
+                    <svg class="caret" viewBox="0 0 12 7" aria-hidden="true"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <ul class="nav-dropdown-menu" id="areasMenu" role="menu">
+                    <li role="none"><a role="menuitem" href="page.html?slug=malaga"><span class="flag">🇪🇸</span>Málaga</a></li>
+                    <li role="none"><a role="menuitem" href="page.html?slug=marbella"><span class="flag">🇪🇸</span>Marbella</a></li>
+                    <li role="none"><a role="menuitem" href="page.html?slug=costa-del-sol"><span class="flag">🇪🇸</span>Costa del Sol</a></li>
+                    <li role="none"><a role="menuitem" href="page.html?slug=alicante"><span class="flag">🇪🇸</span>Alicante</a></li>
+                    <li role="none"><a role="menuitem" href="page.html?slug=granada"><span class="flag">🇪🇸</span>Granada</a></li>
+                    <li role="none"><a role="menuitem" href="page.html?slug=madrid"><span class="flag">🇪🇸</span>Madrid</a></li>
+                </ul>
+            </li>
             <li><a href="pet-transport-to-spain.html#testimonials">Testimonials</a></li>
         </ul>
-        <a id="navWhatsapp" class="nav-whatsapp" href="#" target="_blank" rel="noopener noreferrer">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            WhatsApp
-        </a>
-        <a href="pet-transport-to-spain.html#booking" class="nav-cta">Book Now</a>
+        <div class="nav-actions">
+            <a id="navWhatsapp" class="nav-whatsapp" href="#" target="_blank" rel="noopener noreferrer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                WhatsApp
+            </a>
+            <a href="pet-transport-to-spain.html#booking" class="nav-cta">Book Now</a>
+        </div>
+        <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMobileMenu()">
+            <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
     </nav>
+
+    <div class="mobile-menu-backdrop" id="mobileMenuBackdrop" onclick="closeMobileMenu()"></div>
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Site navigation">
+        <div class="mobile-menu-header">
+            <a href="pet-transport-to-spain.html" class="logo">🐕 Viva Españiel</a>
+        </div>
+        <ul class="mobile-menu-list">
+            <li><a href="pet-transport-to-spain.html#about" onclick="closeMobileMenu()">About</a></li>
+            <li class="mobile-menu-group" id="mmAreasGroup">
+                <button type="button" class="mobile-menu-group-toggle" aria-expanded="false" aria-controls="mmAreasItems" onclick="toggleMobileAreas(this)">
+                    Areas
+                    <svg class="caret" viewBox="0 0 12 7" aria-hidden="true"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <ul class="mobile-menu-group-items" id="mmAreasItems">
+                    <li><a href="page.html?slug=malaga" onclick="closeMobileMenu()">🇪🇸 Málaga</a></li>
+                    <li><a href="page.html?slug=marbella" onclick="closeMobileMenu()">🇪🇸 Marbella</a></li>
+                    <li><a href="page.html?slug=costa-del-sol" onclick="closeMobileMenu()">🇪🇸 Costa del Sol</a></li>
+                    <li><a href="page.html?slug=alicante" onclick="closeMobileMenu()">🇪🇸 Alicante</a></li>
+                    <li><a href="page.html?slug=granada" onclick="closeMobileMenu()">🇪🇸 Granada</a></li>
+                    <li><a href="page.html?slug=madrid" onclick="closeMobileMenu()">🇪🇸 Madrid</a></li>
+                </ul>
+            </li>
+            <li><a href="pet-transport-to-spain.html#testimonials" onclick="closeMobileMenu()">Testimonials</a></li>
+            <li><a href="pet-transport-to-spain.html#booking" onclick="closeMobileMenu()">Book Now</a></li>
+            <li><a href="blog.html" onclick="closeMobileMenu()">Blog</a></li>
+        </ul>
+        <div class="mobile-menu-footer">
+            <a id="mobileNavWhatsapp" class="nav-whatsapp" style="display:none;" href="#" target="_blank" rel="noopener noreferrer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                WhatsApp
+            </a>
+            <a href="pet-transport-to-spain.html#booking" class="nav-cta" onclick="closeMobileMenu()">Book Now</a>
+        </div>
+    </div>
 
     <div id="heroSlot"></div>
 
@@ -280,13 +572,26 @@
                 const pageRows = pageRes.ok  ? await pageRes.json()  : [];
                 const p        = pageRows[0];
 
-                // Inject custom page links into nav
+                // Inject custom page links into nav. Skip area pages (they're in the Areas dropdown).
+                const AREA_SLUGS = new Set(['malaga', 'marbella', 'costa-del-sol', 'alicante', 'granada', 'madrid']);
                 if (pages.length) {
                     const navLinks = document.getElementById('navLinks');
+                    const mobileList = document.querySelector('.mobile-menu-list');
                     pages.forEach(pg => {
+                        if (AREA_SLUGS.has(pg.slug)) return;
+                        const label = pg.nav_label || pg.slug;
                         const li = document.createElement('li');
-                        li.innerHTML = `<a href="page.html?slug=${pg.slug}">${pg.nav_label || pg.slug}</a>`;
+                        li.innerHTML = `<a href="page.html?slug=${pg.slug}">${label}</a>`;
                         navLinks.appendChild(li);
+                        if (mobileList) {
+                            const mli = document.createElement('li');
+                            const ma = document.createElement('a');
+                            ma.href = `page.html?slug=${pg.slug}`;
+                            ma.textContent = label;
+                            ma.addEventListener('click', closeMobileMenu);
+                            mli.appendChild(ma);
+                            mobileList.appendChild(mli);
+                        }
                     });
                 }
 
@@ -351,12 +656,89 @@
                 const waNumber  = settings.find(r => r.key === 'whatsapp_number')?.value  || '';
                 const waEnabled = settings.find(r => r.key === 'whatsapp_enabled')?.value === 'true';
                 if (waEnabled && waNumber) {
+                    const waUrl = `https://wa.me/${waNumber.replace(/\D/g, '')}`;
                     const el = document.getElementById('navWhatsapp');
-                    el.href = `https://wa.me/${waNumber.replace(/\D/g, '')}`;
-                    el.style.display = 'flex';
+                    if (el) { el.href = waUrl; el.style.display = 'flex'; }
+                    const mEl = document.getElementById('mobileNavWhatsapp');
+                    if (mEl) { mEl.href = waUrl; mEl.style.display = 'flex'; }
                 }
             } catch (e) {}
         }
+
+        // ── Mobile menu + Areas dropdown ─────────────────────────────────────────
+        function openMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const backdrop = document.getElementById('mobileMenuBackdrop');
+            const btn = document.getElementById('mobileMenuBtn');
+            if (!menu || !btn) return;
+            menu.classList.add('active');
+            if (backdrop) backdrop.classList.add('active');
+            btn.setAttribute('aria-expanded', 'true');
+            btn.setAttribute('aria-label', 'Close menu');
+            document.body.classList.add('menu-open');
+        }
+        function closeMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const backdrop = document.getElementById('mobileMenuBackdrop');
+            const btn = document.getElementById('mobileMenuBtn');
+            if (!menu || !btn) return;
+            menu.classList.remove('active');
+            if (backdrop) backdrop.classList.remove('active');
+            btn.setAttribute('aria-expanded', 'false');
+            btn.setAttribute('aria-label', 'Open menu');
+            document.body.classList.remove('menu-open');
+            const grp = document.getElementById('mmAreasGroup');
+            if (grp) {
+                grp.classList.remove('open');
+                const t = grp.querySelector('.mobile-menu-group-toggle');
+                if (t) t.setAttribute('aria-expanded', 'false');
+            }
+        }
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            if (!menu) return;
+            if (menu.classList.contains('active')) closeMobileMenu();
+            else openMobileMenu();
+        }
+        function toggleMobileAreas(btn) {
+            const grp = document.getElementById('mmAreasGroup');
+            if (!grp) return;
+            const open = grp.classList.toggle('open');
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+
+        (function initAreasDropdown() {
+            const dropdown = document.getElementById('areasDropdown');
+            if (!dropdown) return;
+            const trigger = dropdown.querySelector('.nav-dropdown-trigger');
+            const menu = dropdown.querySelector('.nav-dropdown-menu');
+            if (!trigger || !menu) return;
+            function openDD() { dropdown.classList.add('open'); trigger.setAttribute('aria-expanded', 'true'); }
+            function closeDD() { dropdown.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); }
+            function toggleDD() { if (dropdown.classList.contains('open')) closeDD(); else openDD(); }
+            trigger.addEventListener('click', (e) => { e.preventDefault(); toggleDD(); });
+            trigger.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault(); openDD();
+                    const first = menu.querySelector('a'); if (first) first.focus();
+                }
+            });
+            menu.addEventListener('keydown', (e) => {
+                const items = Array.from(menu.querySelectorAll('a'));
+                const idx = items.indexOf(document.activeElement);
+                if (e.key === 'ArrowDown') { e.preventDefault(); (items[(idx + 1) % items.length] || items[0]).focus(); }
+                else if (e.key === 'ArrowUp') { e.preventDefault(); (items[(idx - 1 + items.length) % items.length] || items[0]).focus(); }
+                else if (e.key === 'Escape') { closeDD(); trigger.focus(); }
+            });
+            document.addEventListener('click', (e) => { if (!dropdown.contains(e.target)) closeDD(); });
+        })();
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const menu = document.getElementById('mobileMenu');
+                if (menu && menu.classList.contains('active')) closeMobileMenu();
+            }
+        });
 
         initNav();
         load();
