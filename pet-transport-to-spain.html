@@ -3207,7 +3207,7 @@
                 <h4>Support</h4>
                 <a href="#">Pet Passport Guide</a>
                 <a href="#faq">FAQ</a>
-                <a href="#">Contact</a>
+                <a href="contact.html">Contact</a>
             </div>
             <div class="footer-column">
                 <h4>Areas We Serve</h4>
@@ -3220,7 +3220,8 @@
             </div>
             <div class="footer-column">
                 <h4>Contact</h4>
-                <a href="#">hello@vivaespaniel.com</a>
+                <a href="mailto:hello@vivaespaniel.com">hello@vivaespaniel.com</a>
+                <a href="contact.html">Contact form</a>
                 <a href="#">+44 800 123 4567</a>
                 <a id="footerWhatsapp" href="#" target="_blank" rel="noopener noreferrer" style="display:none;color:#25d366;">💬 WhatsApp Us</a>
             </div>
@@ -3486,7 +3487,7 @@
                 // Re-render gallery
                 if (gallery.length > 0) {
                     document.getElementById('galleryGrid').innerHTML = gallery.map(g => {
-                        const ytMatch = g.video_url && g.video_url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?\s]+)/);
+                        const ytMatch = g.video_url && g.video_url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([^&?\s/]+)/);
                         const ytId = ytMatch ? ytMatch[1] : null;
                         const media = ytId
                             ? `<iframe src="https://www.youtube.com/embed/${ytId}?rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>`
@@ -3542,7 +3543,7 @@
 
             if (allForDir.length === 0) {
                 filterWrap.innerHTML = '';
-                grid.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">No dates available for this direction yet. Please <a href="#contact">contact us</a> directly.</p>';
+                grid.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">No dates available for this direction yet. Please <a href="contact.html">contact us</a> directly.</p>';
                 return;
             }
 

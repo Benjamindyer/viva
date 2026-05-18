@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <title>Contact Jon — Viva Españiel Dog Transport Spain ↔ UK</title>
+    <meta name="description" content="Questions about a journey for your dog? Talk to Jon — same-day reply on WhatsApp, or by email within 24 hours. Contact Viva Españiel, the British-run dog transport service between Spain and the UK.">
+    <link rel="canonical" href="https://www.vivaespaniel.com/contact.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Contact Jon — Viva Españiel">
+    <meta property="og:description" content="Talk to Jon about your dog's journey between Spain and the UK. WhatsApp, email or contact form — same-day reply.">
+    <meta property="og:url" content="https://www.vivaespaniel.com/contact.html">
+    <meta property="og:site_name" content="Viva Españiel">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Contact Jon — Viva Españiel">
+    <meta name="twitter:description" content="Talk to Jon about your dog's journey between Spain and the UK.">
+
+    <link rel="preconnect" href="https://geztmwtgnbgrobtblotp.supabase.co">
+    <script>
+        const SUPABASE_URL      = 'https://geztmwtgnbgrobtblotp.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlenRtd3RnbmJncm9idGJsb3RwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyNDc1NzEsImV4cCI6MjA5MTgyMzU3MX0.HIqvHZohlAk4o_blQKiFmzd6LPpgF2XLG5ZM1uLs-EE';
+        const EDGE_BASE_URL     = `${SUPABASE_URL}/functions/v1`;
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #c84b31;
+            --primary-dark: #a33d28;
+            --secondary: #AA151B;
+            --accent: #2d6a4f;
+            --dark: #1a1a2e;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: #333;
+            background: #fafafa;
+            line-height: 1.6;
+        }
+
+        /* ── Nav ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: background 0.3s, box-shadow 0.3s;
+            background: rgba(255,255,255,0.98);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-logo {
+            font-size: 20px; font-weight: 700;
+            color: var(--primary); text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex; gap: 20px; list-style: none; align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none; color: #555;
+            font-weight: 500; font-size: 14px;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--primary); }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Nav dropdown (Areas) */
+        .nav-item-dropdown { position: relative; }
+
+        .nav-dropdown-trigger {
+            background: none; border: none; padding: 0; margin: 0;
+            cursor: pointer; font-family: inherit;
+            color: #555;
+            font-weight: 500; font-size: 14px;
+            display: inline-flex; align-items: center; gap: 5px;
+            transition: color 0.2s;
+        }
+
+        .nav-dropdown-trigger:hover,
+        .nav-item-dropdown.open .nav-dropdown-trigger,
+        .nav-item-dropdown:hover .nav-dropdown-trigger {
+            color: var(--primary); outline: none;
+        }
+
+        .nav-dropdown-trigger .caret {
+            width: 10px; height: 10px;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-item-dropdown.open .nav-dropdown-trigger .caret,
+        .nav-item-dropdown:hover .nav-dropdown-trigger .caret {
+            transform: rotate(180deg);
+        }
+
+        .nav-dropdown-menu {
+            position: absolute; top: 100%; left: 0;
+            margin: 0; padding: 8px 0;
+            min-width: 220px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.08);
+            list-style: none;
+            opacity: 0; visibility: hidden;
+            transform: translateY(-4px);
+            transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0.18s;
+            z-index: 1100;
+        }
+
+        .nav-item-dropdown.open .nav-dropdown-menu,
+        .nav-item-dropdown:hover .nav-dropdown-menu,
+        .nav-item-dropdown:focus-within .nav-dropdown-menu {
+            opacity: 1; visibility: visible;
+            transform: translateY(0);
+            transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s;
+        }
+
+        .nav-dropdown-menu::before {
+            content: ''; position: absolute;
+            top: -12px; left: 0; right: 0; height: 12px;
+        }
+
+        .nav-dropdown-menu li { list-style: none; }
+
+        .nav-dropdown-menu a {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 18px;
+            color: #444; font-size: 14px; font-weight: 500;
+            text-decoration: none;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .nav-dropdown-menu a:hover,
+        .nav-dropdown-menu a:focus-visible {
+            background: rgba(200, 75, 49, 0.08);
+            color: var(--primary);
+            outline: none;
+        }
+
+        .nav-dropdown-menu .flag { font-size: 15px; line-height: 1; }
+
+        .nav-cta {
+            background: var(--primary); color: white;
+            padding: 10px 20px; border-radius: 25px;
+            text-decoration: none; font-weight: 600; font-size: 14px;
+            transition: background 0.2s;
+        }
+        .nav-cta:hover { background: var(--primary-dark); }
+
+        .nav-whatsapp {
+            display: none; align-items: center; gap: 6px;
+            background: #25d366; color: white; padding: 8px 14px;
+            border-radius: 25px; text-decoration: none; font-weight: 600; font-size: 13px;
+        }
+        .nav-whatsapp:hover { background: #1ebe5d; }
+        .nav-whatsapp svg { flex-shrink: 0; }
+
+        /* Mobile menu button */
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            width: 42px; height: 42px;
+            padding: 8px;
+            cursor: pointer;
+            color: var(--dark);
+            border-radius: 8px;
+            transition: background 0.2s, color 0.2s;
+            position: relative;
+            z-index: 1101;
+        }
+        .mobile-menu-btn:hover { background: rgba(0,0,0,0.05); }
+        .mobile-menu-btn:focus-visible {
+            outline: 2px solid var(--secondary); outline-offset: 2px;
+        }
+        .mobile-menu-btn svg { display: block; width: 24px; height: 24px; }
+        .mobile-menu-btn .icon-close { display: none; }
+        .mobile-menu-btn[aria-expanded="true"] .icon-open { display: none; }
+        .mobile-menu-btn[aria-expanded="true"] .icon-close { display: block; }
+
+        .mobile-menu-backdrop {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.4);
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+            z-index: 1050;
+        }
+        .mobile-menu-backdrop.active {
+            opacity: 1; visibility: visible;
+            transition: opacity 0.25s ease, visibility 0s;
+        }
+
+        .mobile-menu {
+            position: fixed; top: 0; right: 0; bottom: 0;
+            width: min(340px, 88vw);
+            background: white;
+            box-shadow: -8px 0 28px rgba(0,0,0,0.15);
+            transform: translateX(100%);
+            transition: transform 0.25s ease;
+            z-index: 1060;
+            display: flex; flex-direction: column;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
+        .mobile-menu.active { transform: translateX(0); }
+        .mobile-menu-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .mobile-menu-header .logo {
+            font-size: 18px; font-weight: 700;
+            color: var(--primary); text-decoration: none;
+        }
+        .mobile-menu-list { list-style: none; margin: 0; padding: 8px 0; flex: 1; }
+        .mobile-menu-list > li > a,
+        .mobile-menu-group-toggle {
+            display: flex; align-items: center; justify-content: space-between;
+            width: 100%;
+            padding: 14px 22px;
+            color: #2a2a2a;
+            font-weight: 500; font-size: 16px;
+            text-decoration: none;
+            background: transparent; border: none;
+            border-bottom: 1px solid #f5f5f5;
+            font-family: inherit; text-align: left;
+            cursor: pointer;
+        }
+        .mobile-menu-list > li > a:hover,
+        .mobile-menu-list > li > a:focus-visible,
+        .mobile-menu-group-toggle:hover,
+        .mobile-menu-group-toggle:focus-visible {
+            background: rgba(200, 75, 49, 0.06);
+            color: var(--primary);
+            outline: none;
+        }
+        .mobile-menu-group-toggle .caret {
+            width: 14px; height: 14px; color: #888;
+            transition: transform 0.2s ease;
+        }
+        .mobile-menu-group.open .mobile-menu-group-toggle .caret {
+            transform: rotate(180deg);
+        }
+        .mobile-menu-group-items {
+            list-style: none; margin: 0; padding: 0;
+            max-height: 0; overflow: hidden;
+            background: #fafafa;
+            transition: max-height 0.25s ease;
+        }
+        .mobile-menu-group.open .mobile-menu-group-items { max-height: 600px; }
+        .mobile-menu-group-items a {
+            display: block;
+            padding: 12px 22px 12px 38px;
+            color: #555; font-size: 15px;
+            text-decoration: none;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .mobile-menu-group-items a:hover,
+        .mobile-menu-group-items a:focus-visible {
+            background: rgba(200, 75, 49, 0.06);
+            color: var(--primary);
+            outline: none;
+        }
+        .mobile-menu-footer {
+            padding: 18px 20px 28px;
+            display: flex; flex-direction: column; gap: 10px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .mobile-menu-footer .nav-whatsapp,
+        .mobile-menu-footer .nav-cta {
+            display: flex !important;
+            justify-content: center; align-items: center; gap: 8px;
+            width: 100%;
+            padding: 12px 18px;
+            font-size: 15px;
+        }
+
+        body.menu-open { overflow: hidden; }
+
+        /* ── Contact hero ── */
+        .contact-hero {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 120px 24px 60px;
+            text-align: center;
+        }
+        .contact-hero h1 {
+            font-size: clamp(28px, 5vw, 44px);
+            font-weight: 700;
+            margin-bottom: 14px;
+            line-height: 1.15;
+        }
+        .contact-hero p {
+            max-width: 620px;
+            margin: 0 auto;
+            font-size: clamp(15px, 1.6vw, 17px);
+            color: rgba(255,255,255,0.92);
+        }
+
+        /* ── Contact methods cards ── */
+        .contact-methods {
+            max-width: 1080px;
+            margin: -40px auto 0;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+        .contact-methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+        }
+        .contact-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid var(--border);
+        }
+        .contact-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 36px rgba(0,0,0,0.12);
+        }
+        .contact-card .icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+        .contact-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 6px;
+            letter-spacing: 0.2px;
+        }
+        .contact-card .value {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 15px;
+            word-break: break-word;
+        }
+        .contact-card .hint {
+            display: block;
+            margin-top: 6px;
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+        /* ── Contact form section ── */
+        .contact-form-section {
+            max-width: 720px;
+            margin: 60px auto 0;
+            padding: 0 24px 80px;
+        }
+        .contact-form-card {
+            background: white;
+            border-radius: 16px;
+            padding: 36px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid var(--border);
+        }
+        .contact-form-card h2 {
+            font-size: 24px;
+            color: var(--dark);
+            margin-bottom: 6px;
+        }
+        .contact-form-card .form-intro {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 26px;
+        }
+        .form-field {
+            margin-bottom: 18px;
+        }
+        .form-field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #2a2a2a;
+            margin-bottom: 6px;
+            letter-spacing: 0.2px;
+        }
+        .form-field label .req { color: var(--primary); margin-left: 2px; }
+        .form-field input,
+        .form-field select,
+        .form-field textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            color: #1a1a2e;
+            background: white;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-field input:focus,
+        .form-field select:focus,
+        .form-field textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(200, 75, 49, 0.12);
+        }
+        .form-field textarea {
+            resize: vertical;
+            min-height: 140px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 560px) {
+            .form-row { grid-template-columns: 1fr; gap: 0; }
+        }
+
+        /* Honeypot — visually hidden, off-screen */
+        .hp-field {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            width: 1px; height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .submit-row {
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 14px 32px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            font-family: inherit;
+        }
+        .btn-submit:hover { background: var(--primary-dark); }
+        .btn-submit:active { transform: scale(0.98); }
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .form-message {
+            display: none;
+            margin-top: 18px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.55;
+        }
+        .form-message.success {
+            display: block;
+            background: rgba(45, 106, 79, 0.1);
+            border: 1px solid rgba(45, 106, 79, 0.3);
+            color: var(--accent);
+        }
+        .form-message.error {
+            display: block;
+            background: rgba(200, 75, 49, 0.08);
+            border: 1px solid rgba(200, 75, 49, 0.3);
+            color: var(--primary-dark);
+        }
+        .form-message a { color: inherit; font-weight: 600; }
+
+        /* ── Footer (copied from pet-transport-to-spain.html) ── */
+        footer {
+            background: var(--dark);
+            color: rgba(255,255,255,0.7);
+            padding: 60px 24px 30px;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
+            gap: 40px;
+        }
+        .footer-brand h3 {
+            color: white;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+        .footer-brand p {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .footer-column h4 {
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+        .footer-column a {
+            display: block;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 10px;
+            transition: color 0.2s;
+        }
+        .footer-column a:hover { color: var(--secondary); }
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 36px auto 0;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+        }
+        .footer-bottom a { color: rgba(255,255,255,0.5); text-decoration: none; }
+
+        @media (max-width: 900px) {
+            .footer-content { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 540px) {
+            .footer-content { grid-template-columns: 1fr; gap: 28px; }
+        }
+
+        @media (max-width: 960px) {
+            nav > .nav-links,
+            nav > .nav-actions {
+                display: none !important;
+            }
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .contact-hero { padding: 110px 20px 50px; }
+            .contact-form-card { padding: 24px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="nav">
+        <a href="pet-transport-to-spain.html" class="nav-logo">🐕 Viva Españiel</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="pet-transport-to-spain.html#about">About</a></li>
+            <li class="nav-item-dropdown" id="areasDropdown">
+                <button type="button" class="nav-dropdown-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="areasMenu">
+                    Areas
+                    <svg class="caret" viewBox="0 0 12 7" aria-hidden="true"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <ul class="nav-dropdown-menu" id="areasMenu" role="menu">
+                    <li role="none"><a role="menuitem" href="page.html?slug=malaga"><span class="flag">🇪🇸</span>Málaga</a></li>
+                    <li role="none"><a role="menuitem" href="page.html?slug=marbella"><span class="flag">🇪🇸</span>Marbella</a></li>
+                    <li role="none"><a role="menuitem" href="page.html?slug=costa-del-sol"><span class="flag">🇪🇸</span>Costa del Sol</a></li>
+                    <li role="none"><a role="menuitem" href="page.html?slug=alicante"><span class="flag">🇪🇸</span>Alicante</a></li>
+                    <li role="none"><a role="menuitem" href="page.html?slug=granada"><span class="flag">🇪🇸</span>Granada</a></li>
+                    <li role="none"><a role="menuitem" href="page.html?slug=madrid"><span class="flag">🇪🇸</span>Madrid</a></li>
+                </ul>
+            </li>
+            <li><a href="pet-transport-to-spain.html#booking">Book Now</a></li>
+            <li><a href="pet-transport-to-spain.html#testimonials">Testimonials</a></li>
+            <li><a href="blog.html">Blog</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a id="navWhatsapp" class="nav-whatsapp" href="#" target="_blank" rel="noopener noreferrer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                WhatsApp
+            </a>
+            <a href="pet-transport-to-spain.html#booking" class="nav-cta">Book Transport</a>
+        </div>
+        <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMobileMenu()">
+            <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </nav>
+
+    <div class="mobile-menu-backdrop" id="mobileMenuBackdrop" onclick="closeMobileMenu()"></div>
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Site navigation">
+        <div class="mobile-menu-header">
+            <a href="pet-transport-to-spain.html" class="logo" onclick="closeMobileMenu()">🐕 Viva Españiel</a>
+        </div>
+        <ul class="mobile-menu-list">
+            <li><a href="pet-transport-to-spain.html#about" onclick="closeMobileMenu()">About</a></li>
+            <li class="mobile-menu-group" id="mmAreasGroup">
+                <button type="button" class="mobile-menu-group-toggle" aria-expanded="false" aria-controls="mmAreasItems" onclick="toggleMobileAreas(this)">
+                    Areas
+                    <svg class="caret" viewBox="0 0 12 7" aria-hidden="true"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <ul class="mobile-menu-group-items" id="mmAreasItems">
+                    <li><a href="page.html?slug=malaga" onclick="closeMobileMenu()">🇪🇸 Málaga</a></li>
+                    <li><a href="page.html?slug=marbella" onclick="closeMobileMenu()">🇪🇸 Marbella</a></li>
+                    <li><a href="page.html?slug=costa-del-sol" onclick="closeMobileMenu()">🇪🇸 Costa del Sol</a></li>
+                    <li><a href="page.html?slug=alicante" onclick="closeMobileMenu()">🇪🇸 Alicante</a></li>
+                    <li><a href="page.html?slug=granada" onclick="closeMobileMenu()">🇪🇸 Granada</a></li>
+                    <li><a href="page.html?slug=madrid" onclick="closeMobileMenu()">🇪🇸 Madrid</a></li>
+                </ul>
+            </li>
+            <li><a href="pet-transport-to-spain.html#booking" onclick="closeMobileMenu()">Book Now</a></li>
+            <li><a href="pet-transport-to-spain.html#testimonials" onclick="closeMobileMenu()">Testimonials</a></li>
+            <li><a href="blog.html" onclick="closeMobileMenu()">Blog</a></li>
+        </ul>
+        <div class="mobile-menu-footer">
+            <a id="mobileNavWhatsapp" class="nav-whatsapp" style="display:none;" href="#" target="_blank" rel="noopener noreferrer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                WhatsApp
+            </a>
+            <a href="pet-transport-to-spain.html#booking" class="nav-cta" onclick="closeMobileMenu()">Book Transport</a>
+        </div>
+    </div>
+
+    <!-- Hero -->
+    <section class="contact-hero">
+        <h1>Get in Touch</h1>
+        <p>Questions about a journey for your dog? Talk to Jon — same-day reply on WhatsApp, or by email within 24 hours.</p>
+    </section>
+
+    <!-- Contact methods -->
+    <section class="contact-methods" aria-label="Ways to contact us">
+        <div class="contact-methods-grid">
+            <a class="contact-card" href="mailto:hello@vivaespaniel.com">
+                <div class="icon" aria-hidden="true">✉️</div>
+                <h3>Email Us</h3>
+                <div class="value">hello@vivaespaniel.com</div>
+                <span class="hint">Reply within 24 hours</span>
+            </a>
+            <a class="contact-card" id="contactWhatsappCard" href="#" target="_blank" rel="noopener noreferrer" style="display:none;">
+                <div class="icon" aria-hidden="true">💬</div>
+                <h3>Chat on WhatsApp</h3>
+                <div class="value" id="contactWhatsappNumber">Loading…</div>
+                <span class="hint">Fastest — usually a same-day reply</span>
+            </a>
+            <a class="contact-card" id="contactPhoneCard" href="#" style="display:none;">
+                <div class="icon" aria-hidden="true">📞</div>
+                <h3>Call Us</h3>
+                <div class="value" id="contactPhoneNumber">Loading…</div>
+                <span class="hint">UK office hours, Mon–Sat</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Contact form -->
+    <section class="contact-form-section">
+        <div class="contact-form-card">
+            <h2>Send us a message</h2>
+            <p class="form-intro">Tell us a bit about your dog and what you're hoping to arrange. We'll be in touch shortly.</p>
+
+            <form id="contactForm" novalidate>
+                <!-- Honeypot — bots fill this, humans don't see it -->
+                <div class="hp-field" aria-hidden="true">
+                    <label for="cWebsite">Website</label>
+                    <input type="text" id="cWebsite" name="website" tabindex="-1" autocomplete="off">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="cName">Your name<span class="req">*</span></label>
+                        <input type="text" id="cName" name="name" required maxlength="100" autocomplete="name">
+                    </div>
+                    <div class="form-field">
+                        <label for="cEmail">Email<span class="req">*</span></label>
+                        <input type="email" id="cEmail" name="email" required maxlength="200" autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="cPhone">Phone <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
+                        <input type="tel" id="cPhone" name="phone" maxlength="50" autocomplete="tel">
+                    </div>
+                    <div class="form-field">
+                        <label for="cSubject">Subject</label>
+                        <select id="cSubject" name="subject">
+                            <option value="">— Select —</option>
+                            <option value="General">General question</option>
+                            <option value="Booking question">Booking question</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="cMessage">Message<span class="req">*</span></label>
+                    <textarea id="cMessage" name="message" required maxlength="5000" rows="6" placeholder="Tell us about your dog, where you are, and where you'd like to travel…"></textarea>
+                </div>
+
+                <div class="submit-row">
+                    <button type="submit" class="btn-submit" id="cSubmitBtn">Send message</button>
+                    <small style="color:var(--muted);font-size:12px;">We never share your details. By submitting you agree to be contacted about your enquiry.</small>
+                </div>
+
+                <div class="form-message" id="cFormMsg" role="status" aria-live="polite"></div>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>🐕 Viva Españiel</h3>
+                <p id="footerTagline">Reuniting dogs with their families since 2019. Made with love and plenty of treats.</p>
+            </div>
+            <div class="footer-column">
+                <h4>Links</h4>
+                <a href="pet-transport-to-spain.html#trust">Why Us</a>
+                <a href="pet-transport-to-spain.html#booking">Book Now</a>
+                <a href="pet-transport-to-spain.html#testimonials">Testimonials</a>
+            </div>
+            <div class="footer-column">
+                <h4>Support</h4>
+                <a href="pet-transport-to-spain.html">Pet Passport Guide</a>
+                <a href="pet-transport-to-spain.html#faq">FAQ</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <div class="footer-column">
+                <h4>Areas We Serve</h4>
+                <a href="page.html?slug=malaga">Dog Transport Málaga</a>
+                <a href="page.html?slug=marbella">Dog Transport Marbella</a>
+                <a href="page.html?slug=costa-del-sol">Dog Transport Costa del Sol</a>
+                <a href="page.html?slug=alicante">Dog Transport Alicante</a>
+                <a href="page.html?slug=granada">Dog Transport Granada</a>
+                <a href="page.html?slug=madrid">Dog Transport Madrid</a>
+            </div>
+            <div class="footer-column">
+                <h4>Contact</h4>
+                <a href="mailto:hello@vivaespaniel.com">hello@vivaespaniel.com</a>
+                <a id="footerWhatsapp" href="#" target="_blank" rel="noopener noreferrer" style="display:none;color:#25d366;">💬 WhatsApp Us</a>
+            </div>
+        </div>
+        <div class="footer-bottom">© 2026 Viva Españiel • Spain ↔ UK pet transport • <a href="llm-info.html" style="color:#666;">AI Info</a></div>
+    </footer>
+
+    <script>
+        // ── WhatsApp + contact details from settings ──────────────────────────────
+        async function initContactSettings() {
+            const h = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY };
+            try {
+                const res = await fetch(
+                    `${SUPABASE_URL}/rest/v1/settings?key=in.(whatsapp_number,whatsapp_enabled)&select=key,value`,
+                    { headers: h }
+                );
+                if (!res.ok) return;
+                const settings = await res.json();
+                const waNumber  = settings.find(r => r.key === 'whatsapp_number')?.value || '';
+                const waEnabled = settings.find(r => r.key === 'whatsapp_enabled')?.value === 'true';
+
+                if (waEnabled && waNumber) {
+                    const digits = waNumber.replace(/\D/g, '');
+                    const waUrl  = `https://wa.me/${digits}`;
+
+                    // Nav + mobile menu WhatsApp buttons
+                    const navWa  = document.getElementById('navWhatsapp');
+                    if (navWa)  { navWa.href = waUrl; navWa.style.display = 'flex'; }
+                    const mNavWa = document.getElementById('mobileNavWhatsapp');
+                    if (mNavWa) { mNavWa.href = waUrl; mNavWa.style.display = 'flex'; }
+                    const fWa    = document.getElementById('footerWhatsapp');
+                    if (fWa)    { fWa.href = waUrl; fWa.style.display = 'inline-block'; }
+
+                    // WhatsApp contact card
+                    const waCard = document.getElementById('contactWhatsappCard');
+                    const waNum  = document.getElementById('contactWhatsappNumber');
+                    if (waCard && waNum) {
+                        waCard.href = waUrl;
+                        waNum.textContent = waNumber;
+                        waCard.style.display = 'block';
+                    }
+
+                    // Phone card uses the same number (it's the line Jon answers)
+                    const phoneCard = document.getElementById('contactPhoneCard');
+                    const phoneNum  = document.getElementById('contactPhoneNumber');
+                    if (phoneCard && phoneNum) {
+                        phoneCard.href = `tel:${digits.startsWith('00') ? '+' + digits.slice(2) : '+' + digits}`;
+                        phoneNum.textContent = waNumber;
+                        phoneCard.style.display = 'block';
+                    }
+                }
+            } catch (e) { /* silent — non-critical */ }
+        }
+
+        // ── Mobile menu + Areas dropdown ──────────────────────────────────────────
+        function openMobileMenu() {
+            const menu     = document.getElementById('mobileMenu');
+            const backdrop = document.getElementById('mobileMenuBackdrop');
+            const btn      = document.getElementById('mobileMenuBtn');
+            if (!menu || !btn) return;
+            menu.classList.add('active');
+            if (backdrop) backdrop.classList.add('active');
+            btn.setAttribute('aria-expanded', 'true');
+            btn.setAttribute('aria-label', 'Close menu');
+            document.body.classList.add('menu-open');
+        }
+        function closeMobileMenu() {
+            const menu     = document.getElementById('mobileMenu');
+            const backdrop = document.getElementById('mobileMenuBackdrop');
+            const btn      = document.getElementById('mobileMenuBtn');
+            if (!menu || !btn) return;
+            menu.classList.remove('active');
+            if (backdrop) backdrop.classList.remove('active');
+            btn.setAttribute('aria-expanded', 'false');
+            btn.setAttribute('aria-label', 'Open menu');
+            document.body.classList.remove('menu-open');
+            const grp = document.getElementById('mmAreasGroup');
+            if (grp) {
+                grp.classList.remove('open');
+                const t = grp.querySelector('.mobile-menu-group-toggle');
+                if (t) t.setAttribute('aria-expanded', 'false');
+            }
+        }
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            if (!menu) return;
+            if (menu.classList.contains('active')) closeMobileMenu();
+            else openMobileMenu();
+        }
+        function toggleMobileAreas(btn) {
+            const grp = document.getElementById('mmAreasGroup');
+            if (!grp) return;
+            const open = grp.classList.toggle('open');
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+
+        (function initAreasDropdown() {
+            const dropdown = document.getElementById('areasDropdown');
+            if (!dropdown) return;
+            const trigger = dropdown.querySelector('.nav-dropdown-trigger');
+            const menu    = dropdown.querySelector('.nav-dropdown-menu');
+            if (!trigger || !menu) return;
+            function openDD()   { dropdown.classList.add('open');    trigger.setAttribute('aria-expanded', 'true'); }
+            function closeDD()  { dropdown.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); }
+            function toggleDD() { if (dropdown.classList.contains('open')) closeDD(); else openDD(); }
+            trigger.addEventListener('click', (e) => { e.preventDefault(); toggleDD(); });
+            trigger.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault(); openDD();
+                    const first = menu.querySelector('a'); if (first) first.focus();
+                }
+            });
+            menu.addEventListener('keydown', (e) => {
+                const items = Array.from(menu.querySelectorAll('a'));
+                const idx = items.indexOf(document.activeElement);
+                if (e.key === 'ArrowDown') { e.preventDefault(); (items[(idx + 1) % items.length] || items[0]).focus(); }
+                else if (e.key === 'ArrowUp') { e.preventDefault(); (items[(idx - 1 + items.length) % items.length] || items[0]).focus(); }
+                else if (e.key === 'Escape') { closeDD(); trigger.focus(); }
+            });
+            document.addEventListener('click', (e) => { if (!dropdown.contains(e.target)) closeDD(); });
+        })();
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const menu = document.getElementById('mobileMenu');
+                if (menu && menu.classList.contains('active')) closeMobileMenu();
+            }
+        });
+
+        // ── Contact form submit ───────────────────────────────────────────────────
+        function showFormMessage(kind, html) {
+            const el = document.getElementById('cFormMsg');
+            el.className = 'form-message ' + kind;
+            el.innerHTML = html;
+        }
+        function clearFormMessage() {
+            const el = document.getElementById('cFormMsg');
+            el.className = 'form-message';
+            el.innerHTML = '';
+        }
+
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearFormMessage();
+
+            const name    = document.getElementById('cName').value.trim();
+            const email   = document.getElementById('cEmail').value.trim();
+            const phone   = document.getElementById('cPhone').value.trim();
+            const subject = document.getElementById('cSubject').value.trim();
+            const message = document.getElementById('cMessage').value.trim();
+            const website = document.getElementById('cWebsite').value.trim();
+
+            // Client-side required check
+            if (!name || !email || !message) {
+                showFormMessage('error', 'Please fill in your name, email and message.');
+                return;
+            }
+            // Simple email format check
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showFormMessage('error', 'Please enter a valid email address.');
+                return;
+            }
+
+            const btn = document.getElementById('cSubmitBtn');
+            const originalLabel = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Sending…';
+
+            try {
+                const res = await fetch(`${EDGE_BASE_URL}/submit-contact`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type':  'application/json',
+                        'apikey':        SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    },
+                    body: JSON.stringify({ name, email, phone, subject, message, website }),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    throw new Error(data.error || `Request failed (${res.status})`);
+                }
+                showFormMessage(
+                    'success',
+                    'Message sent — Jon will get back to you within 24 hours. We\'ve also sent you a confirmation email.'
+                );
+                document.getElementById('contactForm').reset();
+            } catch (err) {
+                showFormMessage(
+                    'error',
+                    `Sorry, we couldn't send your message. ${err.message || ''}<br>You can also email us directly at <a href="mailto:hello@vivaespaniel.com">hello@vivaespaniel.com</a>.`
+                );
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalLabel;
+            }
+        });
+
+        initContactSettings();
+    </script>
+</body>
+</html>

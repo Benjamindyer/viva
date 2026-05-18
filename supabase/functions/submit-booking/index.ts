@@ -15,7 +15,7 @@ function generateReference(): string {
   return ref
 }
 
-async function sendEmail(to: string, subject: string, html: string, resendKey: string) {
+async function sendEmail(to: string, subject: string, html: string, resendKey: string, replyTo: string) {
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -24,7 +24,7 @@ async function sendEmail(to: string, subject: string, html: string, resendKey: s
     },
     body: JSON.stringify({
       from: 'Viva Españiel <bookings@vivaespaniel.com>',
-      reply_to: 'farmerpalma@gmail.com',
+      reply_to: replyTo,
       to: [to],
       subject,
       html,
@@ -137,17 +137,26 @@ serve(async (req) => {
 
     // Send emails (best-effort — don't fail the booking if email fails)
     const resendKey = Deno.env.get('RESEND_API_KEY')
-    const jonEmail = Deno.env.get('JON_EMAIL') || 'jon@vivaespaniel.com'
 
     if (resendKey) {
       const directionLabel = direction === 'spain_to_uk' ? 'Spain → UK' : 'UK → Spain'
 
-      // Fetch editable email template blocks
+      // Fetch editable email template blocks + notification settings in one query
       const { data: templateRows } = await supabase
         .from('content')
         .select('key,value')
-        .in('key', ['email_request_subject', 'email_request_intro', 'email_request_footer'])
+        .in('key', [
+          'email_request_subject', 'email_request_intro', 'email_request_footer',
+          'admin_notification_email', 'admin_reply_to_email',
+        ])
       const tpl: Record<string, string> = Object.fromEntries((templateRows || []).map(r => [r.key, r.value]))
+
+      // Admin-editable recipient + reply-to, with fallbacks: content → env var → hardcoded
+      const jonEmail = (tpl['admin_notification_email'] || '').trim()
+        || Deno.env.get('JON_EMAIL')
+        || 'vivaespaniel@gmail.com'
+      const replyTo  = (tpl['admin_reply_to_email'] || '').trim()
+        || 'vivaespaniel@gmail.com'
 
       const vars: Record<string, string> = {
         first_name: firstName,
@@ -226,8 +235,8 @@ serve(async (req) => {
         </div>`
 
       await Promise.allSettled([
-        sendEmail(email, customerSubject, customerHtml, resendKey),
-        sendEmail(jonEmail, `New booking request: ${reference} — ${firstName} ${lastName} — £${Number(totalPriceGbp).toFixed(2)}`, jonHtml, resendKey),
+        sendEmail(email,    customerSubject, customerHtml, resendKey, replyTo),
+        sendEmail(jonEmail, `New booking request: ${reference} — ${firstName} ${lastName} — £${Number(totalPriceGbp).toFixed(2)}`, jonHtml, resendKey, email),
       ])
     }
 
