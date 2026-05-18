@@ -527,6 +527,26 @@
                 <h3>✉️ Email Templates</h3>
                 <p style="font-size:13px;color:var(--muted);margin:-10px 0 18px;">Edit the text Jon's customers receive. Use these variables anywhere: <code style="background:#f4f5f7;padding:1px 5px;border-radius:4px;font-size:12px;">{first_name} {dog_name} {reference} {deposit} {balance} {direction} {travel_date}</code></p>
 
+                <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#999;margin-bottom:12px;">🔔 Notifications <span style="font-weight:400;text-transform:none;letter-spacing:0;">(who receives operator alerts &amp; what customers see in their inbox)</span></p>
+                <div class="content-field">
+                    <label>Notification email <span style="font-weight:400;color:var(--muted)">— where new bookings &amp; contact-form submissions are sent</span></label>
+                    <input type="email" id="cAdminNotificationEmail" class="content-input" placeholder="vivaespaniel@gmail.com" autocomplete="email">
+                    <small style="display:block;color:var(--muted);font-size:12px;margin-top:4px;">Must be a valid email address.</small>
+                </div>
+                <div class="content-field">
+                    <label>Reply-to email <span style="font-weight:400;color:var(--muted)">— what customers see when they hit reply on confirmation emails</span></label>
+                    <input type="email" id="cAdminReplyToEmail" class="content-input" placeholder="vivaespaniel@gmail.com" autocomplete="email">
+                    <small style="display:block;color:var(--muted);font-size:12px;margin-top:4px;">Must be a valid email address.</small>
+                </div>
+                <div class="content-field">
+                    <label>Contact-form inbox <span style="font-weight:400;color:var(--muted)">— overrides the notification email for the public contact form (leave blank to use the notification email above)</span></label>
+                    <input type="email" id="cContactFormToEmail" class="content-input" placeholder="vivaespaniel@gmail.com" autocomplete="email">
+                </div>
+                <button class="save-btn" onclick="saveNotificationEmails()">Save</button>
+                <span class="save-msg" id="notifyMsg"></span>
+
+                <hr style="border:none;border-top:1px solid var(--border);margin:24px 0;">
+
                 <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#999;margin-bottom:12px;">📬 Booking Request Received <span style="font-weight:400;text-transform:none;letter-spacing:0;">(sent automatically when customer submits)</span></p>
                 <div class="content-field">
                     <label>Subject line</label>
@@ -1570,6 +1590,11 @@ async function loadContent() {
     document.getElementById('cMetaTitle').value     = get('meta_title');
     document.getElementById('cMetaDesc').value      = get('meta_description');
 
+    // Notification settings
+    document.getElementById('cAdminNotificationEmail').value = get('admin_notification_email');
+    document.getElementById('cAdminReplyToEmail').value      = get('admin_reply_to_email');
+    document.getElementById('cContactFormToEmail').value     = get('contact_form_to_email');
+
     // Email templates
     document.getElementById('cEmailReqSubject').value = get('email_request_subject');
     document.getElementById('cEmailReqIntro').value   = get('email_request_intro');
@@ -1578,6 +1603,32 @@ async function loadContent() {
     document.getElementById('cEmailPayIntro').value   = get('email_payment_intro');
     document.getElementById('cEmailPayNote').value    = get('email_payment_note');
     document.getElementById('cEmailPayFooter').value  = get('email_payment_footer');
+}
+
+function saveNotificationEmails() {
+    const notif   = (v('cAdminNotificationEmail') || '').trim();
+    const replyTo = (v('cAdminReplyToEmail')      || '').trim();
+    const contact = (v('cContactFormToEmail')     || '').trim();
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const msg     = document.getElementById('notifyMsg');
+    if (!notif || !replyTo) {
+        msg.textContent = 'Notification email and reply-to are required.';
+        msg.style.color = 'var(--primary)';
+        msg.style.display = 'inline';
+        return;
+    }
+    const invalid = [notif, replyTo, contact].filter(e => e && !emailRe.test(e));
+    if (invalid.length) {
+        msg.textContent = 'Please enter valid email address(es).';
+        msg.style.color = 'var(--primary)';
+        msg.style.display = 'inline';
+        return;
+    }
+    saveContent({
+        admin_notification_email: notif,
+        admin_reply_to_email:     replyTo,
+        contact_form_to_email:    contact,
+    }, 'notifyMsg');
 }
 
 function setPreview(id, url) {

@@ -67,8 +67,12 @@ serve(async (req) => {
     const { data: templateRows } = await supabase
       .from('content')
       .select('key,value')
-      .in('key', ['email_payment_subject', 'email_payment_intro', 'email_payment_note', 'email_payment_footer'])
+      .in('key', [
+        'email_payment_subject', 'email_payment_intro', 'email_payment_note', 'email_payment_footer',
+        'admin_reply_to_email',
+      ])
     const tpl: Record<string, string> = Object.fromEntries((templateRows || []).map(r => [r.key, r.value]))
+    const replyTo = (tpl['admin_reply_to_email'] || '').trim() || 'vivaespaniel@gmail.com'
 
     const resendKey = Deno.env.get('RESEND_API_KEY')
     if (!resendKey) throw new Error('RESEND_API_KEY not configured')
@@ -144,7 +148,7 @@ serve(async (req) => {
       headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         from: 'Viva Españiel <bookings@vivaespaniel.com>',
-        reply_to: 'farmerpalma@gmail.com',
+        reply_to: replyTo,
         to: [booking.email],
         subject: emailSubject,
         html,
