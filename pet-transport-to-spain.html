@@ -3487,7 +3487,7 @@
                 // Re-render gallery
                 if (gallery.length > 0) {
                     document.getElementById('galleryGrid').innerHTML = gallery.map(g => {
-                        const ytMatch = g.video_url && g.video_url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?\s]+)/);
+                        const ytMatch = g.video_url && g.video_url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([^&?\s/]+)/);
                         const ytId = ytMatch ? ytMatch[1] : null;
                         const media = ytId
                             ? `<iframe src="https://www.youtube.com/embed/${ytId}?rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>`
