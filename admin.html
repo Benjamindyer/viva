@@ -1549,16 +1549,18 @@ let editingItem = null;    // { type, id } or { type, id: null } for new
 const v = id => document.getElementById(id)?.value || '';
 
 async function loadContent() {
-    const [cr, tr, gr, fr] = await Promise.all([
+    const [cr, tr, gr, fr, hr] = await Promise.all([
         adminFetch('/content'),
         adminFetch('/testimonials'),
         adminFetch('/gallery'),
         adminFetch('/faqs'),
+        adminFetch('/hero-images'),
     ]);
     cmsContent      = Object.fromEntries((await cr.json()).map(r => [r.key, r.value]));
     cmsTestimonials = await tr.json();
     cmsGallery      = await gr.json();
     cmsFaqs         = await fr.json();
+    cmsHeroImages   = hr.ok ? await hr.json() : [];
 
     const get = k => cmsContent[k] || '';
 
@@ -1584,6 +1586,7 @@ async function loadContent() {
     renderTestimonialsList();
     renderGalleryList();
     renderFaqsList();
+    renderHeroImagesGrid();
 
     // Footer / meta
     document.getElementById('cFooterTagline').value = get('footer_tagline');
@@ -1729,6 +1732,247 @@ function renderTestimonialsList() {
             </div>
         </div>
     `).join('');
+}
+
+// ── Hero carousel admin ───────────────────────────────────────────────────────
+
+// Client-side image resize: returns a JPEG Blob fitting within maxW × maxH (no upscaling).
+async function resizeImage(file, maxW = 1920, maxH = 1080, quality = 0.85) {
+    if (!file || !file.type || !file.type.startsWith('image/')) {
+        throw new Error('Only image files are allowed.');
+    }
+    const dataUrl = await new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(r.result);
+        r.onerror = () => reject(new Error('Could not read file.'));
+        r.readAsDataURL(file);
+    });
+    const img = await new Promise((resolve, reject) => {
+        const i = new Image();
+        i.onload  = () => resolve(i);
+        i.onerror = () => reject(new Error('Could not decode image.'));
+        i.src = dataUrl;
+    });
+    const ratio = Math.min(maxW / img.naturalWidth, maxH / img.naturalHeight, 1);
+    const w = Math.round(img.naturalWidth  * ratio);
+    const h = Math.round(img.naturalHeight * ratio);
+    const canvas = document.createElement('canvas');
+    canvas.width  = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, w, h);
+    ctx.drawImage(img, 0, 0, w, h);
+    const blob = await new Promise((resolve, reject) => {
+        canvas.toBlob(b => b ? resolve(b) : reject(new Error('Canvas export failed.')), 'image/jpeg', quality);
+    });
+    console.log(`Hero image resize: ${file.name} ${Math.round(file.size/1024)}KB (${img.naturalWidth}×${img.naturalHeight}) → ${Math.round(blob.size/1024)}KB (${w}×${h})`);
+    return blob;
+}
+
+async function uploadHeroBlob(blob, originalName) {
+    const form = new FormData();
+    const safeName = (originalName || 'hero').replace(/\.[^.]+$/, '') + '.jpg';
+    form.append('file', new File([blob], safeName, { type: 'image/jpeg' }));
+    const res = await fetch(`${EDGE_BASE_URL}/upload-media`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${adminToken}` },
+        body: form,
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Upload failed');
+    return data.url;
+}
+
+function setHeroMsg(text, isError) {
+    const el = document.getElementById('heroImagesMsg');
+    if (!el) return;
+    el.textContent = text;
+    el.style.color = isError ? 'var(--primary)' : '#22c55e';
+    el.style.display = 'inline';
+    if (!isError) setTimeout(() => { el.style.display = 'none'; }, 2500);
+}
+
+function renderHeroImagesGrid() {
+    const grid = document.getElementById('heroImagesGrid');
+    if (!grid) return;
+    if (!cmsHeroImages.length) {
+        grid.innerHTML = '<p style="font-size:13px;color:var(--muted);grid-column:1/-1;">No hero images yet. The homepage will fall back to the static hero image until you add one.</p>';
+        return;
+    }
+    grid.innerHTML = cmsHeroImages.map((h, i) => `
+        <div class="hero-image-card ${h.active ? '' : 'inactive'}" data-id="${escAttr(h.id)}">
+            <div class="thumb" style="background-image:url('${escAttr(h.image_url)}');">
+                <div class="thumb-overlay">Processing…</div>
+            </div>
+            <div class="card-body">
+                <div>
+                    <label>Alt text</label>
+                    <input type="text" data-field="alt_text" value="${escAttr(h.alt_text || '')}" placeholder="Describe the image for screen readers">
+                </div>
+                <div>
+                    <label>Caption (optional)</label>
+                    <input type="text" data-field="caption" value="${escAttr(h.caption || '')}" placeholder="Small overlay text">
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="sort-controls">
+                    <button class="sort-btn" onclick="moveHeroImage('${escAttr(h.id)}', -1)" ${i === 0 ? 'disabled' : ''} aria-label="Move up">↑</button>
+                    <button class="sort-btn" onclick="moveHeroImage('${escAttr(h.id)}', 1)" ${i === cmsHeroImages.length - 1 ? 'disabled' : ''} aria-label="Move down">↓</button>
+                </div>
+                <label class="active-toggle">
+                    <input type="checkbox" ${h.active ? 'checked' : ''} onchange="toggleHeroImageActive('${escAttr(h.id)}', this.checked)"> Active
+                </label>
+                <div class="card-actions">
+                    <button class="replace-btn" onclick="replaceHeroImage('${escAttr(h.id)}')">Replace</button>
+                    <button class="delete-btn" onclick="deleteHeroImage('${escAttr(h.id)}')">Delete</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    // Wire up inline field edits (alt_text / caption) — save on blur if changed.
+    grid.querySelectorAll('.hero-image-card').forEach(card => {
+        const id = card.getAttribute('data-id');
+        card.querySelectorAll('input[data-field]').forEach(input => {
+            input.addEventListener('change', () => {
+                const field = input.getAttribute('data-field');
+                patchHeroImage(id, { [field]: input.value });
+            });
+        });
+    });
+}
+
+async function refreshHeroImages() {
+    const res = await adminFetch('/hero-images');
+    cmsHeroImages = res.ok ? await res.json() : [];
+    renderHeroImagesGrid();
+}
+
+function setHeroCardProcessing(id, on) {
+    const card = document.querySelector(`.hero-image-card[data-id="${CSS.escape(id)}"]`);
+    if (card) card.classList.toggle('processing', !!on);
+}
+
+async function patchHeroImage(id, body) {
+    try {
+        const res  = await adminFetch(`/hero-images/${id}`, { method: 'PATCH', body });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Update failed');
+        const idx = cmsHeroImages.findIndex(h => h.id === id);
+        if (idx !== -1) cmsHeroImages[idx] = data;
+        setHeroMsg('Saved!', false);
+    } catch (err) {
+        setHeroMsg('Error: ' + err.message, true);
+        await refreshHeroImages();
+    }
+}
+
+async function toggleHeroImageActive(id, active) {
+    const idx = cmsHeroImages.findIndex(h => h.id === id);
+    if (idx !== -1) cmsHeroImages[idx].active = active; // optimistic
+    const card = document.querySelector(`.hero-image-card[data-id="${CSS.escape(id)}"]`);
+    if (card) card.classList.toggle('inactive', !active);
+    await patchHeroImage(id, { active });
+}
+
+async function moveHeroImage(id, delta) {
+    const idx = cmsHeroImages.findIndex(h => h.id === id);
+    const j   = idx + delta;
+    if (idx === -1 || j < 0 || j >= cmsHeroImages.length) return;
+    // Swap sort_order with the neighbor
+    const a = cmsHeroImages[idx];
+    const b = cmsHeroImages[j];
+    const aOrder = a.sort_order, bOrder = b.sort_order;
+    try {
+        await Promise.all([
+            adminFetch(`/hero-images/${a.id}`, { method: 'PATCH', body: { sort_order: bOrder } }),
+            adminFetch(`/hero-images/${b.id}`, { method: 'PATCH', body: { sort_order: aOrder } }),
+        ]);
+        await refreshHeroImages();
+        setHeroMsg('Order updated', false);
+    } catch (err) {
+        setHeroMsg('Error: ' + err.message, true);
+    }
+}
+
+async function deleteHeroImage(id) {
+    if (!confirm('Delete this hero image? This cannot be undone.')) return;
+    try {
+        const target = cmsHeroImages.find(h => h.id === id);
+        const res = await adminFetch(`/hero-images/${id}`, { method: 'DELETE' });
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.error || 'Delete failed');
+        }
+        if (target?.image_url) {
+            await adminFetch('/media', { method: 'DELETE', body: { url: target.image_url } }).catch(() => {});
+        }
+        await refreshHeroImages();
+        setHeroMsg('Deleted', false);
+    } catch (err) {
+        setHeroMsg('Error: ' + err.message, true);
+    }
+}
+
+function addHeroImage() {
+    const input = document.getElementById('heroImageFileInput');
+    input.value = '';
+    input.onchange = async () => {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        const btn = document.getElementById('heroImagesAddBtn');
+        if (btn) { btn.textContent = 'Uploading…'; btn.disabled = true; }
+        try {
+            const blob = await resizeImage(file);
+            const url  = await uploadHeroBlob(blob, file.name);
+            const nextOrder = cmsHeroImages.length
+                ? Math.max(...cmsHeroImages.map(h => h.sort_order || 0)) + 1
+                : 1;
+            const res = await adminFetch('/hero-images', {
+                method: 'POST',
+                body: { image_url: url, alt_text: '', caption: '', sort_order: nextOrder, active: true },
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Save failed');
+            await refreshHeroImages();
+            setHeroMsg('Image added', false);
+        } catch (err) {
+            setHeroMsg('Error: ' + err.message, true);
+        } finally {
+            if (btn) { btn.textContent = '+ Add image'; btn.disabled = false; }
+            input.value = '';
+        }
+    };
+    input.click();
+}
+
+function replaceHeroImage(id) {
+    const input = document.getElementById('heroImageReplaceInput');
+    input.value = '';
+    input.onchange = async () => {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        const target = cmsHeroImages.find(h => h.id === id);
+        const oldUrl = target ? target.image_url : '';
+        setHeroCardProcessing(id, true);
+        try {
+            const blob   = await resizeImage(file);
+            const url    = await uploadHeroBlob(blob, file.name);
+            await patchHeroImage(id, { image_url: url });
+            if (oldUrl) {
+                await adminFetch('/media', { method: 'DELETE', body: { url: oldUrl } }).catch(() => {});
+            }
+            await refreshHeroImages();
+            setHeroMsg('Image replaced', false);
+        } catch (err) {
+            setHeroMsg('Error: ' + err.message, true);
+        } finally {
+            setHeroCardProcessing(id, false);
+            input.value = '';
+        }
+    };
+    input.click();
 }
 
 // Gallery list
