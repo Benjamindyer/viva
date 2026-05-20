@@ -954,6 +954,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
+            align-items: stretch;
         }
 
         .trust-card {
@@ -963,6 +964,9 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
             transition: transform 0.3s;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .trust-card:hover {
@@ -971,23 +975,35 @@
 
         .trust-card-body {
             padding: 20px 25px 25px;
+            flex: 1;
         }
 
         .trust-icon {
             width: 100%;
-            height: 150px;
+            aspect-ratio: 16 / 10;
             overflow: hidden;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #e8e8e8;
+            flex-shrink: 0;
+            position: relative;
         }
 
         .trust-icon img {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+
+        .trust-card--logo .trust-icon {
+            background: var(--light);
+        }
+
+        .trust-card--logo .trust-icon img {
             object-fit: contain;
-            padding: 16px;
+            padding: 14px;
             box-sizing: border-box;
         }
 
@@ -3386,6 +3402,18 @@
             loadSiteContent();
         }
 
+        function applyTrustCardImageFit(img) {
+            const apply = () => {
+                const card = img.closest('.trust-card');
+                if (!card || !img.naturalWidth) return;
+                const r = img.naturalWidth / img.naturalHeight;
+                const isLogo = r > 1.85 || (r >= 0.85 && r <= 1.15);
+                card.classList.toggle('trust-card--logo', isLogo);
+            };
+            if (img.complete && img.naturalWidth) apply();
+            else img.addEventListener('load', apply, { once: true });
+        }
+
         async function loadSiteContent() {
             try {
                 const h = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY };
@@ -3432,6 +3460,12 @@
 
                 const setText = (id, val) => { const el = document.getElementById(id); if (el && val) el.textContent = val; };
                 const setImg  = (id, src) => { const el = document.getElementById(id); if (el && src) el.src = src; };
+                const setTrustImg = (id, src) => {
+                    const el = document.getElementById(id);
+                    if (!el || !src) return;
+                    el.src = src;
+                    applyTrustCardImageFit(el);
+                };
 
                 setText('heroBadge',    c.hero_badge);
                 setText('heroHeadline', c.hero_headline);
@@ -3458,8 +3492,9 @@
                 for (let i = 1; i <= 4; i++) {
                     setText(`trust${i}Title`, c[`trust_${i}_title`]);
                     setText(`trust${i}Desc`,  c[`trust_${i}_desc`]);
-                    setImg(`trust${i}Img`,    c[`trust_${i}_image`]);
+                    setTrustImg(`trust${i}Img`, c[`trust_${i}_image`]);
                 }
+                document.querySelectorAll('.trust-icon img').forEach(applyTrustCardImageFit);
 
                 setText('footerTagline', c.footer_tagline);
 
@@ -3525,6 +3560,7 @@
                 }
             } catch (e) {
                 console.warn('Could not load CMS content — using defaults');
+                document.querySelectorAll('.trust-icon img').forEach(applyTrustCardImageFit);
             }
         }
 
