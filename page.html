@@ -582,11 +582,12 @@
 
                 // Inject custom page links into nav. Skip area pages (they're in the Areas dropdown).
                 const AREA_SLUGS = new Set(['malaga', 'marbella', 'costa-del-sol', 'alicante', 'granada', 'madrid']);
+                const MVP_SLUGS = new Set(['the-man', 'the-plan', 'the-van']);
                 if (pages.length) {
                     const navLinks = document.getElementById('navLinks');
                     const mobileList = document.querySelector('.mobile-menu-list');
                     pages.forEach(pg => {
-                        if (AREA_SLUGS.has(pg.slug)) return;
+                        if (AREA_SLUGS.has(pg.slug) || MVP_SLUGS.has(pg.slug)) return;
                         const label = pg.nav_label || pg.slug;
                         const li = document.createElement('li');
                         li.innerHTML = `<a href="page.html?slug=${pg.slug}">${label}</a>`;
