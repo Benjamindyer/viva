@@ -1,5 +1,5 @@
 -- ============================================================
--- Viva Españiel — CMS content tables
+-- Viva Espaniel — CMS content tables
 -- ============================================================
 
 -- Key/value store for hero, about, trust cards, footer, meta
@@ -59,7 +59,7 @@ INSERT INTO content (key, value) VALUES
   ('about_subtitle',   'Meet The Founder'),
   ('about_name',       'Jon Brown'),
   ('about_bio1',       'With over 16 years in the transport industry, Jon has dedicated his career to reuniting families with their four-legged loved ones. What started as a passion project has grown into a trusted service that''s helped thousands of dogs make the journey between Spain and the UK safely.'),
-  ('about_bio2',       'Jon personally oversees every transport, ensuring the highest standards of care from pickup to delivery. His hands-on approach and genuine love for animals is what sets Viva Españiel apart.'),
+  ('about_bio2',       'Jon personally oversees every transport, ensuring the highest standards of care from pickup to delivery. His hands-on approach and genuine love for animals is what sets Viva Espaniel apart.'),
   ('about_quote',      'Every dog that travels with us becomes part of our family for the journey. I understand how much trust people place in us, and I take that responsibility seriously. These aren''t just pets – they''re family members, and they deserve to travel in comfort and safety.'),
   ('about_years',      '16+'),
   ('trust_1_title',    'Vet Approved'),
@@ -75,7 +75,7 @@ INSERT INTO content (key, value) VALUES
   ('trust_4_desc',     'Comfort breaks every 2-3 hours'),
   ('trust_4_image',    'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=200&q=80'),
   ('footer_tagline',   'Reuniting dogs with their families since 2019. Made with love and plenty of treats.'),
-  ('meta_title',       'Viva Españiel — Dog Transport Spain ↔ UK'),
+  ('meta_title',       'Viva Espaniel — Dog Transport Spain ↔ UK'),
   ('meta_description', 'Professional dog transport between Spain and the UK. Door-to-door service, climate-controlled vans, live updates and regular stops. Book your dog''s journey today.')
 ON CONFLICT (key) DO NOTHING;
 

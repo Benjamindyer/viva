@@ -23,7 +23,7 @@ async function sendEmail(to: string, subject: string, html: string, resendKey: s
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'Viva Españiel <bookings@vivaespaniel.com>',
+      from: 'Viva Espaniel <bookings@vivaespaniel.com>',
       reply_to: replyTo,
       to: [to],
       subject,
@@ -178,7 +178,7 @@ serve(async (req) => {
       const customerHtml = `
         <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
           <div style="background:#c84b31;padding:30px;text-align:center;">
-            <h1 style="color:white;margin:0;font-size:24px;">🐕 Viva Españiel</h1>
+            <h1 style="color:white;margin:0;font-size:24px;">🐕 Viva Espaniel</h1>
             <p style="color:rgba(255,255,255,0.9);margin:8px 0 0;">Dog transport Spain &amp; UK</p>
           </div>
           <div style="padding:30px;background:#fff;">
@@ -203,7 +203,7 @@ serve(async (req) => {
             <p style="color:#666;font-size:14px;">Any questions? Reply to this email or contact us directly.</p>
           </div>
           <div style="background:#f8f9fa;padding:20px;text-align:center;font-size:12px;color:#999;">
-            © 2026 Viva Españiel · Spain ↔ UK dog transport
+            © 2026 Viva Espaniel · Spain ↔ UK dog transport
           </div>
         </div>`
 

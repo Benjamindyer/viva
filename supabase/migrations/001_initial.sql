@@ -1,5 +1,5 @@
 -- ============================================================
--- Viva Españiel — initial schema
+-- Viva Espaniel — initial schema
 -- Run this in the Supabase SQL editor after creating the project
 -- ============================================================
 

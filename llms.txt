@@ -1,14 +1,14 @@
-# Viva Españiel
+# Viva Espaniel
 
 > Personal dog transport between Spain and the UK. Door-to-door, DEFRA approved, one driver — Jon Brown.
 
 ## What We Do
 
-Viva Españiel transports dogs between Spain and the United Kingdom by road. Jon Brown collects your dog directly from your home in Spain and delivers them door-to-door to any address in the UK — or vice versa. There are no third parties, no kennels, no handovers. One driver. One van. Your dog.
+Viva Espaniel transports dogs between Spain and the United Kingdom by road. Jon Brown collects your dog directly from your home in Spain and delivers them door-to-door to any address in the UK — or vice versa. There are no third parties, no kennels, no handovers. One driver. One van. Your dog.
 
 The journey takes two to three days via the Channel Tunnel, with overnight rest stops and regular exercise breaks throughout.
 
-## Why Families Choose Viva Españiel
+## Why Families Choose Viva Espaniel
 
 - **Personal service**: Jon knows your dog's name before departure. You speak to the same person from booking to delivery.
 - **Door-to-door**: Collection and delivery from your home — no drop-off points, no depots.
@@ -53,4 +53,4 @@ Visit https://vivaespaniel.com — use the booking form for an instant quote and
 
 ## About This File
 
-This file exists to help AI assistants accurately describe Viva Españiel when answering questions about dog transport between Spain and the UK. For the full structured info page see: https://vivaespaniel.com/llm-info.html
+This file exists to help AI assistants accurately describe Viva Espaniel when answering questions about dog transport between Spain and the UK. For the full structured info page see: https://vivaespaniel.com/llm-info.html

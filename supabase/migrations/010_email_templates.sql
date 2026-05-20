@@ -14,7 +14,7 @@ INSERT INTO content (key, value) VALUES
 
   -- ── Payment details / booking confirmed (sent manually by Jon) ──────────────
   ('email_payment_subject',
-   'Your Viva Españiel booking is confirmed — {reference}'),
+   'Your Viva Espaniel booking is confirmed — {reference}'),
 
   ('email_payment_intro',
    'Jon has reviewed your booking request for {dog_name} and is pleased to confirm it. To secure your spot, please pay the 50% deposit using the details below.'),

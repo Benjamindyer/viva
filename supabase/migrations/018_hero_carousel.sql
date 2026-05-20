@@ -1,5 +1,5 @@
 -- ============================================================
--- Viva Españiel — Hero carousel images
+-- Viva Espaniel — Hero carousel images
 -- ============================================================
 -- A list of images shown as a rotating carousel in the homepage
 -- hero section. Managed by admin via the admin-bookings edge function.
@@ -29,7 +29,7 @@ EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 -- renders something before Jon uploads new images.
 INSERT INTO hero_images (image_url, alt_text, sort_order, active)
 SELECT value,
-       'Dog safely transported from Spain to UK by Viva Españiel',
+       'Dog safely transported from Spain to UK by Viva Espaniel',
        1,
        true
 FROM content

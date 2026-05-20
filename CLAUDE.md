@@ -1,4 +1,4 @@
-# Viva Españiel
+# Viva Espaniel
 
 Dog transport service website — Spain ↔ UK.
 

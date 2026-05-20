@@ -94,7 +94,7 @@ serve(async (req) => {
     const fill = (key: string, fallback: string) =>
       (tpl[key] || fallback).replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? `{${k}}`)
 
-    const emailSubject = fill('email_payment_subject', `Your Viva Españiel booking is confirmed — ${booking.reference}`)
+    const emailSubject = fill('email_payment_subject', `Your Viva Espaniel booking is confirmed — ${booking.reference}`)
     const emailIntro   = fill('email_payment_intro',   `Jon has reviewed your booking request for ${booking.dog_name} and is pleased to confirm it. To secure your spot, please pay the 50% deposit using the details below.`)
     const emailNote    = fill('email_payment_note',    `Please include your reference number ${booking.reference} as the PayPal payment note. Your spot is not confirmed until the deposit is received.`)
     const emailFooter  = fill('email_payment_footer',  `The balance of ${balanceFormatted} is collected on delivery of ${booking.dog_name}. Any questions? Reply to this email and Jon will be in touch.`)
@@ -106,7 +106,7 @@ serve(async (req) => {
     const html = `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
         <div style="background:#c84b31;padding:30px;text-align:center;">
-          <h1 style="color:white;margin:0;font-size:24px;">🐕 Viva Españiel</h1>
+          <h1 style="color:white;margin:0;font-size:24px;">🐕 Viva Espaniel</h1>
           <p style="color:rgba(255,255,255,0.9);margin:8px 0 0;">Dog transport Spain &amp; UK</p>
         </div>
         <div style="padding:30px;background:#fff;">
@@ -139,7 +139,7 @@ serve(async (req) => {
           <p style="margin-top:20px;color:#666;font-size:14px;">${emailFooter}</p>
         </div>
         <div style="background:#f8f9fa;padding:20px;text-align:center;font-size:12px;color:#999;">
-          © 2026 Viva Españiel · Spain ↔ UK dog transport
+          © 2026 Viva Espaniel · Spain ↔ UK dog transport
         </div>
       </div>`
 
@@ -147,7 +147,7 @@ serve(async (req) => {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'Viva Españiel <bookings@vivaespaniel.com>',
+        from: 'Viva Espaniel <bookings@vivaespaniel.com>',
         reply_to: replyTo,
         to: [booking.email],
         subject: emailSubject,

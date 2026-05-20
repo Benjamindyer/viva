@@ -6,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-const FROM_ADDRESS = 'Viva Españiel <bookings@vivaespaniel.com>'
+const FROM_ADDRESS = 'Viva Espaniel <bookings@vivaespaniel.com>'
 
 // Reasonable max lengths for contact form fields
 const LIMITS = {
@@ -176,11 +176,11 @@ serve(async (req) => {
       </div>`
 
     // Customer confirmation email
-    const customerSubject = 'We got your message — Viva Españiel'
+    const customerSubject = 'We got your message — Viva Espaniel'
     const customerHtml = `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
         <div style="background:#c84b31;padding:30px;text-align:center;">
-          <h1 style="color:white;margin:0;font-size:24px;">🐕 Viva Españiel</h1>
+          <h1 style="color:white;margin:0;font-size:24px;">🐕 Viva Espaniel</h1>
           <p style="color:rgba(255,255,255,0.9);margin:8px 0 0;">Dog transport Spain &amp; UK</p>
         </div>
         <div style="padding:30px;background:#fff;">
@@ -195,7 +195,7 @@ serve(async (req) => {
           <p style="margin-top:20px;color:#666;font-size:14px;">Need an urgent answer? Reply to this email or message Jon on WhatsApp.</p>
         </div>
         <div style="background:#f8f9fa;padding:20px;text-align:center;font-size:12px;color:#999;">
-          © 2026 Viva Españiel · Spain ↔ UK dog transport
+          © 2026 Viva Espaniel · Spain ↔ UK dog transport
         </div>
       </div>`
 

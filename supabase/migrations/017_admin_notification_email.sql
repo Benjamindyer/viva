@@ -1,5 +1,5 @@
 -- ============================================================
--- Viva Españiel — Admin-editable notification emails + contact form
+-- Viva Espaniel — Admin-editable notification emails + contact form
 -- ============================================================
 
 -- Seed default notification email settings in existing content table
