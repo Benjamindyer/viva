@@ -758,7 +758,7 @@
         /* Hero Section */
         .hero {
             min-height: 100vh;
-            background: linear-gradient(135deg, rgba(200, 75, 49, 0.9) 0%, rgba(255, 179, 25, 0.9) 100%),
+            background: linear-gradient(135deg, rgba(200, 75, 49, 0.9) 0%, rgba(170, 21, 27, 0.9) 100%),
                         url('https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1920&q=80') center/cover;
             display: flex;
             flex-direction: column;
@@ -1086,6 +1086,7 @@
 
         .gallery-grid--single {
             grid-template-columns: 1fr;
+            width: 100%;
         }
 
         .gallery-item {
@@ -1103,7 +1104,8 @@
         .gallery-grid--single .gallery-item,
         .gallery-grid--single .gallery-item:first-child,
         .gallery-grid .gallery-item:only-child {
-            grid-column: 1 / -1;
+            grid-column: 1 / -1 !important;
+            width: 100%;
         }
 
         .gallery-item img {
@@ -1576,7 +1578,7 @@
         .size-pill:hover { border-color: var(--primary); background: rgba(200,75,49,0.04); }
         .size-pill.selected {
             border-color: var(--primary);
-            background: linear-gradient(135deg, rgba(200,75,49,0.08), rgba(255,179,25,0.06));
+            background: linear-gradient(135deg, rgba(200,75,49,0.08), rgba(170,21,27,0.06));
         }
         .size-pill-icon { font-size: 22px; flex-shrink: 0; line-height: 1; }
         .size-pill-info { flex: 1; }
@@ -1635,7 +1637,7 @@
 
         .date-card.selected {
             border-color: var(--primary);
-            background: linear-gradient(135deg, rgba(200, 75, 49, 0.1), rgba(255, 179, 25, 0.1));
+            background: linear-gradient(135deg, rgba(200, 75, 49, 0.1), rgba(170, 21, 27, 0.1));
         }
 
         .date-card.selected::before {
@@ -2742,8 +2744,10 @@
                 grid-row: span 1;
             }
 
-            .gallery-grid--single .gallery-item {
-                grid-column: 1 / -1;
+            .gallery-grid--single .gallery-item,
+            .gallery-grid .gallery-item:only-child {
+                grid-column: 1 / -1 !important;
+                width: 100%;
             }
 
             .ticket-details {
