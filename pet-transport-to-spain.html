@@ -108,7 +108,7 @@
         :root {
             --primary: #c84b31;
             --primary-dark: #a33d28;
-            --secondary: #ffb319;
+            --secondary: #AA151B;
             --accent: #2d6a4f;
             --dark: #1a1a2e;
             --light: #fafafa;
@@ -419,6 +419,8 @@
 
         /* Van Status Strip */
         .van-status-strip {
+            position: relative;
+            z-index: 5;
             padding: 0 20px 24px;
         }
         .vss-inner {
@@ -758,7 +760,7 @@
         /* Hero Section */
         .hero {
             min-height: 100vh;
-            background: linear-gradient(135deg, rgba(200, 75, 49, 0.9) 0%, rgba(255, 179, 25, 0.9) 100%),
+            background: linear-gradient(135deg, rgba(200, 75, 49, 0.9) 0%, rgba(170, 21, 27, 0.9) 100%),
                         url('https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1920&q=80') center/cover;
             display: flex;
             flex-direction: column;
@@ -776,6 +778,8 @@
             grid-template-columns: 1fr 1fr;
             gap: 40px;
             align-items: center;
+            position: relative;
+            z-index: 5;
         }
 
         .hero-text {
@@ -869,9 +873,110 @@
 
         .hero-visual {
             position: relative;
+            isolation: isolate;
+            min-height: 400px;
+        }
+
+        .hero-carousel {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            height: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+        }
+
+        .hero-carousel-slides {
+            position: absolute;
+            inset: 0;
+        }
+
+        .hero-carousel-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+        }
+
+        .hero-carousel-slide.is-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .hero-carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .hero-carousel-shade {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.35) 100%);
+            pointer-events: none;
+        }
+
+        .hero-carousel-caption {
+            position: absolute;
+            bottom: 48px;
+            left: 16px;
+            max-width: calc(100% - 32px);
+            z-index: 2;
+            padding: 6px 14px;
+            background: rgba(0,0,0,0.55);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 20px;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+        }
+
+        .hero-carousel-slide.is-active .hero-carousel-caption {
+            opacity: 1;
+        }
+
+        .hero-carousel-dots {
+            position: absolute;
+            bottom: 14px;
+            left: 0;
+            right: 0;
+            z-index: 3;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 0 12px;
+        }
+
+        .hero-carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: none;
+            padding: 0;
+            background: rgba(255,255,255,0.45);
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .hero-carousel-dot.is-active {
+            background: #fff;
+            transform: scale(1.25);
+        }
+
+        .hero-carousel-dot:focus-visible {
+            outline: 2px solid #fff;
+            outline-offset: 2px;
         }
 
         .hero-image {
+            position: relative;
+            z-index: 1;
             width: 100%;
             height: 400px;
             object-fit: cover;
@@ -879,11 +984,16 @@
             box-shadow: 0 30px 60px rgba(0,0,0,0.3);
         }
 
+        .hero-visual.has-carousel .hero-image {
+            display: none;
+        }
+
         .hero-notification {
             position: absolute;
             bottom: -20px;
             left: 50%;
             transform: translateX(-50%);
+            z-index: 10;
             background: white;
             padding: 12px 20px;
             border-radius: 50px;
@@ -893,6 +1003,13 @@
             gap: 12px;
             white-space: nowrap;
             animation: float 3s ease-in-out infinite;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .hero-carousel-slide,
+            .hero-carousel-caption {
+                transition: none;
+            }
         }
 
         @keyframes float {
@@ -954,6 +1071,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
+            align-items: stretch;
         }
 
         .trust-card {
@@ -963,6 +1081,9 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
             transition: transform 0.3s;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .trust-card:hover {
@@ -971,23 +1092,35 @@
 
         .trust-card-body {
             padding: 20px 25px 25px;
+            flex: 1;
         }
 
         .trust-icon {
             width: 100%;
-            height: 150px;
+            aspect-ratio: 16 / 10;
             overflow: hidden;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #e8e8e8;
+            flex-shrink: 0;
+            position: relative;
         }
 
         .trust-icon img {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+
+        .trust-card--logo .trust-icon {
+            background: var(--light);
+        }
+
+        .trust-card--logo .trust-icon img {
             object-fit: contain;
-            padding: 16px;
+            padding: 14px;
             box-sizing: border-box;
         }
 
@@ -1061,11 +1194,17 @@
 
         /* Gallery */
         .gallery-grid {
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 16px;
+        }
+
+        .gallery-grid--single {
+            grid-template-columns: 1fr;
+            width: 100%;
         }
 
         .gallery-item {
@@ -1080,6 +1219,13 @@
             grid-column: span 2;
         }
 
+        .gallery-grid--single .gallery-item,
+        .gallery-grid--single .gallery-item:first-child,
+        .gallery-grid .gallery-item:only-child {
+            grid-column: 1 / -1 !important;
+            width: 100%;
+        }
+
         .gallery-item img {
             width: 100%;
             height: 100%;
@@ -1091,11 +1237,72 @@
             transform: scale(1.05);
         }
 
-        .gallery-item iframe {
+        .gallery-item iframe,
+        .gallery-video iframe {
             width: 100%;
             height: 100%;
             border: none;
             display: block;
+        }
+
+        .gallery-video {
+            position: absolute;
+            inset: 0;
+        }
+
+        .gallery-video-poster {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            border: none;
+            cursor: pointer;
+            background: #111;
+        }
+
+        .gallery-video-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-video-play {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(200, 75, 49, 0.92);
+            color: white;
+            font-size: 20px;
+            line-height: 52px;
+            text-align: center;
+            padding-left: 4px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+            pointer-events: none;
+        }
+
+        .gallery-yt-link {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 2;
+            font-size: 10px;
+            font-weight: 600;
+            color: white;
+            text-decoration: none;
+            background: rgba(0,0,0,0.55);
+            padding: 4px 8px;
+            border-radius: 6px;
+            pointer-events: auto;
+        }
+
+        .gallery-yt-link:hover {
+            background: rgba(0,0,0,0.75);
         }
 
         .gallery-overlay {
@@ -1489,7 +1696,7 @@
         .size-pill:hover { border-color: var(--primary); background: rgba(200,75,49,0.04); }
         .size-pill.selected {
             border-color: var(--primary);
-            background: linear-gradient(135deg, rgba(200,75,49,0.08), rgba(255,179,25,0.06));
+            background: linear-gradient(135deg, rgba(200,75,49,0.08), rgba(170,21,27,0.06));
         }
         .size-pill-icon { font-size: 22px; flex-shrink: 0; line-height: 1; }
         .size-pill-info { flex: 1; }
@@ -1548,7 +1755,7 @@
 
         .date-card.selected {
             border-color: var(--primary);
-            background: linear-gradient(135deg, rgba(200, 75, 49, 0.1), rgba(255, 179, 25, 0.1));
+            background: linear-gradient(135deg, rgba(200, 75, 49, 0.1), rgba(170, 21, 27, 0.1));
         }
 
         .date-card.selected::before {
@@ -1704,7 +1911,7 @@
         .card-chip {
             width: 40px;
             height: 28px;
-            background: linear-gradient(135deg, #ffd700, #ffb319);
+            background: linear-gradient(135deg, #ffd700, var(--secondary));
             border-radius: 5px;
             margin-bottom: 15px;
         }
@@ -2585,6 +2792,11 @@
                 order: -1;
             }
 
+            .hero-visual {
+                min-height: 300px;
+            }
+
+            .hero-carousel,
             .hero-image {
                 height: 300px;
             }
@@ -2655,6 +2867,12 @@
                 grid-row: span 1;
             }
 
+            .gallery-grid--single .gallery-item,
+            .gallery-grid .gallery-item:only-child {
+                grid-column: 1 / -1 !important;
+                width: 100%;
+            }
+
             .ticket-details {
                 grid-template-columns: 1fr;
             }
@@ -2714,7 +2932,6 @@
     <nav>
         <a href="#" class="nav-logo">🐕 Viva Españiel</a>
         <ul class="nav-links" id="navLinks">
-            <li><a href="#about">About</a></li>
             <li class="nav-item-dropdown" id="areasDropdown">
                 <button type="button" class="nav-dropdown-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="areasMenu">
                     Areas
@@ -2729,7 +2946,6 @@
                     <li role="none"><a role="menuitem" href="page.html?slug=madrid"><span class="flag">🇪🇸</span>Madrid</a></li>
                 </ul>
             </li>
-            <li><a href="#booking">Book Now</a></li>
             <li><a href="#testimonials">Testimonials</a></li>
             <li><a href="blog.html">Blog</a></li>
         </ul>
@@ -2752,7 +2968,6 @@
             <a href="#" class="logo" onclick="closeMobileMenu()">🐕 Viva Españiel</a>
         </div>
         <ul class="mobile-menu-list">
-            <li><a href="#about" onclick="closeMobileMenu()">About</a></li>
             <li class="mobile-menu-group" id="mmAreasGroup">
                 <button type="button" class="mobile-menu-group-toggle" aria-expanded="false" aria-controls="mmAreasItems" onclick="toggleMobileAreas(this)">
                     Areas
@@ -2767,7 +2982,6 @@
                     <li><a href="page.html?slug=madrid" onclick="closeMobileMenu()">🇪🇸 Madrid</a></li>
                 </ul>
             </li>
-            <li><a href="#booking" onclick="closeMobileMenu()">Book Now</a></li>
             <li><a href="#testimonials" onclick="closeMobileMenu()">Testimonials</a></li>
             <li><a href="blog.html" onclick="closeMobileMenu()">Blog</a></li>
         </ul>
@@ -2808,6 +3022,7 @@
                 </div>
             </div>
             <div class="hero-visual">
+                <div class="hero-carousel" id="heroCarousel" hidden aria-hidden="true"></div>
                 <img src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=800&q=80" alt="Dog safely transported from Spain to UK by Viva Españiel" class="hero-image" id="heroImage">
                 <div class="hero-notification">
                     <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=100&q=80" alt="">
@@ -3386,21 +3601,183 @@
             loadSiteContent();
         }
 
+        function getYouTubeId(url) {
+            if (!url || typeof url !== 'string') return null;
+            const m = url.trim().match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/|v\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+            return m ? m[1] : null;
+        }
+
+        function isYouTubeShorts(url) {
+            return !!url && /youtube\.com\/shorts\//i.test(url.trim());
+        }
+
+        function galleryVideoHtml(ytId, videoUrl) {
+            const watch = `https://www.youtube.com/watch?v=${ytId}`;
+            const shorts = isYouTubeShorts(videoUrl) ? ' data-yt-shorts="1"' : '';
+            return `<div class="gallery-video" data-yt-id="${ytId}"${shorts}>
+                <button type="button" class="gallery-video-poster" aria-label="Play video">
+                    <img src="https://i.ytimg.com/vi/${ytId}/hqdefault.jpg" alt="" loading="lazy" decoding="async">
+                    <span class="gallery-video-play" aria-hidden="true">▶</span>
+                </button>
+                <a class="gallery-yt-link" href="${watch}" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
+            </div>`;
+        }
+
+        function bindGalleryVideos(root) {
+            root.querySelectorAll('.gallery-video-poster').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const wrap = btn.closest('.gallery-video');
+                    const id = wrap && wrap.dataset.ytId;
+                    if (!id) return;
+                    const iframe = document.createElement('iframe');
+                    iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
+                    iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+                    iframe.setAttribute('allowfullscreen', '');
+                    iframe.loading = 'lazy';
+                    wrap.replaceChild(iframe, btn);
+                });
+            });
+        }
+
+        function applyTrustCardImageFit(img) {
+            const apply = () => {
+                const card = img.closest('.trust-card');
+                if (!card || !img.naturalWidth) return;
+                const r = img.naturalWidth / img.naturalHeight;
+                const isLogo = r > 1.85 || (r >= 0.85 && r <= 1.15);
+                card.classList.toggle('trust-card--logo', isLogo);
+            };
+            if (img.complete && img.naturalWidth) apply();
+            else img.addEventListener('load', apply, { once: true });
+        }
+
+        let _heroCarouselCtl = null;
+
+        function teardownHeroCarousel() {
+            if (_heroCarouselCtl) {
+                _heroCarouselCtl.destroy();
+                _heroCarouselCtl = null;
+            }
+            const visual = document.querySelector('.hero-visual');
+            const carousel = document.getElementById('heroCarousel');
+            if (visual) visual.classList.remove('has-carousel');
+            if (carousel) {
+                carousel.hidden = true;
+                carousel.setAttribute('aria-hidden', 'true');
+                carousel.innerHTML = '';
+            }
+        }
+
+        function initHeroCarousel(slides) {
+            teardownHeroCarousel();
+            const visual = document.querySelector('.hero-visual');
+            const carousel = document.getElementById('heroCarousel');
+            if (!visual || !carousel || !slides || slides.length === 0) return;
+
+            visual.classList.add('has-carousel');
+            carousel.hidden = false;
+            carousel.removeAttribute('aria-hidden');
+
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const multi = slides.length > 1;
+            let index = 0;
+            let timer = null;
+            let paused = false;
+
+            const slideHtml = slides.map((s, i) => {
+                const cap = (s.caption || '').trim();
+                const loadAttr = i === 0 ? 'fetchpriority="high"' : 'loading="lazy"';
+                return `<div class="hero-carousel-slide${i === 0 ? ' is-active' : ''}" data-index="${i}" role="group" aria-roledescription="slide" aria-label="${i + 1} of ${slides.length}">
+                    <img src="${s.image_url}" alt="${escHtml(s.alt_text || '')}" ${loadAttr} decoding="async">
+                    ${cap ? `<span class="hero-carousel-caption">${escHtml(cap)}</span>` : ''}
+                </div>`;
+            }).join('');
+
+            const dotsHtml = multi ? `<div class="hero-carousel-dots" role="tablist" aria-label="Hero images">
+                ${slides.map((_, i) => `<button type="button" class="hero-carousel-dot${i === 0 ? ' is-active' : ''}" role="tab" aria-selected="${i === 0}" aria-label="Slide ${i + 1}" data-index="${i}"></button>`).join('')}
+            </div>` : '';
+
+            carousel.innerHTML = `<div class="hero-carousel-slides" aria-live="polite">${slideHtml}</div>
+                <div class="hero-carousel-shade" aria-hidden="true"></div>${dotsHtml}`;
+
+            const slideEls = carousel.querySelectorAll('.hero-carousel-slide');
+            const dotEls = carousel.querySelectorAll('.hero-carousel-dot');
+
+            function goTo(i) {
+                index = ((i % slides.length) + slides.length) % slides.length;
+                slideEls.forEach((el, j) => el.classList.toggle('is-active', j === index));
+                dotEls.forEach((el, j) => {
+                    el.classList.toggle('is-active', j === index);
+                    el.setAttribute('aria-selected', j === index ? 'true' : 'false');
+                });
+            }
+
+            function next() { goTo(index + 1); }
+
+            function startAutoplay() {
+                if (!multi || reducedMotion || paused) return;
+                stopAutoplay();
+                timer = setInterval(next, 6000);
+            }
+
+            function stopAutoplay() {
+                if (timer) { clearInterval(timer); timer = null; }
+            }
+
+            dotEls.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    goTo(parseInt(dot.dataset.index, 10));
+                    startAutoplay();
+                });
+            });
+
+            carousel.addEventListener('mouseenter', () => { paused = true; stopAutoplay(); });
+            carousel.addEventListener('mouseleave', () => { paused = false; startAutoplay(); });
+
+            const onVis = () => {
+                if (document.visibilityState === 'hidden') stopAutoplay();
+                else startAutoplay();
+            };
+            document.addEventListener('visibilitychange', onVis);
+
+            let touchX = 0;
+            carousel.addEventListener('touchstart', e => {
+                touchX = e.changedTouches[0].clientX;
+            }, { passive: true });
+            carousel.addEventListener('touchend', e => {
+                if (!multi) return;
+                const dx = e.changedTouches[0].clientX - touchX;
+                if (Math.abs(dx) >= 40) goTo(index + (dx < 0 ? 1 : -1));
+                startAutoplay();
+            }, { passive: true });
+
+            startAutoplay();
+
+            _heroCarouselCtl = {
+                destroy() {
+                    stopAutoplay();
+                    document.removeEventListener('visibilitychange', onVis);
+                }
+            };
+        }
+
         async function loadSiteContent() {
             try {
                 const h = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY };
-                const [cr, tr, gr, pr, fr] = await Promise.all([
+                const [cr, tr, gr, pr, fr, hr] = await Promise.all([
                     fetch(`${SUPABASE_URL}/rest/v1/content?select=key,value`, { headers: h }),
                     fetch(`${SUPABASE_URL}/rest/v1/testimonials?active=eq.true&order=sort_order`, { headers: h }),
                     fetch(`${SUPABASE_URL}/rest/v1/gallery_items?active=eq.true&order=sort_order`, { headers: h }),
                     fetch(`${SUPABASE_URL}/rest/v1/pages?status=eq.live&order=sort_order&select=slug,nav_label,title`, { headers: h }),
                     fetch(`${SUPABASE_URL}/rest/v1/faqs?active=eq.true&order=sort_order`, { headers: h }),
+                    fetch(`${SUPABASE_URL}/rest/v1/hero_images?active=eq.true&order=sort_order`, { headers: h }),
                 ]);
                 const content      = cr.ok ? await cr.json() : [];
                 const testimonials = tr.ok ? await tr.json() : [];
                 const gallery      = gr.ok ? await gr.json() : [];
                 const customPages  = pr.ok ? await pr.json() : [];
                 const faqs         = fr.ok ? await fr.json() : [];
+                const heroImages   = hr.ok ? await hr.json() : [];
 
                 // Inject live custom pages into nav after Testimonials.
                 // Skip area pages — they live in the Areas dropdown.
@@ -3432,11 +3809,22 @@
 
                 const setText = (id, val) => { const el = document.getElementById(id); if (el && val) el.textContent = val; };
                 const setImg  = (id, src) => { const el = document.getElementById(id); if (el && src) el.src = src; };
+                const setTrustImg = (id, src) => {
+                    const el = document.getElementById(id);
+                    if (!el || !src) return;
+                    el.src = src;
+                    applyTrustCardImageFit(el);
+                };
 
                 setText('heroBadge',    c.hero_badge);
                 setText('heroHeadline', c.hero_headline);
                 setText('heroTagline',  c.hero_tagline);
-                setImg('heroImage',     c.hero_image_url);
+                if (heroImages.length >= 1) {
+                    initHeroCarousel(heroImages);
+                } else {
+                    teardownHeroCarousel();
+                    setImg('heroImage', c.hero_image_url);
+                }
 
                 if (c.google_rating)       document.getElementById('googleRatingTitle').textContent  = c.google_rating + ' Google Rating';
                 if (c.google_review_count) document.getElementById('googleReviewCount').textContent  = c.google_review_count + ' Reviews';
@@ -3458,8 +3846,9 @@
                 for (let i = 1; i <= 4; i++) {
                     setText(`trust${i}Title`, c[`trust_${i}_title`]);
                     setText(`trust${i}Desc`,  c[`trust_${i}_desc`]);
-                    setImg(`trust${i}Img`,    c[`trust_${i}_image`]);
+                    setTrustImg(`trust${i}Img`, c[`trust_${i}_image`]);
                 }
+                document.querySelectorAll('.trust-icon img').forEach(applyTrustCardImageFit);
 
                 setText('footerTagline', c.footer_tagline);
 
@@ -3486,14 +3875,23 @@
 
                 // Re-render gallery
                 if (gallery.length > 0) {
-                    document.getElementById('galleryGrid').innerHTML = gallery.map(g => {
-                        const ytMatch = g.video_url && g.video_url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([^&?\s/]+)/);
-                        const ytId = ytMatch ? ytMatch[1] : null;
+                    const grid = document.getElementById('galleryGrid');
+                    const gallerySection = document.getElementById('gallery');
+                    grid.classList.toggle('gallery-grid--single', gallery.length === 1);
+                    if (gallerySection) gallerySection.classList.toggle('gallery-section--single', gallery.length === 1);
+                    grid.innerHTML = gallery.map(g => {
+                        const ytId = getYouTubeId(g.video_url);
                         const media = ytId
-                            ? `<iframe src="https://www.youtube.com/embed/${ytId}?rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>`
+                            ? galleryVideoHtml(ytId, g.video_url)
                             : `<img src="${g.image_url}" alt="${g.dog_name} — dog transport Spain UK" loading="lazy" decoding="async">`;
-                        return `<div class="gallery-item">${media}<div class="gallery-overlay"><h4>${g.dog_name}</h4><p>${g.route}</p></div></div>`;
+                        const cls = ytId ? ' gallery-item--video' : '';
+                        return `<div class="gallery-item${cls}">${media}<div class="gallery-overlay"><h4>${g.dog_name}</h4><p>${g.route}</p></div></div>`;
                     }).join('');
+                    bindGalleryVideos(grid);
+                    if (gallery.length === 1) {
+                        const item = grid.querySelector('.gallery-item');
+                        if (item) item.style.gridColumn = '1 / -1';
+                    }
                 }
 
                 // Render FAQs
@@ -3525,6 +3923,7 @@
                 }
             } catch (e) {
                 console.warn('Could not load CMS content — using defaults');
+                document.querySelectorAll('.trust-icon img').forEach(applyTrustCardImageFit);
             }
         }
 
