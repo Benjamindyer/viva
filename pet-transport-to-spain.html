@@ -419,6 +419,8 @@
 
         /* Van Status Strip */
         .van-status-strip {
+            position: relative;
+            z-index: 5;
             padding: 0 20px 24px;
         }
         .vss-inner {
@@ -776,6 +778,8 @@
             grid-template-columns: 1fr 1fr;
             gap: 40px;
             align-items: center;
+            position: relative;
+            z-index: 5;
         }
 
         .hero-text {
@@ -869,9 +873,110 @@
 
         .hero-visual {
             position: relative;
+            isolation: isolate;
+            min-height: 400px;
+        }
+
+        .hero-carousel {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            height: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+        }
+
+        .hero-carousel-slides {
+            position: absolute;
+            inset: 0;
+        }
+
+        .hero-carousel-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+        }
+
+        .hero-carousel-slide.is-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .hero-carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .hero-carousel-shade {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.35) 100%);
+            pointer-events: none;
+        }
+
+        .hero-carousel-caption {
+            position: absolute;
+            bottom: 48px;
+            left: 16px;
+            max-width: calc(100% - 32px);
+            z-index: 2;
+            padding: 6px 14px;
+            background: rgba(0,0,0,0.55);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 20px;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+        }
+
+        .hero-carousel-slide.is-active .hero-carousel-caption {
+            opacity: 1;
+        }
+
+        .hero-carousel-dots {
+            position: absolute;
+            bottom: 14px;
+            left: 0;
+            right: 0;
+            z-index: 3;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 0 12px;
+        }
+
+        .hero-carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: none;
+            padding: 0;
+            background: rgba(255,255,255,0.45);
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .hero-carousel-dot.is-active {
+            background: #fff;
+            transform: scale(1.25);
+        }
+
+        .hero-carousel-dot:focus-visible {
+            outline: 2px solid #fff;
+            outline-offset: 2px;
         }
 
         .hero-image {
+            position: relative;
+            z-index: 1;
             width: 100%;
             height: 400px;
             object-fit: cover;
@@ -879,11 +984,16 @@
             box-shadow: 0 30px 60px rgba(0,0,0,0.3);
         }
 
+        .hero-visual.has-carousel .hero-image {
+            display: none;
+        }
+
         .hero-notification {
             position: absolute;
             bottom: -20px;
             left: 50%;
             transform: translateX(-50%);
+            z-index: 10;
             background: white;
             padding: 12px 20px;
             border-radius: 50px;
@@ -893,6 +1003,13 @@
             gap: 12px;
             white-space: nowrap;
             animation: float 3s ease-in-out infinite;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .hero-carousel-slide,
+            .hero-carousel-caption {
+                transition: none;
+            }
         }
 
         @keyframes float {
@@ -1077,6 +1194,7 @@
 
         /* Gallery */
         .gallery-grid {
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
@@ -2674,6 +2792,11 @@
                 order: -1;
             }
 
+            .hero-visual {
+                min-height: 300px;
+            }
+
+            .hero-carousel,
             .hero-image {
                 height: 300px;
             }
@@ -2899,6 +3022,7 @@
                 </div>
             </div>
             <div class="hero-visual">
+                <div class="hero-carousel" id="heroCarousel" hidden aria-hidden="true"></div>
                 <img src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=800&q=80" alt="Dog safely transported from Spain to UK by Viva Españiel" class="hero-image" id="heroImage">
                 <div class="hero-notification">
                     <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=100&q=80" alt="">
@@ -3527,21 +3651,133 @@
             else img.addEventListener('load', apply, { once: true });
         }
 
+        let _heroCarouselCtl = null;
+
+        function teardownHeroCarousel() {
+            if (_heroCarouselCtl) {
+                _heroCarouselCtl.destroy();
+                _heroCarouselCtl = null;
+            }
+            const visual = document.querySelector('.hero-visual');
+            const carousel = document.getElementById('heroCarousel');
+            if (visual) visual.classList.remove('has-carousel');
+            if (carousel) {
+                carousel.hidden = true;
+                carousel.setAttribute('aria-hidden', 'true');
+                carousel.innerHTML = '';
+            }
+        }
+
+        function initHeroCarousel(slides) {
+            teardownHeroCarousel();
+            const visual = document.querySelector('.hero-visual');
+            const carousel = document.getElementById('heroCarousel');
+            if (!visual || !carousel || !slides || slides.length === 0) return;
+
+            visual.classList.add('has-carousel');
+            carousel.hidden = false;
+            carousel.removeAttribute('aria-hidden');
+
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const multi = slides.length > 1;
+            let index = 0;
+            let timer = null;
+            let paused = false;
+
+            const slideHtml = slides.map((s, i) => {
+                const cap = (s.caption || '').trim();
+                const loadAttr = i === 0 ? 'fetchpriority="high"' : 'loading="lazy"';
+                return `<div class="hero-carousel-slide${i === 0 ? ' is-active' : ''}" data-index="${i}" role="group" aria-roledescription="slide" aria-label="${i + 1} of ${slides.length}">
+                    <img src="${s.image_url}" alt="${escHtml(s.alt_text || '')}" ${loadAttr} decoding="async">
+                    ${cap ? `<span class="hero-carousel-caption">${escHtml(cap)}</span>` : ''}
+                </div>`;
+            }).join('');
+
+            const dotsHtml = multi ? `<div class="hero-carousel-dots" role="tablist" aria-label="Hero images">
+                ${slides.map((_, i) => `<button type="button" class="hero-carousel-dot${i === 0 ? ' is-active' : ''}" role="tab" aria-selected="${i === 0}" aria-label="Slide ${i + 1}" data-index="${i}"></button>`).join('')}
+            </div>` : '';
+
+            carousel.innerHTML = `<div class="hero-carousel-slides" aria-live="polite">${slideHtml}</div>
+                <div class="hero-carousel-shade" aria-hidden="true"></div>${dotsHtml}`;
+
+            const slideEls = carousel.querySelectorAll('.hero-carousel-slide');
+            const dotEls = carousel.querySelectorAll('.hero-carousel-dot');
+
+            function goTo(i) {
+                index = ((i % slides.length) + slides.length) % slides.length;
+                slideEls.forEach((el, j) => el.classList.toggle('is-active', j === index));
+                dotEls.forEach((el, j) => {
+                    el.classList.toggle('is-active', j === index);
+                    el.setAttribute('aria-selected', j === index ? 'true' : 'false');
+                });
+            }
+
+            function next() { goTo(index + 1); }
+
+            function startAutoplay() {
+                if (!multi || reducedMotion || paused) return;
+                stopAutoplay();
+                timer = setInterval(next, 6000);
+            }
+
+            function stopAutoplay() {
+                if (timer) { clearInterval(timer); timer = null; }
+            }
+
+            dotEls.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    goTo(parseInt(dot.dataset.index, 10));
+                    startAutoplay();
+                });
+            });
+
+            carousel.addEventListener('mouseenter', () => { paused = true; stopAutoplay(); });
+            carousel.addEventListener('mouseleave', () => { paused = false; startAutoplay(); });
+
+            const onVis = () => {
+                if (document.visibilityState === 'hidden') stopAutoplay();
+                else startAutoplay();
+            };
+            document.addEventListener('visibilitychange', onVis);
+
+            let touchX = 0;
+            carousel.addEventListener('touchstart', e => {
+                touchX = e.changedTouches[0].clientX;
+            }, { passive: true });
+            carousel.addEventListener('touchend', e => {
+                if (!multi) return;
+                const dx = e.changedTouches[0].clientX - touchX;
+                if (Math.abs(dx) >= 40) goTo(index + (dx < 0 ? 1 : -1));
+                startAutoplay();
+            }, { passive: true });
+
+            startAutoplay();
+
+            _heroCarouselCtl = {
+                destroy() {
+                    stopAutoplay();
+                    document.removeEventListener('visibilitychange', onVis);
+                }
+            };
+        }
+
         async function loadSiteContent() {
             try {
                 const h = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY };
-                const [cr, tr, gr, pr, fr] = await Promise.all([
+                const [cr, tr, gr, pr, fr, hr] = await Promise.all([
                     fetch(`${SUPABASE_URL}/rest/v1/content?select=key,value`, { headers: h }),
                     fetch(`${SUPABASE_URL}/rest/v1/testimonials?active=eq.true&order=sort_order`, { headers: h }),
                     fetch(`${SUPABASE_URL}/rest/v1/gallery_items?active=eq.true&order=sort_order`, { headers: h }),
                     fetch(`${SUPABASE_URL}/rest/v1/pages?status=eq.live&order=sort_order&select=slug,nav_label,title`, { headers: h }),
                     fetch(`${SUPABASE_URL}/rest/v1/faqs?active=eq.true&order=sort_order`, { headers: h }),
+                    fetch(`${SUPABASE_URL}/rest/v1/hero_images?active=eq.true&order=sort_order`, { headers: h }),
                 ]);
                 const content      = cr.ok ? await cr.json() : [];
                 const testimonials = tr.ok ? await tr.json() : [];
                 const gallery      = gr.ok ? await gr.json() : [];
                 const customPages  = pr.ok ? await pr.json() : [];
                 const faqs         = fr.ok ? await fr.json() : [];
+                const heroImages   = hr.ok ? await hr.json() : [];
 
                 // Inject live custom pages into nav after Testimonials.
                 // Skip area pages — they live in the Areas dropdown.
@@ -3583,7 +3819,12 @@
                 setText('heroBadge',    c.hero_badge);
                 setText('heroHeadline', c.hero_headline);
                 setText('heroTagline',  c.hero_tagline);
-                setImg('heroImage',     c.hero_image_url);
+                if (heroImages.length >= 1) {
+                    initHeroCarousel(heroImages);
+                } else {
+                    teardownHeroCarousel();
+                    setImg('heroImage', c.hero_image_url);
+                }
 
                 if (c.google_rating)       document.getElementById('googleRatingTitle').textContent  = c.google_rating + ' Google Rating';
                 if (c.google_review_count) document.getElementById('googleReviewCount').textContent  = c.google_review_count + ' Reviews';
@@ -3635,7 +3876,9 @@
                 // Re-render gallery
                 if (gallery.length > 0) {
                     const grid = document.getElementById('galleryGrid');
+                    const gallerySection = document.getElementById('gallery');
                     grid.classList.toggle('gallery-grid--single', gallery.length === 1);
+                    if (gallerySection) gallerySection.classList.toggle('gallery-section--single', gallery.length === 1);
                     grid.innerHTML = gallery.map(g => {
                         const ytId = getYouTubeId(g.video_url);
                         const media = ytId
@@ -3645,6 +3888,10 @@
                         return `<div class="gallery-item${cls}">${media}<div class="gallery-overlay"><h4>${g.dog_name}</h4><p>${g.route}</p></div></div>`;
                     }).join('');
                     bindGalleryVideos(grid);
+                    if (gallery.length === 1) {
+                        const item = grid.querySelector('.gallery-item');
+                        if (item) item.style.gridColumn = '1 / -1';
+                    }
                 }
 
                 // Render FAQs
