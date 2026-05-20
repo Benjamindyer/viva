@@ -369,7 +369,7 @@ serve(async (req) => {
     if (blogIdMatch) {
       if (req.method === 'PATCH') {
         const body = await req.json()
-        const allowed = ['title', 'slug', 'excerpt', 'body_html', 'hero_image_url', 'published', 'published_at', 'meta_title', 'meta_description']
+        const allowed = ['title', 'slug', 'excerpt', 'body_html', 'hero_image_url', 'focus_x', 'focus_y', 'published', 'published_at', 'meta_title', 'meta_description']
         const update: Record<string, unknown> = { updated_at: new Date().toISOString() }
         for (const key of allowed) {
           if (body[key] !== undefined) update[key] = body[key]

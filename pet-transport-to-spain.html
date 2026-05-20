@@ -3705,13 +3705,12 @@
                 // Inject live custom pages into nav after Testimonials.
                 // Skip area pages — they live in the Areas dropdown.
                 const AREA_SLUGS = new Set(['malaga', 'marbella', 'costa-del-sol', 'alicante', 'granada', 'madrid']);
-                const MVP_SLUGS = new Set(['the-man', 'the-plan', 'the-van']);
                 if (customPages.length) {
                     const navLinks    = document.getElementById('navLinks');
                     const mobileList  = document.querySelector('.mobile-menu-list');
                     customPages.forEach(pg => {
-                        if (AREA_SLUGS.has(pg.slug) || MVP_SLUGS.has(pg.slug)) return;
-                        const label = pg.nav_label || pg.title || pg.slug;
+                        if (AREA_SLUGS.has(pg.slug)) return;
+                        const label = (pg.nav_label || '').trim() || pg.title || pg.slug;
                         const li = document.createElement('li');
                         li.innerHTML = `<a href="page.html?slug=${pg.slug}">${label}</a>`;
                         navLinks.appendChild(li);

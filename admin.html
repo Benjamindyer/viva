@@ -278,6 +278,13 @@
         .hero-image-card .replace-btn:hover { border-color: var(--primary); color: var(--primary); }
         .hero-image-card .delete-btn { flex: 1; padding: 6px 10px; border: 1.5px solid #fee2e2; border-radius: 6px; font-size: 12px; cursor: pointer; background: white; color: #991b1b; }
         .hero-image-card .delete-btn:hover { background: #fee2e2; }
+        /* CMS page / blog hero focus picker */
+        .cms-focus-thumb { position: relative; height: 100px; background-size: cover; background-position: center; background-color: #f3f4f6; cursor: crosshair; border-radius: 8px; margin-bottom: 8px; }
+        .cms-focus-thumb .focus-dot { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border: 2px solid #fff; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 1px rgba(0,0,0,0.35); cursor: grab; z-index: 2; touch-action: none; }
+        .cms-focus-thumb .focus-dot:active { cursor: grabbing; }
+        .cms-focus-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; }
+        .cms-focus-reset { padding: 0; border: none; background: none; font-size: 11px; color: var(--primary); cursor: pointer; font-weight: 600; text-transform: none; letter-spacing: 0; }
+        .cms-focus-reset:hover { text-decoration: underline; }
         /* Item edit modal */
         .item-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 600; display: none; align-items: center; justify-content: center; padding: 20px; }
         .item-modal-overlay.open { display: flex; }
@@ -764,7 +771,15 @@
                         <!-- Hero image -->
                         <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
                             <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:12px;">Hero image</div>
-                            <img id="peHeroPreview" src="" style="width:100%;height:100px;object-fit:cover;border-radius:8px;display:none;margin-bottom:10px;">
+                            <div id="peHeroFocusWrap" style="display:none;">
+                                <div id="peHeroThumb" class="cms-focus-thumb" role="img" aria-label="Hero image — click to set focus">
+                                    <span id="peHeroFocusDot" class="focus-dot"></span>
+                                </div>
+                                <div class="cms-focus-bar">
+                                    <span>Focus</span>
+                                    <button type="button" class="cms-focus-reset" id="peHeroFocusReset">Reset to center</button>
+                                </div>
+                            </div>
                             <div id="peHeroEmpty" style="width:100%;height:80px;background:#f4f5f7;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#aaa;margin-bottom:10px;">No image</div>
                             <input type="file" id="peHeroFile" accept="image/*" style="display:none" onchange="peUploadHero(this)">
                             <button class="upload-btn" style="width:100%;" onclick="document.getElementById('peHeroFile').click()">Upload image</button>
@@ -863,7 +878,15 @@
                         <!-- Hero image -->
                         <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
                             <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:12px;">Hero image</div>
-                            <img id="beHeroPreview" src="" style="width:100%;height:100px;object-fit:cover;border-radius:8px;display:none;margin-bottom:10px;">
+                            <div id="beHeroFocusWrap" style="display:none;">
+                                <div id="beHeroThumb" class="cms-focus-thumb" role="img" aria-label="Featured image — click to set focus">
+                                    <span id="beHeroFocusDot" class="focus-dot"></span>
+                                </div>
+                                <div class="cms-focus-bar">
+                                    <span>Focus</span>
+                                    <button type="button" class="cms-focus-reset" id="beHeroFocusReset">Reset to center</button>
+                                </div>
+                            </div>
                             <div id="beHeroEmpty" style="width:100%;height:80px;background:#f4f5f7;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#aaa;margin-bottom:10px;">No image</div>
                             <input type="file" id="beHeroFile" accept="image/*" style="display:none" onchange="beUploadHero(this)">
                             <button class="upload-btn" style="width:100%;" onclick="document.getElementById('beHeroFile').click()">Upload image</button>
@@ -896,7 +919,7 @@
         <div id="page-pages" class="page">
             <div class="page-header">
                 <h1>Pages</h1>
-                <p>Create up to 3 custom pages for your site. Set to <strong>On</strong> to show in nav, <strong>Off</strong> to keep accessible but unlisted, or <strong>Draft</strong> to hide completely.</p>
+                <p>Create custom pages for your site. Set to <strong>On</strong> to show in nav, <strong>Off</strong> to keep accessible but unlisted, or <strong>Draft</strong> to hide completely.</p>
             </div>
             <div id="pagesList" style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;"></div>
             <button id="addPageBtn" class="btn-add-item" onclick="openPageEditor(null)">+ Add page</button>
@@ -2386,6 +2409,9 @@ let cmsPages = [];
 let editingPageId = null;
 let peQuill = null;
 let peHeroUrl = '';
+let peFocusX = 50;
+let peFocusY = 50;
+let peFocusTimer = null;
 let peSlugManuallyEdited = false;
 
 function toSlug(s) {
@@ -2403,11 +2429,11 @@ async function loadPages() {
 function renderPagesList() {
     const list = document.getElementById('pagesList');
     const btn  = document.getElementById('addPageBtn');
-    btn.disabled = cmsPages.length >= 3;
-    btn.style.opacity = cmsPages.length >= 3 ? '0.4' : '1';
+    btn.disabled = false;
+    btn.style.opacity = '1';
 
     if (!cmsPages.length) {
-        list.innerHTML = '<p style="color:#888;font-size:14px;">No pages yet. Add up to 3.</p>';
+        list.innerHTML = '<p style="color:#888;font-size:14px;">No pages yet. Click + New page to add one.</p>';
         return;
     }
 
@@ -2449,13 +2475,11 @@ function openPageEditor(id) {
     const statusVal = p?.status || 'draft';
     document.querySelectorAll('input[name="peStatus"]').forEach(r => { r.checked = r.value === statusVal; });
 
-    // Hero image
+    // Hero image + focus
     peHeroUrl = p?.hero_image_url || '';
-    const preview   = document.getElementById('peHeroPreview');
-    const empty     = document.getElementById('peHeroEmpty');
-    const removeBtn = document.getElementById('peHeroRemoveBtn');
-    if (peHeroUrl) { preview.src = peHeroUrl; preview.style.display = 'block'; empty.style.display = 'none'; removeBtn.style.display = 'block'; }
-    else           { preview.style.display = 'none'; empty.style.display = 'flex'; removeBtn.style.display = 'none'; }
+    peFocusX = p?.focus_x != null ? Number(p.focus_x) : 50;
+    peFocusY = p?.focus_y != null ? Number(p.focus_y) : 50;
+    updatePeHeroUI();
 
     // Preview link
     const previewLink = document.getElementById('pePreviewLink');
@@ -2484,6 +2508,7 @@ function openPageEditor(id) {
             ]},
         });
         if (p?.body_html) peQuill.clipboard.dangerouslyPasteHTML(p.body_html);
+        wirePeHeroFocus();
     }, 50);
 }
 
@@ -2505,16 +2530,88 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('peSlug')?.addEventListener('input', () => { peSlugManuallyEdited = true; });
 });
 
+function clampFocus(v) {
+    return Math.round(Math.min(100, Math.max(0, Number(v))) * 10) / 10;
+}
+
+function updatePeHeroUI() {
+    const wrap = document.getElementById('peHeroFocusWrap');
+    const empty = document.getElementById('peHeroEmpty');
+    const removeBtn = document.getElementById('peHeroRemoveBtn');
+    const thumb = document.getElementById('peHeroThumb');
+    const dot = document.getElementById('peHeroFocusDot');
+    peFocusX = clampFocus(peFocusX);
+    peFocusY = clampFocus(peFocusY);
+    if (peHeroUrl) {
+        wrap.style.display = 'block';
+        empty.style.display = 'none';
+        removeBtn.style.display = 'block';
+        thumb.style.backgroundImage = `url('${peHeroUrl.replace(/'/g, "\\'")}')`;
+        thumb.style.backgroundPosition = `${peFocusX}% ${peFocusY}%`;
+        dot.style.left = `${peFocusX}%`;
+        dot.style.top = `${peFocusY}%`;
+    } else {
+        wrap.style.display = 'none';
+        empty.style.display = 'flex';
+        removeBtn.style.display = 'none';
+    }
+}
+
+function schedulePeFocusPatch() {
+    if (!editingPageId) return;
+    clearTimeout(peFocusTimer);
+    peFocusTimer = setTimeout(async () => {
+        try {
+            await adminFetch(`/pages/${editingPageId}`, { method: 'PATCH', body: { focus_x: peFocusX, focus_y: peFocusY } });
+        } catch (e) { /* silent */ }
+    }, 400);
+}
+
+function setPeFocusFromEvent(clientX, clientY) {
+    const thumb = document.getElementById('peHeroThumb');
+    if (!thumb) return;
+    const rect = thumb.getBoundingClientRect();
+    peFocusX = clampFocus(((clientX - rect.left) / rect.width) * 100);
+    peFocusY = clampFocus(((clientY - rect.top) / rect.height) * 100);
+    updatePeHeroUI();
+    schedulePeFocusPatch();
+}
+
+function wirePeHeroFocus() {
+    const thumb = document.getElementById('peHeroThumb');
+    const dot = document.getElementById('peHeroFocusDot');
+    const reset = document.getElementById('peHeroFocusReset');
+    if (!thumb || thumb.dataset.wired) return;
+    thumb.dataset.wired = '1';
+    thumb.addEventListener('click', e => {
+        if (e.target === dot || dot.contains(e.target)) return;
+        setPeFocusFromEvent(e.clientX, e.clientY);
+    });
+    let dragging = false;
+    const onMove = e => { if (!dragging) return; e.preventDefault(); setPeFocusFromEvent(e.clientX, e.clientY); };
+    const onUp = () => { if (!dragging) return; dragging = false; document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
+    dot.addEventListener('mousedown', e => {
+        e.preventDefault(); e.stopPropagation();
+        dragging = true;
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+    });
+    reset.addEventListener('click', e => {
+        e.preventDefault();
+        peFocusX = 50; peFocusY = 50;
+        updatePeHeroUI();
+        schedulePeFocusPatch();
+    });
+}
+
 async function peUploadHero(input) {
     const file = input.files[0]; if (!file) return;
     const btn = input.nextElementSibling;
     btn.textContent = 'Uploading…'; btn.disabled = true;
     try {
         peHeroUrl = await adminUpload(file);
-        const preview = document.getElementById('peHeroPreview');
-        preview.src = peHeroUrl; preview.style.display = 'block';
-        document.getElementById('peHeroEmpty').style.display = 'none';
-        document.getElementById('peHeroRemoveBtn').style.display = 'block';
+        peFocusX = 50; peFocusY = 50;
+        updatePeHeroUI();
         btn.textContent = 'Change image';
     } catch (err) {
         alert('Upload failed: ' + err.message);
@@ -2527,9 +2624,8 @@ async function peUploadHero(input) {
 function peRemoveHero() {
     adminDeleteMedia(peHeroUrl);
     peHeroUrl = '';
-    document.getElementById('peHeroPreview').style.display = 'none';
-    document.getElementById('peHeroEmpty').style.display = 'flex';
-    document.getElementById('peHeroRemoveBtn').style.display = 'none';
+    peFocusX = 50; peFocusY = 50;
+    updatePeHeroUI();
     document.getElementById('peHeroFile').nextElementSibling.textContent = 'Upload image';
 }
 
@@ -2545,6 +2641,8 @@ async function savePage() {
         nav_label:        document.getElementById('peNavLabel').value.trim(),
         status:           document.querySelector('input[name="peStatus"]:checked')?.value || 'draft',
         hero_image_url:   peHeroUrl,
+        focus_x:          peFocusX,
+        focus_y:          peFocusY,
         body_html:        peQuill ? peQuill.root.innerHTML : '',
         video_url:        document.getElementById('peVideoUrl').value.trim(),
         meta_title:       document.getElementById('peMetaTitle').value.trim(),
@@ -2590,6 +2688,9 @@ let blogPosts = [];
 let editingBlogId = null;
 let beQuill = null;
 let beHeroUrl = '';
+let beFocusX = 50;
+let beFocusY = 50;
+let beFocusTimer = null;
 let beSlugManuallyEdited = false;
 
 async function loadBlog() {
@@ -2653,13 +2754,11 @@ function openBlogEditor(id) {
         if (this.checked && !pubAtInput.value) pubAtInput.value = new Date().toISOString().slice(0, 10);
     };
 
-    // Hero image
+    // Hero image + focus
     beHeroUrl = p?.hero_image_url || '';
-    const preview = document.getElementById('beHeroPreview');
-    const empty   = document.getElementById('beHeroEmpty');
-    const removeBtn = document.getElementById('beHeroRemoveBtn');
-    if (beHeroUrl) { preview.src = beHeroUrl; preview.style.display = 'block'; empty.style.display = 'none'; removeBtn.style.display = 'block'; }
-    else           { preview.style.display = 'none'; empty.style.display = 'flex'; removeBtn.style.display = 'none'; }
+    beFocusX = p?.focus_x != null ? Number(p.focus_x) : 50;
+    beFocusY = p?.focus_y != null ? Number(p.focus_y) : 50;
+    updateBeHeroUI();
 
     // Preview link
     const previewLink = document.getElementById('bePreviewLink');
@@ -2682,6 +2781,7 @@ function openBlogEditor(id) {
             ]},
         });
         if (p?.body_html) beQuill.clipboard.dangerouslyPasteHTML(p.body_html);
+        wireBeHeroFocus();
     }, 50);
 }
 
@@ -2698,16 +2798,84 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('beSlug')?.addEventListener('input', () => { beSlugManuallyEdited = true; });
 });
 
+function updateBeHeroUI() {
+    const wrap = document.getElementById('beHeroFocusWrap');
+    const empty = document.getElementById('beHeroEmpty');
+    const removeBtn = document.getElementById('beHeroRemoveBtn');
+    const thumb = document.getElementById('beHeroThumb');
+    const dot = document.getElementById('beHeroFocusDot');
+    beFocusX = clampFocus(beFocusX);
+    beFocusY = clampFocus(beFocusY);
+    if (beHeroUrl) {
+        wrap.style.display = 'block';
+        empty.style.display = 'none';
+        removeBtn.style.display = 'block';
+        thumb.style.backgroundImage = `url('${beHeroUrl.replace(/'/g, "\\'")}')`;
+        thumb.style.backgroundPosition = `${beFocusX}% ${beFocusY}%`;
+        dot.style.left = `${beFocusX}%`;
+        dot.style.top = `${beFocusY}%`;
+    } else {
+        wrap.style.display = 'none';
+        empty.style.display = 'flex';
+        removeBtn.style.display = 'none';
+    }
+}
+
+function scheduleBeFocusPatch() {
+    if (!editingBlogId) return;
+    clearTimeout(beFocusTimer);
+    beFocusTimer = setTimeout(async () => {
+        try {
+            await adminFetch(`/blog/${editingBlogId}`, { method: 'PATCH', body: { focus_x: beFocusX, focus_y: beFocusY } });
+        } catch (e) { /* silent */ }
+    }, 400);
+}
+
+function setBeFocusFromEvent(clientX, clientY) {
+    const thumb = document.getElementById('beHeroThumb');
+    if (!thumb) return;
+    const rect = thumb.getBoundingClientRect();
+    beFocusX = clampFocus(((clientX - rect.left) / rect.width) * 100);
+    beFocusY = clampFocus(((clientY - rect.top) / rect.height) * 100);
+    updateBeHeroUI();
+    scheduleBeFocusPatch();
+}
+
+function wireBeHeroFocus() {
+    const thumb = document.getElementById('beHeroThumb');
+    const dot = document.getElementById('beHeroFocusDot');
+    const reset = document.getElementById('beHeroFocusReset');
+    if (!thumb || thumb.dataset.wired) return;
+    thumb.dataset.wired = '1';
+    thumb.addEventListener('click', e => {
+        if (e.target === dot || dot.contains(e.target)) return;
+        setBeFocusFromEvent(e.clientX, e.clientY);
+    });
+    let dragging = false;
+    const onMove = e => { if (!dragging) return; e.preventDefault(); setBeFocusFromEvent(e.clientX, e.clientY); };
+    const onUp = () => { if (!dragging) return; dragging = false; document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
+    dot.addEventListener('mousedown', e => {
+        e.preventDefault(); e.stopPropagation();
+        dragging = true;
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+    });
+    reset.addEventListener('click', e => {
+        e.preventDefault();
+        beFocusX = 50; beFocusY = 50;
+        updateBeHeroUI();
+        scheduleBeFocusPatch();
+    });
+}
+
 async function beUploadHero(input) {
     const file = input.files[0]; if (!file) return;
     const btn = input.nextElementSibling;
     btn.textContent = 'Uploading…'; btn.disabled = true;
     try {
         beHeroUrl = await adminUpload(file);
-        const preview = document.getElementById('beHeroPreview');
-        preview.src = beHeroUrl; preview.style.display = 'block';
-        document.getElementById('beHeroEmpty').style.display = 'none';
-        document.getElementById('beHeroRemoveBtn').style.display = 'block';
+        beFocusX = 50; beFocusY = 50;
+        updateBeHeroUI();
         btn.textContent = 'Change image';
     } catch (err) {
         alert('Upload failed: ' + err.message);
@@ -2720,9 +2888,8 @@ async function beUploadHero(input) {
 function beRemoveHero() {
     adminDeleteMedia(beHeroUrl);
     beHeroUrl = '';
-    document.getElementById('beHeroPreview').style.display = 'none';
-    document.getElementById('beHeroEmpty').style.display = 'flex';
-    document.getElementById('beHeroRemoveBtn').style.display = 'none';
+    beFocusX = 50; beFocusY = 50;
+    updateBeHeroUI();
     document.getElementById('beHeroFile').nextElementSibling.textContent = 'Upload image';
 }
 
@@ -2742,6 +2909,8 @@ async function saveBlogPost() {
         published,
         published_at:     published && publishedAt ? new Date(publishedAt).toISOString() : null,
         hero_image_url:   beHeroUrl || null,
+        focus_x:          beFocusX,
+        focus_y:          beFocusY,
         body_html:        beQuill ? beQuill.root.innerHTML : '',
         meta_title:       document.getElementById('beMetaTitle').value.trim(),
         meta_description: document.getElementById('beMetaDesc').value.trim(),

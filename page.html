@@ -573,7 +573,7 @@
                 // Load page + nav pages in parallel
                 const [pageRes, pagesRes] = await Promise.all([
                     fetch(`${SUPABASE_URL}/rest/v1/pages?slug=eq.${encodeURIComponent(slug)}&limit=1`, { headers: h }),
-                    fetch(`${SUPABASE_URL}/rest/v1/pages?status=eq.live&order=sort_order&select=slug,nav_label`, { headers: h }),
+                    fetch(`${SUPABASE_URL}/rest/v1/pages?status=eq.live&order=sort_order&select=slug,nav_label,title`, { headers: h }),
                 ]);
 
                 const pages    = pagesRes.ok ? await pagesRes.json() : [];
@@ -582,13 +582,12 @@
 
                 // Inject custom page links into nav. Skip area pages (they're in the Areas dropdown).
                 const AREA_SLUGS = new Set(['malaga', 'marbella', 'costa-del-sol', 'alicante', 'granada', 'madrid']);
-                const MVP_SLUGS = new Set(['the-man', 'the-plan', 'the-van']);
                 if (pages.length) {
                     const navLinks = document.getElementById('navLinks');
                     const mobileList = document.querySelector('.mobile-menu-list');
                     pages.forEach(pg => {
-                        if (AREA_SLUGS.has(pg.slug) || MVP_SLUGS.has(pg.slug)) return;
-                        const label = pg.nav_label || pg.slug;
+                        if (AREA_SLUGS.has(pg.slug)) return;
+                        const label = (pg.nav_label || '').trim() || pg.title || pg.slug;
                         const li = document.createElement('li');
                         li.innerHTML = `<a href="page.html?slug=${pg.slug}">${label}</a>`;
                         navLinks.appendChild(li);
@@ -620,9 +619,11 @@
 
                 // Hero
                 const hasHero = p.hero_image_url && p.hero_image_url.trim() !== '';
+                const fx = p.focus_x != null ? p.focus_x : 50;
+                const fy = p.focus_y != null ? p.focus_y : 50;
                 heroSlot.innerHTML = `
                     <div class="hero">
-                        ${hasHero ? `<img src="${p.hero_image_url}" alt="${p.title}" class="hero-img">` : ''}
+                        ${hasHero ? `<img src="${p.hero_image_url}" alt="${p.title}" class="hero-img" style="object-position:${fx}% ${fy}%;">` : ''}
                         <div class="hero-overlay"></div>
                         <div class="hero-text">
                             <h1 class="hero-title">${p.title}</h1>

@@ -757,6 +757,38 @@
     </footer>
 
     <script>
+        // ── Live CMS pages in nav (after Testimonials) ───────────────────────────
+        async function initNav() {
+            const h = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY };
+            try {
+                const pagesRes = await fetch(
+                    `${SUPABASE_URL}/rest/v1/pages?status=eq.live&order=sort_order&select=slug,nav_label,title`,
+                    { headers: h }
+                );
+                if (!pagesRes.ok) return;
+                const pages = await pagesRes.json();
+                const AREA_SLUGS = new Set(['malaga', 'marbella', 'costa-del-sol', 'alicante', 'granada', 'madrid']);
+                const navLinks = document.getElementById('navLinks');
+                const mobileList = document.querySelector('.mobile-menu-list');
+                pages.forEach(pg => {
+                    if (AREA_SLUGS.has(pg.slug)) return;
+                    const label = (pg.nav_label || '').trim() || pg.title || pg.slug;
+                    const li = document.createElement('li');
+                    li.innerHTML = `<a href="page.html?slug=${pg.slug}">${label}</a>`;
+                    navLinks.appendChild(li);
+                    if (mobileList) {
+                        const mli = document.createElement('li');
+                        const ma = document.createElement('a');
+                        ma.href = `page.html?slug=${pg.slug}`;
+                        ma.textContent = label;
+                        ma.addEventListener('click', closeMobileMenu);
+                        mli.appendChild(ma);
+                        mobileList.appendChild(mli);
+                    }
+                });
+            } catch (e) { /* nav falls back gracefully */ }
+        }
+
         // ── WhatsApp + contact details from settings ──────────────────────────────
         async function initContactSettings() {
             const h = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY };
@@ -947,6 +979,7 @@
             }
         });
 
+        initNav();
         initContactSettings();
     </script>
 </body>
