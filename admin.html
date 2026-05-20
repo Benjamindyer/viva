@@ -244,6 +244,31 @@
         .btn-del-item:hover { background: #fee2e2; }
         .btn-add-item { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 1.5px dashed var(--border); border-radius: 8px; font-size: 13px; cursor: pointer; background: white; color: var(--muted); transition: all 0.15s; }
         .btn-add-item:hover { border-color: var(--primary); color: var(--primary); }
+        /* Hero carousel admin */
+        .hero-carousel-section { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); }
+        .hero-carousel-section h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+        .hero-images-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 14px; }
+        .hero-image-card { border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; background: white; display: flex; flex-direction: column; }
+        .hero-image-card.inactive { opacity: 0.6; }
+        .hero-image-card .thumb { position: relative; height: 140px; background-size: cover; background-position: center; background-color: #f3f4f6; }
+        .hero-image-card .thumb-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.75); display: none; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--muted); }
+        .hero-image-card.processing .thumb-overlay { display: flex; }
+        .hero-image-card .card-body { padding: 12px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+        .hero-image-card .card-body label { display: block; font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+        .hero-image-card .card-body input { width: 100%; padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 13px; font-family: inherit; }
+        .hero-image-card .card-body input:focus { outline: none; border-color: var(--primary); }
+        .hero-image-card .card-footer { padding: 10px 12px; border-top: 1px solid var(--border); background: #f9fafb; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        .hero-image-card .sort-controls { display: flex; gap: 4px; }
+        .hero-image-card .sort-btn { width: 28px; height: 28px; border: 1.5px solid var(--border); border-radius: 6px; background: white; font-size: 14px; cursor: pointer; color: var(--text); }
+        .hero-image-card .sort-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+        .hero-image-card .sort-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+        .hero-image-card .active-toggle { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; cursor: pointer; margin-left: auto; }
+        .hero-image-card .active-toggle input { accent-color: var(--primary); width: 15px; height: 15px; cursor: pointer; }
+        .hero-image-card .card-actions { display: flex; gap: 6px; width: 100%; margin-top: 2px; }
+        .hero-image-card .replace-btn { flex: 1; padding: 6px 10px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 12px; cursor: pointer; background: white; }
+        .hero-image-card .replace-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .hero-image-card .delete-btn { flex: 1; padding: 6px 10px; border: 1.5px solid #fee2e2; border-radius: 6px; font-size: 12px; cursor: pointer; background: white; color: #991b1b; }
+        .hero-image-card .delete-btn:hover { background: #fee2e2; }
         /* Item edit modal */
         .item-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 600; display: none; align-items: center; justify-content: center; padding: 20px; }
         .item-modal-overlay.open { display: flex; }
@@ -456,7 +481,8 @@
                 </div>
                 <div class="content-field"><label>Google reviews URL</label><input type="url" id="cGoogleReviewUrl" class="content-input" placeholder="https://g.page/r/..."></div>
                 <div class="content-field">
-                    <label>Hero image</label>
+                    <label>Hero image <small style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted);">(fallback)</small></label>
+                    <p style="font-size:13px;color:var(--muted);margin:-2px 0 10px;">Used on the homepage when no carousel slides are marked Active. Uploading saves immediately.</p>
                     <div class="img-upload-row">
                         <img id="prevHeroImage" src="" class="img-preview" alt="Hero">
                         <div>
@@ -466,8 +492,19 @@
                         </div>
                     </div>
                 </div>
-                <button class="save-btn" onclick="saveContent({hero_badge:v('cHeroBadge'),hero_headline:v('cHeroHeadline'),hero_tagline:v('cHeroTagline'),google_rating:v('cGoogleRating'),google_review_count:v('cGoogleReviewCount'),google_stars:document.getElementById('cGoogleStars').value,google_review_url:v('cGoogleReviewUrl')},'heroMsg')">Save Hero</button>
-                <span class="save-msg" id="heroMsg"></span>
+                <div class="hero-carousel-section">
+                    <h4>Hero carousel</h4>
+                    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Slides shown on the homepage when marked Active. If none are active, the single Hero Image above is used.</p>
+                    <div id="heroImagesGrid" class="hero-images-grid"></div>
+                    <input type="file" id="heroImageFileInput" accept="image/*" style="display:none">
+                    <input type="file" id="heroImageReplaceInput" accept="image/*" style="display:none">
+                    <button type="button" id="heroImagesAddBtn" class="btn-add-item" onclick="addHeroImage()">+ Add slide</button>
+                    <span class="save-msg" id="heroImagesMsg"></span>
+                </div>
+                <div style="margin-top:18px;">
+                    <button class="save-btn" onclick="saveContent({hero_badge:v('cHeroBadge'),hero_headline:v('cHeroHeadline'),hero_tagline:v('cHeroTagline'),google_rating:v('cGoogleRating'),google_review_count:v('cGoogleReviewCount'),google_stars:document.getElementById('cGoogleStars').value,google_review_url:v('cGoogleReviewUrl')},'heroMsg')">Save Hero</button>
+                    <span class="save-msg" id="heroMsg"></span>
+                </div>
             </div>
 
             <!-- Man / Plan / Van -->
@@ -1544,6 +1581,7 @@ let cmsContent = {};       // key → value
 let cmsTestimonials = [];
 let cmsGallery = [];
 let cmsFaqs = [];
+let cmsHeroImages = [];
 let editingItem = null;    // { type, id } or { type, id: null } for new
 
 const v = id => document.getElementById(id)?.value || '';
@@ -1940,7 +1978,7 @@ function addHeroImage() {
         } catch (err) {
             setHeroMsg('Error: ' + err.message, true);
         } finally {
-            if (btn) { btn.textContent = '+ Add image'; btn.disabled = false; }
+            if (btn) { btn.textContent = '+ Add slide'; btn.disabled = false; }
             input.value = '';
         }
     };
