@@ -255,7 +255,7 @@ serve(async (req) => {
     // POST /hero-images
     if (req.method === 'POST' && path === '/hero-images') {
       const body = await req.json()
-      const allowed = ['image_url', 'alt_text', 'caption', 'sort_order', 'active']
+      const allowed = ['image_url', 'alt_text', 'caption', 'sort_order', 'active', 'focus_x', 'focus_y']
       const insert: Record<string, unknown> = {}
       for (const key of allowed) {
         if (body[key] !== undefined) insert[key] = body[key]
@@ -270,7 +270,7 @@ serve(async (req) => {
     if (heroIdMatch) {
       if (req.method === 'PATCH') {
         const body = await req.json()
-        const allowed = ['image_url', 'alt_text', 'caption', 'sort_order', 'active']
+        const allowed = ['image_url', 'alt_text', 'caption', 'sort_order', 'active', 'focus_x', 'focus_y']
         const update: Record<string, unknown> = {}
         for (const key of allowed) {
           if (body[key] !== undefined) update[key] = body[key]

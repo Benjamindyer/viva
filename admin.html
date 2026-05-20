@@ -250,9 +250,18 @@
         .hero-images-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 14px; }
         .hero-image-card { border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; background: white; display: flex; flex-direction: column; }
         .hero-image-card.inactive { opacity: 0.6; }
-        .hero-image-card .thumb { position: relative; height: 140px; background-size: cover; background-position: center; background-color: #f3f4f6; }
-        .hero-image-card .thumb-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.75); display: none; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--muted); }
+        .hero-image-card .thumb { position: relative; height: 140px; background-size: cover; background-position: center; background-color: #f3f4f6; cursor: crosshair; }
+        .hero-image-card .thumb-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.75); display: none; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--muted); pointer-events: none; }
         .hero-image-card.processing .thumb-overlay { display: flex; }
+        .hero-image-card .focus-dot { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border: 2px solid #fff; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 1px rgba(0,0,0,0.35); cursor: grab; z-index: 2; touch-action: none; }
+        .hero-image-card .focus-dot:active { cursor: grabbing; }
+        .hero-image-card .focus-dot::before, .hero-image-card .focus-dot::after { content: ''; position: absolute; background: rgba(255,255,255,0.9); }
+        .hero-image-card .focus-dot::before { left: 50%; top: 2px; bottom: 2px; width: 1px; transform: translateX(-50%); }
+        .hero-image-card .focus-dot::after { top: 50%; left: 2px; right: 2px; height: 1px; transform: translateY(-50%); }
+        .hero-image-card .focus-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 2px; }
+        .hero-image-card .focus-bar label { margin-bottom: 0; }
+        .hero-image-card .focus-reset { padding: 0; border: none; background: none; font-size: 11px; color: var(--primary); cursor: pointer; font-weight: 600; }
+        .hero-image-card .focus-reset:hover { text-decoration: underline; }
         .hero-image-card .card-body { padding: 12px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
         .hero-image-card .card-body label { display: block; font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
         .hero-image-card .card-body input { width: 100%; padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 13px; font-family: inherit; }
@@ -1831,6 +1840,91 @@ function setHeroMsg(text, isError) {
     if (!isError) setTimeout(() => { el.style.display = 'none'; }, 2500);
 }
 
+const heroFocusTimers = {};
+
+function heroFocusXY(h) {
+    const x = h.focus_x != null ? Number(h.focus_x) : 50;
+    const y = h.focus_y != null ? Number(h.focus_y) : 50;
+    return { x: Math.min(100, Math.max(0, x)), y: Math.min(100, Math.max(0, y)) };
+}
+
+function updateHeroFocusUI(card, focus_x, focus_y) {
+    const thumb = card.querySelector('.thumb');
+    const dot = card.querySelector('.focus-dot');
+    if (thumb) thumb.style.backgroundPosition = `${focus_x}% ${focus_y}%`;
+    if (dot) {
+        dot.style.left = `${focus_x}%`;
+        dot.style.top = `${focus_y}%`;
+    }
+}
+
+function scheduleHeroFocusPatch(id, focus_x, focus_y) {
+    clearTimeout(heroFocusTimers[id]);
+    heroFocusTimers[id] = setTimeout(() => {
+        patchHeroImage(id, { focus_x, focus_y }, true);
+    }, 400);
+}
+
+function setHeroFocusFromEvent(card, id, clientX, clientY) {
+    const thumb = card.querySelector('.thumb');
+    if (!thumb) return;
+    const rect = thumb.getBoundingClientRect();
+    const focus_x = Math.round(Math.min(100, Math.max(0, ((clientX - rect.left) / rect.width) * 100)) * 10) / 10;
+    const focus_y = Math.round(Math.min(100, Math.max(0, ((clientY - rect.top) / rect.height) * 100)) * 10) / 10;
+    const idx = cmsHeroImages.findIndex(h => h.id === id);
+    if (idx !== -1) {
+        cmsHeroImages[idx].focus_x = focus_x;
+        cmsHeroImages[idx].focus_y = focus_y;
+    }
+    updateHeroFocusUI(card, focus_x, focus_y);
+    scheduleHeroFocusPatch(id, focus_x, focus_y);
+}
+
+function wireHeroFocusControls(card, id) {
+    const thumb = card.querySelector('.thumb');
+    const dot = card.querySelector('.focus-dot');
+    const resetBtn = card.querySelector('.focus-reset');
+    if (!thumb || !dot) return;
+
+    thumb.addEventListener('click', e => {
+        if (e.target === dot || dot.contains(e.target)) return;
+        setHeroFocusFromEvent(card, id, e.clientX, e.clientY);
+    });
+
+    let dragging = false;
+    const onMove = e => {
+        if (!dragging) return;
+        e.preventDefault();
+        setHeroFocusFromEvent(card, id, e.clientX, e.clientY);
+    };
+    const onUp = () => {
+        if (!dragging) return;
+        dragging = false;
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+    };
+    dot.addEventListener('mousedown', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        dragging = true;
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+    });
+
+    if (resetBtn) {
+        resetBtn.addEventListener('click', e => {
+            e.preventDefault();
+            const idx = cmsHeroImages.findIndex(h => h.id === id);
+            if (idx !== -1) {
+                cmsHeroImages[idx].focus_x = 50;
+                cmsHeroImages[idx].focus_y = 50;
+            }
+            updateHeroFocusUI(card, 50, 50);
+            scheduleHeroFocusPatch(id, 50, 50);
+        });
+    }
+}
+
 function renderHeroImagesGrid() {
     const grid = document.getElementById('heroImagesGrid');
     if (!grid) return;
@@ -1838,12 +1932,19 @@ function renderHeroImagesGrid() {
         grid.innerHTML = '<p style="font-size:13px;color:var(--muted);grid-column:1/-1;">No hero images yet. The homepage will fall back to the static hero image until you add one.</p>';
         return;
     }
-    grid.innerHTML = cmsHeroImages.map((h, i) => `
+    grid.innerHTML = cmsHeroImages.map((h, i) => {
+        const { x: fx, y: fy } = heroFocusXY(h);
+        return `
         <div class="hero-image-card ${h.active ? '' : 'inactive'}" data-id="${escAttr(h.id)}">
-            <div class="thumb" style="background-image:url('${escAttr(h.image_url)}');">
+            <div class="thumb" style="background-image:url('${escAttr(h.image_url)}');background-position:${fx}% ${fy}%;">
                 <div class="thumb-overlay">Processing…</div>
+                <span class="focus-dot" role="img" aria-label="Image focus point" style="left:${fx}%;top:${fy}%;"></span>
             </div>
             <div class="card-body">
+                <div class="focus-bar">
+                    <label>Focus</label>
+                    <button type="button" class="focus-reset">Reset to center</button>
+                </div>
                 <div>
                     <label>Alt text</label>
                     <input type="text" data-field="alt_text" value="${escAttr(h.alt_text || '')}" placeholder="Describe the image for screen readers">
@@ -1866,12 +1967,13 @@ function renderHeroImagesGrid() {
                     <button class="delete-btn" onclick="deleteHeroImage('${escAttr(h.id)}')">Delete</button>
                 </div>
             </div>
-        </div>
-    `).join('');
+        </div>`;
+    }).join('');
 
     // Wire up inline field edits (alt_text / caption) — save on blur if changed.
     grid.querySelectorAll('.hero-image-card').forEach(card => {
         const id = card.getAttribute('data-id');
+        wireHeroFocusControls(card, id);
         card.querySelectorAll('input[data-field]').forEach(input => {
             input.addEventListener('change', () => {
                 const field = input.getAttribute('data-field');
@@ -1892,14 +1994,14 @@ function setHeroCardProcessing(id, on) {
     if (card) card.classList.toggle('processing', !!on);
 }
 
-async function patchHeroImage(id, body) {
+async function patchHeroImage(id, body, quiet) {
     try {
         const res  = await adminFetch(`/hero-images/${id}`, { method: 'PATCH', body });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Update failed');
         const idx = cmsHeroImages.findIndex(h => h.id === id);
         if (idx !== -1) cmsHeroImages[idx] = data;
-        setHeroMsg('Saved!', false);
+        if (!quiet) setHeroMsg('Saved!', false);
     } catch (err) {
         setHeroMsg('Error: ' + err.message, true);
         await refreshHeroImages();

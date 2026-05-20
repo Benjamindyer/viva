@@ -896,7 +896,7 @@
             position: absolute;
             inset: 0;
             opacity: 0;
-            transition: opacity 0.8s ease;
+            transition: opacity 0.5s ease;
             pointer-events: none;
         }
 
@@ -933,7 +933,7 @@
             font-weight: 600;
             border-radius: 20px;
             opacity: 0;
-            transition: opacity 0.8s ease;
+            transition: opacity 0.5s ease;
             pointer-events: none;
         }
 
@@ -3693,9 +3693,11 @@
 
             const slideHtml = slides.map((s, i) => {
                 const cap = (s.caption || '').trim();
+                const fx = s.focus_x != null ? s.focus_x : 50;
+                const fy = s.focus_y != null ? s.focus_y : 50;
                 const loadAttr = i === 0 ? 'fetchpriority="high"' : 'loading="lazy"';
                 return `<div class="hero-carousel-slide${i === 0 ? ' is-active' : ''}" data-index="${i}" role="group" aria-roledescription="slide" aria-label="${i + 1} of ${slides.length}">
-                    <img src="${s.image_url}" alt="${escHtml(s.alt_text || '')}" ${loadAttr} decoding="async">
+                    <img src="${s.image_url}" alt="${escHtml(s.alt_text || '')}" ${loadAttr} decoding="async" style="object-position:${fx}% ${fy}%">
                     ${cap ? `<span class="hero-carousel-caption">${escHtml(cap)}</span>` : ''}
                 </div>`;
             }).join('');
@@ -3724,7 +3726,7 @@
             function startAutoplay() {
                 if (!multi || reducedMotion || paused) return;
                 stopAutoplay();
-                timer = setInterval(next, 6000);
+                timer = setInterval(next, 4000);
             }
 
             function stopAutoplay() {
