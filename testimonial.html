@@ -18,7 +18,7 @@
         :root {
             --primary: #c84b31;
             --primary-dark: #a33d28;
-            --secondary: #ffb319;
+            --secondary: #AA151B;
             --dark: #1a1a2e;
         }
 
@@ -256,6 +256,16 @@
             display: block;
         }
 
+        .video-fallback-link {
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        .video-fallback-link a {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
         /* ── CTA ── */
         .cta-box {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -346,8 +356,9 @@
         }
 
         function getYouTubeId(url) {
-            if (!url) return null;
-            const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([^&?\s/]+)/);
+            if (!url || typeof url !== 'string') return null;
+            const u = url.trim();
+            const m = u.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/|v\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
             return m ? m[1] : null;
         }
 
@@ -422,10 +433,12 @@
 
                 const videoHtml = ytId ? `
                     <div class="video-wrap">
-                        <iframe src="https://www.youtube.com/embed/${ytId}?rel=0"
+                        <iframe src="https://www.youtube-nocookie.com/embed/${ytId}?rel=0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen loading="lazy"></iframe>
-                    </div>` : '';
+                        <p class="video-fallback-link"><a href="https://www.youtube.com/watch?v=${ytId}" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a></p>
+                    </div>` : (t.video_url && t.video_url.trim() ? `
+                    <p class="video-fallback-link"><a href="${t.video_url.trim()}" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a></p>` : '');
 
                 page.innerHTML = `
                     <div class="page">
