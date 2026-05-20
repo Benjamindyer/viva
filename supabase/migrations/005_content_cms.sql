@@ -74,7 +74,7 @@ INSERT INTO content (key, value) VALUES
   ('trust_4_title',    'Regular Stops'),
   ('trust_4_desc',     'Comfort breaks every 2-3 hours'),
   ('trust_4_image',    'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=200&q=80'),
-  ('footer_tagline',   'Reuniting dogs with their families since 2019. Made with love and plenty of treats.'),
+  ('footer_tagline',   ''),
   ('meta_title',       'Viva Espaniel — Dog Transport Spain ↔ UK'),
   ('meta_description', 'Professional dog transport between Spain and the UK. Door-to-door service, climate-controlled vans, live updates and regular stops. Book your dog''s journey today.')
 ON CONFLICT (key) DO NOTHING;
