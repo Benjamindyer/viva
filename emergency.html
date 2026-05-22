@@ -341,13 +341,30 @@
             margin-bottom: 20px;
             line-height: 1.25;
         }
+        .case-study-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        .case-study-figure {
+            margin: 0;
+            max-width: 320px;
+        }
+        .case-study-photo {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
         .case-study p {
             font-size: 16px;
             color: #444;
             margin-bottom: 16px;
             line-height: 1.7;
         }
-        .case-study p:last-child { margin-bottom: 0; }
+        .case-study-body p:last-child { margin-bottom: 0; }
 
         .emergency-cta {
             text-align: center;
@@ -435,9 +452,16 @@
         @media (max-width: 900px) {
             .footer-content { grid-template-columns: 1fr 1fr; }
         }
+        @media (min-width: 640px) {
+            .case-study-layout {
+                grid-template-columns: minmax(0, 220px) 1fr;
+                gap: 28px;
+            }
+        }
         @media (max-width: 600px) {
             .emergency-hero { padding: calc(var(--nav-height) + var(--banner-height) + 52px) 20px 50px; }
             .case-study { padding: 24px 20px; }
+            .case-study-figure { max-width: 100%; }
         }
         @media (max-width: 540px) {
             .footer-content { grid-template-columns: 1fr; gap: 28px; }
@@ -528,9 +552,23 @@
         <article class="case-study">
             <span class="case-study-label">Case study</span>
             <h2>Jenny &amp; Rox — a short-notice move to Spain</h2>
-            <p>Jenny had been planning a move to Spain with her dog Rox, but the timeline shifted suddenly when her rental in the UK came to an end earlier than expected. With just days to get Rox across before she flew out herself, the usual booking window wasn't an option.</p>
-            <p>She got in touch with Jon to explain the situation. He talked her through what was still needed on the paperwork side, checked whether Rox's travel documents were in order, and worked out whether a slot could be found on an upcoming crossing. Because the timing was tight, the trip was priced individually rather than at the standard fixed rate.</p>
-            <p>Rox travelled safely to Spain on schedule, and Jenny was able to focus on the rest of the move knowing her dog was in good hands. If you're facing a similar situation, get in touch — Jon will be honest about what's possible and what it will cost.</p>
+            <div class="case-study-layout">
+                <figure class="case-study-figure">
+                    <img
+                        src="images/rox-emergency-case-study.jpg"
+                        alt="Rox, Jenny's beagle, ready for emergency transport to Spain"
+                        class="case-study-photo"
+                        width="768"
+                        height="1024"
+                        loading="lazy"
+                        decoding="async">
+                </figure>
+                <div class="case-study-body">
+                    <p>Jenny had been planning a move to Spain with her dog Rox, but the timeline shifted suddenly when her rental in the UK came to an end earlier than expected. With just days to get Rox across before she flew out herself, the usual booking window wasn't an option.</p>
+                    <p>She got in touch with Jon to explain the situation. He talked her through what was still needed on the paperwork side, checked whether Rox's travel documents were in order, and worked out whether a slot could be found on an upcoming crossing. Because the timing was tight, the trip was priced individually rather than at the standard fixed rate.</p>
+                    <p>Rox travelled safely to Spain on schedule, and Jenny was able to focus on the rest of the move knowing her dog was in good hands. If you're facing a similar situation, get in touch — Jon will be honest about what's possible and what it will cost.</p>
+                </div>
+            </div>
         </article>
     </div>
 
