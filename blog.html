@@ -23,8 +23,8 @@
             --primary-dark: #a33d28;
             --secondary: #AA151B;
             --dark: #1a1a2e;
-            --nav-height: 58px;
-            --banner-height: 42px;
+            --nav-height: 52px;
+            --banner-height: 49px;
         }
 
         body {
@@ -37,7 +37,9 @@
         nav {
             position: fixed;
             top: 0; left: 0; right: 0;
-            padding: 15px 20px;
+            height: var(--nav-height);
+            box-sizing: border-box;
+            padding: 0 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -58,12 +60,14 @@
             text-align: center;
             font-weight: 600;
             font-size: clamp(13px, 2.5vw, 15px);
-            line-height: 1.4;
         }
 
         .price-banner a {
-            display: block;
-            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            line-height: 1.4;
             color: inherit;
             text-decoration: none;
             cursor: pointer;
@@ -167,8 +171,9 @@
 
         .nav-cta {
             background: var(--primary); color: white;
-            padding: 10px 20px; border-radius: 25px;
+            padding: 8px 16px; border-radius: 25px;
             text-decoration: none; font-weight: 600; font-size: 14px;
+            line-height: 1.2;
             transition: background 0.2s;
         }
 
