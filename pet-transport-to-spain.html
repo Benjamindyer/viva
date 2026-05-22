@@ -31,6 +31,13 @@
           "email": "hello@vivaespaniel.com",
           "founder": { "@type": "Person", "name": "Jon Brown" },
           "foundingDate": "2019",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Woodlands Cottage, Marvel Lane",
+            "addressLocality": "Newport",
+            "postalCode": "PO30 3DT",
+            "addressCountry": "GB"
+          },
           "areaServed": [
             { "@type": "Country", "name": "United Kingdom" },
             { "@type": "Country", "name": "Spain" },
@@ -2787,6 +2794,13 @@
             line-height: 1.6;
         }
 
+        .footer-brand .footer-address {
+            font-size: 13px;
+            color: #aaa;
+            line-height: 1.6;
+            font-style: normal;
+        }
+
         .footer-column h4 {
             font-size: 14px;
             margin-bottom: 15px;
@@ -3456,6 +3470,11 @@
         <div class="footer-content">
             <div class="footer-brand">
                 <h3>🐕 Viva Espaniel</h3>
+                <address class="footer-address">
+                    Woodlands Cottage, Marvel Lane<br>
+                    Newport, United Kingdom<br>
+                    PO30 3DT
+                </address>
             </div>
             <div class="footer-column">
                 <h4>Links</h4>
