@@ -471,10 +471,54 @@
         footer {
             background: var(--dark);
             color: rgba(255,255,255,0.7);
-            text-align: center; padding: 24px; font-size: 14px;
+            padding: 60px 24px 30px;
         }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
+            gap: 40px;
+        }
+        .footer-brand h3 {
+            color: white;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+        .footer-column h4 {
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+        .footer-column a {
+            display: block;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 10px;
+            transition: color 0.2s;
+        }
+        .footer-column a:hover { color: var(--secondary); }
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 36px auto 0;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+        }
+        .footer-bottom a { color: rgba(255,255,255,0.5); text-decoration: none; }
 
-        footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
+        @media (max-width: 900px) {
+            .footer-content { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 540px) {
+            .footer-content { grid-template-columns: 1fr; gap: 28px; }
+        }
 
         .nav-whatsapp {
             display: none; align-items: center; gap: 6px;
@@ -581,7 +625,40 @@
         </div>
     </div>
 
-    <footer>© 2026 Viva Espaniel • <a href="pet-transport-to-spain.html">vivaespaniel.com</a></footer>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>🐕 Viva Espaniel</h3>
+            </div>
+            <div class="footer-column">
+                <h4>Links</h4>
+                <a href="pet-transport-to-spain.html#trust">Why Us</a>
+                <a href="pet-transport-to-spain.html#booking">Book Now</a>
+                <a href="pet-transport-to-spain.html#testimonials">Testimonials</a>
+            </div>
+            <div class="footer-column">
+                <h4>Support</h4>
+                <a href="pet-transport-to-spain.html">Pet Passport Guide</a>
+                <a href="pet-transport-to-spain.html#faq">FAQ</a>
+                <a href="emergency.html">Emergency transport</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <div class="footer-column">
+                <h4>Areas We Serve</h4>
+                <a href="page.html?slug=malaga">Dog Transport Málaga</a>
+                <a href="page.html?slug=marbella">Dog Transport Marbella</a>
+                <a href="page.html?slug=costa-del-sol">Dog Transport Costa del Sol</a>
+                <a href="page.html?slug=alicante">Dog Transport Alicante</a>
+                <a href="page.html?slug=granada">Dog Transport Granada</a>
+                <a href="page.html?slug=madrid">Dog Transport Madrid</a>
+            </div>
+            <div class="footer-column">
+                <h4>Contact</h4>
+                <a id="footerWhatsapp" href="#" target="_blank" rel="noopener noreferrer" style="display:none;color:#25d366;">💬 WhatsApp Us</a>
+            </div>
+        </div>
+        <div class="footer-bottom">© 2026 Viva Espaniel • Spain ↔ UK pet transport • <a href="llm-info.html" style="color:#666;">AI Info</a></div>
+    </footer>
 
     <script>
         window.addEventListener('scroll', () => {
@@ -717,6 +794,8 @@
                     if (el) { el.href = waUrl; el.style.display = 'flex'; }
                     const mEl = document.getElementById('mobileNavWhatsapp');
                     if (mEl) { mEl.href = waUrl; mEl.style.display = 'flex'; }
+                    const fEl = document.getElementById('footerWhatsapp');
+                    if (fEl) { fEl.href = waUrl; fEl.style.display = 'inline-block'; }
                 }
             } catch (e) {}
         }

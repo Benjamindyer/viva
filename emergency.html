@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <title>Emergency Pet Transport Spain ↔ UK — Viva Espaniel</title>
+    <meta name="description" content="Need urgent dog transport between Spain and the UK? Jon can arrange emergency pet transport at short notice — custom pricing when timing is critical.">
+    <link rel="canonical" href="https://www.vivaespaniel.com/emergency.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Emergency Pet Transport — Viva Espaniel">
+    <meta property="og:description" content="Short-notice dog transport between Spain and the UK. Jon can step in when plans change and timing is critical.">
+    <meta property="og:url" content="https://www.vivaespaniel.com/emergency.html">
+    <meta property="og:site_name" content="Viva Espaniel">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Emergency Pet Transport — Viva Espaniel">
+    <meta name="twitter:description" content="Short-notice dog transport between Spain and the UK when timing is critical.">
+
+    <link rel="preconnect" href="https://geztmwtgnbgrobtblotp.supabase.co">
+    <script>
+        const SUPABASE_URL      = 'https://geztmwtgnbgrobtblotp.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlenRtd3RnbmJncm9idGJsb3RwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyNDc1NzEsImV4cCI6MjA5MTgyMzU3MX0.HIqvHZohlAk4o_blQKiFmzd6LPpgF2XLG5ZM1uLs-EE';
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #c84b31;
+            --primary-dark: #a33d28;
+            --secondary: #AA151B;
+            --accent: #2d6a4f;
+            --dark: #1a1a2e;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --nav-height: 52px;
+            --banner-height: 49px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: #333;
+            background: #fafafa;
+            line-height: 1.6;
+        }
+
+        /* ── Nav ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--nav-height);
+            box-sizing: border-box;
+            padding: 0 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(255,255,255,0.98);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .price-banner {
+            position: fixed;
+            top: var(--nav-height);
+            left: 0;
+            right: 0;
+            z-index: 999;
+            background: var(--secondary);
+            color: #fff;
+            text-align: center;
+            font-weight: 600;
+            font-size: clamp(13px, 2.5vw, 15px);
+        }
+
+        .price-banner a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            line-height: 1.4;
+            color: inherit;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .price-banner a:hover { background: var(--primary); }
+
+        .nav-logo {
+            font-size: 20px; font-weight: 700;
+            color: var(--primary); text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex; gap: 20px; list-style: none; align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none; color: #555;
+            font-weight: 500; font-size: 14px;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--primary); }
+
+        .nav-actions { display: flex; align-items: center; gap: 10px; }
+
+        .nav-item-dropdown { position: relative; }
+
+        .nav-dropdown-trigger {
+            background: none; border: none; padding: 0; margin: 0;
+            cursor: pointer; font-family: inherit;
+            color: #555; font-weight: 500; font-size: 14px;
+            display: inline-flex; align-items: center; gap: 5px;
+            transition: color 0.2s;
+        }
+
+        .nav-dropdown-trigger:hover,
+        .nav-item-dropdown.open .nav-dropdown-trigger,
+        .nav-item-dropdown:hover .nav-dropdown-trigger {
+            color: var(--primary); outline: none;
+        }
+
+        .nav-dropdown-trigger .caret {
+            width: 10px; height: 10px;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-item-dropdown.open .nav-dropdown-trigger .caret,
+        .nav-item-dropdown:hover .nav-dropdown-trigger .caret {
+            transform: rotate(180deg);
+        }
+
+        .nav-dropdown-menu {
+            position: absolute; top: 100%; left: 0;
+            margin: 0; padding: 8px 0;
+            min-width: 220px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.08);
+            list-style: none;
+            opacity: 0; visibility: hidden;
+            transform: translateY(-4px);
+            transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0.18s;
+            z-index: 1100;
+        }
+
+        .nav-item-dropdown.open .nav-dropdown-menu,
+        .nav-item-dropdown:hover .nav-dropdown-menu,
+        .nav-item-dropdown:focus-within .nav-dropdown-menu {
+            opacity: 1; visibility: visible;
+            transform: translateY(0);
+            transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s;
+        }
+
+        .nav-dropdown-menu::before {
+            content: ''; position: absolute;
+            top: -12px; left: 0; right: 0; height: 12px;
+        }
+
+        .nav-dropdown-menu li { list-style: none; }
+
+        .nav-dropdown-menu a {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 18px;
+            color: #444; font-size: 14px; font-weight: 500;
+            text-decoration: none;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .nav-dropdown-menu a:hover,
+        .nav-dropdown-menu a:focus-visible {
+            background: rgba(200, 75, 49, 0.08);
+            color: var(--primary);
+            outline: none;
+        }
+
+        .nav-dropdown-menu .flag { font-size: 15px; line-height: 1; }
+
+        .nav-cta {
+            background: var(--primary); color: white;
+            padding: 8px 16px; border-radius: 25px;
+            text-decoration: none; font-weight: 600; font-size: 14px;
+            transition: background 0.2s;
+        }
+        .nav-cta:hover { background: var(--primary-dark); }
+
+        .nav-whatsapp {
+            display: none; align-items: center; gap: 6px;
+            background: #25d366; color: white; padding: 8px 14px;
+            border-radius: 25px; text-decoration: none; font-weight: 600; font-size: 13px;
+        }
+        .nav-whatsapp:hover { background: #1ebe5d; }
+        .nav-whatsapp svg { flex-shrink: 0; }
+
+        .mobile-menu-btn {
+            display: none;
+            background: transparent; border: none;
+            width: 42px; height: 42px; padding: 8px;
+            cursor: pointer; color: var(--dark);
+            border-radius: 8px; z-index: 1101;
+        }
+        .mobile-menu-btn svg { display: block; width: 24px; height: 24px; }
+        .mobile-menu-btn .icon-close { display: none; }
+        .mobile-menu-btn[aria-expanded="true"] .icon-open { display: none; }
+        .mobile-menu-btn[aria-expanded="true"] .icon-close { display: block; }
+
+        .mobile-menu-backdrop {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.4);
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+            z-index: 1050;
+        }
+        .mobile-menu-backdrop.active {
+            opacity: 1; visibility: visible;
+            transition: opacity 0.25s ease, visibility 0s;
+        }
+
+        .mobile-menu {
+            position: fixed; top: 0; right: 0; bottom: 0;
+            width: min(340px, 88vw);
+            background: white;
+            box-shadow: -8px 0 28px rgba(0,0,0,0.15);
+            transform: translateX(100%);
+            transition: transform 0.25s ease;
+            z-index: 1060;
+            display: flex; flex-direction: column;
+            overflow-y: auto;
+        }
+        .mobile-menu.active { transform: translateX(0); }
+        .mobile-menu-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .mobile-menu-header .logo {
+            font-size: 18px; font-weight: 700;
+            color: var(--primary); text-decoration: none;
+        }
+        .mobile-menu-list { list-style: none; margin: 0; padding: 8px 0; flex: 1; }
+        .mobile-menu-list > li > a,
+        .mobile-menu-group-toggle {
+            display: flex; align-items: center; justify-content: space-between;
+            width: 100%; padding: 14px 22px;
+            color: #2a2a2a; font-weight: 500; font-size: 16px;
+            text-decoration: none; background: transparent; border: none;
+            border-bottom: 1px solid #f5f5f5;
+            font-family: inherit; text-align: left; cursor: pointer;
+        }
+        .mobile-menu-group-toggle .caret {
+            width: 14px; height: 14px; color: #888;
+            transition: transform 0.2s ease;
+        }
+        .mobile-menu-group.open .mobile-menu-group-toggle .caret {
+            transform: rotate(180deg);
+        }
+        .mobile-menu-group-items {
+            list-style: none; margin: 0; padding: 0;
+            max-height: 0; overflow: hidden;
+            background: #fafafa;
+            transition: max-height 0.25s ease;
+        }
+        .mobile-menu-group.open .mobile-menu-group-items { max-height: 600px; }
+        .mobile-menu-group-items a {
+            display: block;
+            padding: 12px 22px 12px 38px;
+            color: #555; font-size: 15px;
+            text-decoration: none;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .mobile-menu-footer {
+            padding: 18px 20px 28px;
+            display: flex; flex-direction: column; gap: 10px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .mobile-menu-footer .nav-whatsapp,
+        .mobile-menu-footer .nav-cta {
+            display: flex !important;
+            justify-content: center; align-items: center; gap: 8px;
+            width: 100%; padding: 12px 18px; font-size: 15px;
+        }
+
+        body.menu-open { overflow: hidden; }
+
+        /* ── Hero ── */
+        .emergency-hero {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: calc(var(--nav-height) + var(--banner-height) + 62px) 24px 60px;
+            text-align: center;
+        }
+        .emergency-hero h1 {
+            font-size: clamp(28px, 5vw, 44px);
+            font-weight: 700;
+            margin-bottom: 14px;
+            line-height: 1.15;
+        }
+        .emergency-hero p {
+            max-width: 640px;
+            margin: 0 auto;
+            font-size: clamp(15px, 1.6vw, 17px);
+            color: rgba(255,255,255,0.92);
+        }
+
+        /* ── Content ── */
+        .emergency-content {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 56px 24px 40px;
+        }
+        .emergency-intro {
+            font-size: 17px;
+            color: #444;
+            margin-bottom: 48px;
+            line-height: 1.7;
+        }
+        .emergency-intro strong { color: var(--dark); }
+
+        .case-study {
+            background: white;
+            border-radius: 16px;
+            padding: 36px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid var(--border);
+            margin-bottom: 48px;
+        }
+        .case-study-label {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+        .case-study h2 {
+            font-size: 24px;
+            color: var(--dark);
+            margin-bottom: 20px;
+            line-height: 1.25;
+        }
+        .case-study p {
+            font-size: 16px;
+            color: #444;
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+        .case-study p:last-child { margin-bottom: 0; }
+
+        .emergency-cta {
+            text-align: center;
+            padding: 0 24px 80px;
+        }
+        .btn-emergency {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 16px 36px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-emergency:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        .emergency-cta .hint {
+            display: block;
+            margin-top: 14px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        /* ── Footer ── */
+        footer {
+            background: var(--dark);
+            color: rgba(255,255,255,0.7);
+            padding: 60px 24px 30px;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
+            gap: 40px;
+        }
+        .footer-brand h3 {
+            color: white;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+        .footer-column h4 {
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+        .footer-column a {
+            display: block;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 10px;
+            transition: color 0.2s;
+        }
+        .footer-column a:hover { color: var(--secondary); }
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 36px auto 0;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+        }
+        .footer-bottom a { color: rgba(255,255,255,0.5); text-decoration: none; }
+
+        @media (max-width: 960px) {
+            nav > .nav-links,
+            nav > .nav-actions { display: none !important; }
+            .mobile-menu-btn { display: flex; align-items: center; justify-content: center; }
+        }
+        @media (max-width: 900px) {
+            .footer-content { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 600px) {
+            .emergency-hero { padding: calc(var(--nav-height) + var(--banner-height) + 52px) 20px 50px; }
+            .case-study { padding: 24px 20px; }
+        }
+        @media (max-width: 540px) {
+            .footer-content { grid-template-columns: 1fr; gap: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="nav">
+        <a href="pet-transport-to-spain.html" class="nav-logo">🐕 Viva Espaniel</a>
+        <ul class="nav-links" id="navLinks">
+            <li class="nav-item-dropdown" id="areasDropdown">
+                <button type="button" class="nav-dropdown-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="areasMenu">
+                    Areas
+                    <svg class="caret" viewBox="0 0 12 7" aria-hidden="true"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <ul class="nav-dropdown-menu" id="areasMenu" role="menu">
+                    <li role="none"><a role="menuitem" href="page.html?slug=malaga"><span class="flag">🇪🇸</span>Málaga</a></li>
+                    <li role="none"><a role="menuitem" href="page.html?slug=marbella"><span class="flag">🇪🇸</span>Marbella</a></li>
+                    <li role="none"><a role="menuitem" href="page.html?slug=costa-del-sol"><span class="flag">🇪🇸</span>Costa del Sol</a></li>
+                    <li role="none"><a role="menuitem" href="page.html?slug=alicante"><span class="flag">🇪🇸</span>Alicante</a></li>
+                    <li role="none"><a role="menuitem" href="page.html?slug=granada"><span class="flag">🇪🇸</span>Granada</a></li>
+                    <li role="none"><a role="menuitem" href="page.html?slug=madrid"><span class="flag">🇪🇸</span>Madrid</a></li>
+                </ul>
+            </li>
+            <li><a href="pet-transport-to-spain.html#testimonials">Testimonials</a></li>
+            <li><a href="blog.html">Blog</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a id="navWhatsapp" class="nav-whatsapp" href="#" target="_blank" rel="noopener noreferrer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                WhatsApp
+            </a>
+            <a href="pet-transport-to-spain.html#booking" class="nav-cta">Book Transport</a>
+        </div>
+        <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMobileMenu()">
+            <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </nav>
+
+    <div class="price-banner">
+        <a href="pet-transport-to-spain.html#booking">Fixed Price Pet Transport, £495 plus UK Mileage</a>
+    </div>
+
+    <div class="mobile-menu-backdrop" id="mobileMenuBackdrop" onclick="closeMobileMenu()"></div>
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Site navigation">
+        <div class="mobile-menu-header">
+            <a href="pet-transport-to-spain.html" class="logo" onclick="closeMobileMenu()">🐕 Viva Espaniel</a>
+        </div>
+        <ul class="mobile-menu-list">
+            <li class="mobile-menu-group" id="mmAreasGroup">
+                <button type="button" class="mobile-menu-group-toggle" aria-expanded="false" aria-controls="mmAreasItems" onclick="toggleMobileAreas(this)">
+                    Areas
+                    <svg class="caret" viewBox="0 0 12 7" aria-hidden="true"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <ul class="mobile-menu-group-items" id="mmAreasItems">
+                    <li><a href="page.html?slug=malaga" onclick="closeMobileMenu()">🇪🇸 Málaga</a></li>
+                    <li><a href="page.html?slug=marbella" onclick="closeMobileMenu()">🇪🇸 Marbella</a></li>
+                    <li><a href="page.html?slug=costa-del-sol" onclick="closeMobileMenu()">🇪🇸 Costa del Sol</a></li>
+                    <li><a href="page.html?slug=alicante" onclick="closeMobileMenu()">🇪🇸 Alicante</a></li>
+                    <li><a href="page.html?slug=granada" onclick="closeMobileMenu()">🇪🇸 Granada</a></li>
+                    <li><a href="page.html?slug=madrid" onclick="closeMobileMenu()">🇪🇸 Madrid</a></li>
+                </ul>
+            </li>
+            <li><a href="pet-transport-to-spain.html#testimonials" onclick="closeMobileMenu()">Testimonials</a></li>
+            <li><a href="blog.html" onclick="closeMobileMenu()">Blog</a></li>
+        </ul>
+        <div class="mobile-menu-footer">
+            <a id="mobileNavWhatsapp" class="nav-whatsapp" style="display:none;" href="#" target="_blank" rel="noopener noreferrer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                WhatsApp
+            </a>
+            <a href="pet-transport-to-spain.html#booking" class="nav-cta" onclick="closeMobileMenu()">Book Transport</a>
+        </div>
+    </div>
+
+    <section class="emergency-hero">
+        <h1>Emergency Pet Transport</h1>
+        <p>When plans change and timing is critical, Jon can arrange short-notice dog transport between Spain and the UK — at a custom price tailored to your situation.</p>
+    </section>
+
+    <div class="emergency-content">
+        <p class="emergency-intro">
+            Our regular service runs on scheduled routes at a fixed price — but life doesn't always work to a timetable. If you need to move your dog urgently, whether that's a sudden relocation, a family emergency, or paperwork that landed sooner than expected, <strong>Jon may be able to help with an emergency trip</strong>. Pricing depends on timing, route, and what's needed to make it happen safely.
+        </p>
+
+        <article class="case-study">
+            <span class="case-study-label">Case study</span>
+            <h2>Jenny &amp; Rox — a short-notice move to Spain</h2>
+            <p>Jenny had been planning a move to Spain with her dog Rox, but the timeline shifted suddenly when her rental in the UK came to an end earlier than expected. With just days to get Rox across before she flew out herself, the usual booking window wasn't an option.</p>
+            <p>She got in touch with Jon to explain the situation. He talked her through what was still needed on the paperwork side, checked whether Rox's travel documents were in order, and worked out whether a slot could be found on an upcoming crossing. Because the timing was tight, the trip was priced individually rather than at the standard fixed rate.</p>
+            <p>Rox travelled safely to Spain on schedule, and Jenny was able to focus on the rest of the move knowing her dog was in good hands. If you're facing a similar situation, get in touch — Jon will be honest about what's possible and what it will cost.</p>
+        </article>
+    </div>
+
+    <div class="emergency-cta">
+        <a href="contact.html?subject=emergency" class="btn-emergency">Enquire about emergency transport</a>
+        <span class="hint">Jon typically replies the same day on WhatsApp, or within 24 hours by email.</span>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>🐕 Viva Espaniel</h3>
+            </div>
+            <div class="footer-column">
+                <h4>Links</h4>
+                <a href="pet-transport-to-spain.html#trust">Why Us</a>
+                <a href="pet-transport-to-spain.html#booking">Book Now</a>
+                <a href="pet-transport-to-spain.html#testimonials">Testimonials</a>
+            </div>
+            <div class="footer-column">
+                <h4>Support</h4>
+                <a href="pet-transport-to-spain.html">Pet Passport Guide</a>
+                <a href="pet-transport-to-spain.html#faq">FAQ</a>
+                <a href="emergency.html">Emergency transport</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <div class="footer-column">
+                <h4>Areas We Serve</h4>
+                <a href="page.html?slug=malaga">Dog Transport Málaga</a>
+                <a href="page.html?slug=marbella">Dog Transport Marbella</a>
+                <a href="page.html?slug=costa-del-sol">Dog Transport Costa del Sol</a>
+                <a href="page.html?slug=alicante">Dog Transport Alicante</a>
+                <a href="page.html?slug=granada">Dog Transport Granada</a>
+                <a href="page.html?slug=madrid">Dog Transport Madrid</a>
+            </div>
+            <div class="footer-column">
+                <h4>Contact</h4>
+                <a id="footerWhatsapp" href="#" target="_blank" rel="noopener noreferrer" style="display:none;color:#25d366;">💬 WhatsApp Us</a>
+            </div>
+        </div>
+        <div class="footer-bottom">© 2026 Viva Espaniel • Spain ↔ UK pet transport • <a href="llm-info.html" style="color:#666;">AI Info</a></div>
+    </footer>
+
+    <script>
+        async function initNav() {
+            const h = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY };
+            try {
+                const pagesRes = await fetch(
+                    `${SUPABASE_URL}/rest/v1/pages?status=eq.live&order=sort_order&select=slug,nav_label,title`,
+                    { headers: h }
+                );
+                if (!pagesRes.ok) return;
+                const pages = await pagesRes.json();
+                const AREA_SLUGS = new Set(['malaga', 'marbella', 'costa-del-sol', 'alicante', 'granada', 'madrid']);
+                const navLinks = document.getElementById('navLinks');
+                const mobileList = document.querySelector('.mobile-menu-list');
+                pages.forEach(pg => {
+                    if (AREA_SLUGS.has(pg.slug)) return;
+                    const label = (pg.nav_label || '').trim() || pg.title || pg.slug;
+                    const li = document.createElement('li');
+                    li.innerHTML = `<a href="page.html?slug=${pg.slug}">${label}</a>`;
+                    navLinks.appendChild(li);
+                    if (mobileList) {
+                        const mli = document.createElement('li');
+                        const ma = document.createElement('a');
+                        ma.href = `page.html?slug=${pg.slug}`;
+                        ma.textContent = label;
+                        ma.addEventListener('click', closeMobileMenu);
+                        mli.appendChild(ma);
+                        mobileList.appendChild(mli);
+                    }
+                });
+            } catch (e) { /* nav falls back gracefully */ }
+        }
+
+        async function initContactSettings() {
+            const h = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY };
+            try {
+                const res = await fetch(
+                    `${SUPABASE_URL}/rest/v1/settings?key=in.(whatsapp_number,whatsapp_enabled)&select=key,value`,
+                    { headers: h }
+                );
+                if (!res.ok) return;
+                const settings = await res.json();
+                const waNumber  = settings.find(r => r.key === 'whatsapp_number')?.value || '';
+                const waEnabled = settings.find(r => r.key === 'whatsapp_enabled')?.value === 'true';
+
+                if (waEnabled && waNumber) {
+                    const digits = waNumber.replace(/\D/g, '');
+                    const waUrl  = `https://wa.me/${digits}`;
+
+                    const navWa  = document.getElementById('navWhatsapp');
+                    if (navWa)  { navWa.href = waUrl; navWa.style.display = 'flex'; }
+                    const mNavWa = document.getElementById('mobileNavWhatsapp');
+                    if (mNavWa) { mNavWa.href = waUrl; mNavWa.style.display = 'flex'; }
+                    const fWa    = document.getElementById('footerWhatsapp');
+                    if (fWa)    { fWa.href = waUrl; fWa.style.display = 'inline-block'; }
+                }
+            } catch (e) { /* silent */ }
+        }
+
+        function openMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const backdrop = document.getElementById('mobileMenuBackdrop');
+            const btn = document.getElementById('mobileMenuBtn');
+            if (!menu || !btn) return;
+            menu.classList.add('active');
+            if (backdrop) backdrop.classList.add('active');
+            btn.setAttribute('aria-expanded', 'true');
+            btn.setAttribute('aria-label', 'Close menu');
+            document.body.classList.add('menu-open');
+        }
+        function closeMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const backdrop = document.getElementById('mobileMenuBackdrop');
+            const btn = document.getElementById('mobileMenuBtn');
+            if (!menu || !btn) return;
+            menu.classList.remove('active');
+            if (backdrop) backdrop.classList.remove('active');
+            btn.setAttribute('aria-expanded', 'false');
+            btn.setAttribute('aria-label', 'Open menu');
+            document.body.classList.remove('menu-open');
+            const grp = document.getElementById('mmAreasGroup');
+            if (grp) {
+                grp.classList.remove('open');
+                const t = grp.querySelector('.mobile-menu-group-toggle');
+                if (t) t.setAttribute('aria-expanded', 'false');
+            }
+        }
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            if (!menu) return;
+            if (menu.classList.contains('active')) closeMobileMenu();
+            else openMobileMenu();
+        }
+        function toggleMobileAreas(btn) {
+            const grp = document.getElementById('mmAreasGroup');
+            if (!grp) return;
+            const open = grp.classList.toggle('open');
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+
+        (function initAreasDropdown() {
+            const dropdown = document.getElementById('areasDropdown');
+            if (!dropdown) return;
+            const trigger = dropdown.querySelector('.nav-dropdown-trigger');
+            const menu    = dropdown.querySelector('.nav-dropdown-menu');
+            if (!trigger || !menu) return;
+            function openDD()   { dropdown.classList.add('open');    trigger.setAttribute('aria-expanded', 'true'); }
+            function closeDD()  { dropdown.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); }
+            function toggleDD() { if (dropdown.classList.contains('open')) closeDD(); else openDD(); }
+            trigger.addEventListener('click', (e) => { e.preventDefault(); toggleDD(); });
+            document.addEventListener('click', (e) => { if (!dropdown.contains(e.target)) closeDD(); });
+        })();
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const menu = document.getElementById('mobileMenu');
+                if (menu && menu.classList.contains('active')) closeMobileMenu();
+            }
+        });
+
+        initNav();
+        initContactSettings();
+    </script>
+</body>
+</html>

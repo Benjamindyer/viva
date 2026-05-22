@@ -745,6 +745,7 @@
                             <option value="">— Select —</option>
                             <option value="General">General question</option>
                             <option value="Booking question">Booking question</option>
+                            <option value="emergency">Emergency</option>
                             <option value="Other">Other</option>
                         </select>
                     </div>
@@ -780,6 +781,7 @@
                 <h4>Support</h4>
                 <a href="pet-transport-to-spain.html">Pet Passport Guide</a>
                 <a href="pet-transport-to-spain.html#faq">FAQ</a>
+                <a href="emergency.html">Emergency transport</a>
                 <a href="contact.html">Contact</a>
             </div>
             <div class="footer-column">
@@ -1024,6 +1026,15 @@
 
         initNav();
         initContactSettings();
+
+        (function initSubjectFromUrl() {
+            const subject = new URLSearchParams(window.location.search).get('subject');
+            if (!subject) return;
+            const sel = document.getElementById('cSubject');
+            if (!sel) return;
+            const opt = Array.from(sel.options).find(o => o.value.toLowerCase() === subject.toLowerCase());
+            if (opt) sel.value = opt.value;
+        })();
     </script>
 </body>
 </html>
