@@ -26,7 +26,7 @@
     <meta name="twitter:title" content="Dog Transport Spain to UK | Viva Espaniel">
     <meta name="twitter:description" content="Trusted door-to-door dog transport between Spain and the UK. Personal service by Jon Brown — climate-controlled van, live updates, regular stops.">
     <meta name="twitter:image" content="https://vivaespaniel.com/jon-brown.png">
-    <script type="application/ld+json">
+    <script type="application/ld+json" id="siteSchema">
     {
       "@context": "https://schema.org",
       "@graph": [
@@ -59,7 +59,7 @@
           "aggregateRating": {
             "@type": "AggregateRating",
             "ratingValue": "5.0",
-            "reviewCount": "10",
+            "reviewCount": "23",
             "bestRating": "5"
           },
           "review": [
@@ -3078,7 +3078,7 @@
                         <div class="trust-badge-content">
                             <div class="google-stars" id="googleStars">★★★★★</div>
                             <div class="trust-badge-title" id="googleRatingTitle">5.0 Google Rating</div>
-                            <div class="trust-badge-subtitle" id="googleReviewCount">10 Reviews</div>
+                            <div class="trust-badge-subtitle" id="googleReviewCount">23 Reviews</div>
                         </div>
                     </a>
                     <div class="trust-badge corridor-badge">
@@ -3449,7 +3449,7 @@
         <div style="text-align:center;margin-top:36px;">
             <a href="https://www.google.com/maps?cid=1171727711662582741" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:12px;padding:14px 28px;background:white;color:var(--dark);font-weight:600;font-size:15px;text-decoration:none;border:2px solid var(--primary);border-radius:50px;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 4px 14px rgba(0,0,0,0.06);" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 22px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 14px rgba(0,0,0,0.06)';">
                 <span style="color:var(--secondary);font-size:18px;letter-spacing:1px;" aria-hidden="true">★★★★★</span>
-                <span>Read all 10 reviews on Google</span>
+                <span>Read all <span id="googleReviewCountLink">23</span> reviews on Google</span>
                 <span aria-hidden="true">→</span>
             </a>
         </div>
@@ -3895,7 +3895,23 @@
                 }
 
                 if (c.google_rating)       document.getElementById('googleRatingTitle').textContent  = c.google_rating + ' Google Rating';
-                if (c.google_review_count) document.getElementById('googleReviewCount').textContent  = c.google_review_count + ' Reviews';
+                if (c.google_review_count) {
+                    document.getElementById('googleReviewCount').textContent     = c.google_review_count + ' Reviews';
+                    document.getElementById('googleReviewCountLink').textContent = c.google_review_count;
+                }
+                // Keep the Google structured data in step with the admin-managed rating
+                if (c.google_rating || c.google_review_count) {
+                    try {
+                        const schemaEl = document.getElementById('siteSchema');
+                        const schema   = JSON.parse(schemaEl.textContent);
+                        (schema['@graph'] || [schema]).forEach(node => {
+                            if (!node.aggregateRating) return;
+                            if (c.google_rating)       node.aggregateRating.ratingValue = String(c.google_rating);
+                            if (c.google_review_count) node.aggregateRating.reviewCount = String(c.google_review_count);
+                        });
+                        schemaEl.textContent = JSON.stringify(schema);
+                    } catch (e) { /* leave static schema as-is */ }
+                }
                 if (c.google_stars) {
                     const n = Math.min(5, Math.max(0, parseInt(c.google_stars) || 5));
                     document.getElementById('googleStars').textContent = '★'.repeat(n) + '☆'.repeat(5 - n);
