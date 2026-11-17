@@ -3298,7 +3298,7 @@
                     <div class="error-message" id="errorMessage"></div>
                     <div class="price-breakdown" id="priceBreakdown" style="display:none;">
                         <div class="price-line"><span>Transport (Spain ↔ Dover)</span><span id="basePriceDisplay">£495.00</span></div>
-                        <div class="price-line"><span>UK mileage (<span id="deliveryMiles">0</span> mi @ 50p)</span><span id="deliveryCost">£0.00</span></div>
+                        <div class="price-line"><span>UK mileage (<span id="deliveryMiles">0</span> mi @ <span id="perMileRate">50p</span>)</span><span id="deliveryCost">£0.00</span></div>
                         <div class="price-line total"><span>Price per dog</span><span class="value" id="totalPrice">£495.00</span></div>
                         <div class="price-line" style="color:#2d6a4f;font-weight:600;"><span>Deposit per dog</span><span id="depositDisplay">—</span></div>
                         <div class="price-line" style="color:#888;font-size:13px;"><span>Balance per dog on travel day</span><span id="balanceDisplay">—</span></div>
@@ -4439,6 +4439,8 @@
 
                 document.getElementById('basePriceDisplay').textContent = `£${pricing.base.toFixed(2)}`;
                 document.getElementById('deliveryMiles').textContent    = miles.toFixed(0);
+                const ppm = pricing.perMilePence;
+                document.getElementById('perMileRate').textContent      = ppm < 100 ? `${ppm}p` : `£${(ppm / 100).toFixed(ppm % 100 ? 2 : 0)}`;
                 document.getElementById('deliveryCost').textContent     = `£${mileageCost.toFixed(2)}`;
                 document.getElementById('totalPrice').textContent       = `£${total.toFixed(2)}`;
                 document.getElementById('depositDisplay').textContent   = `£${bookingFee.toFixed(2)}`;
