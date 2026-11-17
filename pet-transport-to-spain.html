@@ -4064,7 +4064,9 @@
                     document.getElementById('testimonialsGrid').innerHTML = testimonials.map(t =>
                         `<a class="testimonial-card testimonial-card-link" href="testimonial.html?id=${t.id}">
                             <div class="testimonial-header">
-                                <div class="testimonial-avatar"><img src="${t.avatar_url}" alt="${t.name}" loading="lazy" decoding="async"></div>
+                                ${t.avatar_url && t.avatar_url.trim()
+                                    ? `<div class="testimonial-avatar"><img src="${t.avatar_url}" alt="${t.name}" loading="lazy" decoding="async"></div>`
+                                    : `<div class="testimonial-avatar" aria-hidden="true" style="background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;">${escHtml((t.name || '?').trim().charAt(0).toUpperCase())}</div>`}
                                 <div class="testimonial-author"><h4>${t.name}</h4><p>${t.location}</p></div>
                             </div>
                             <div class="testimonial-stars">${'★'.repeat(t.stars)}${'☆'.repeat(5 - t.stars)}</div>
