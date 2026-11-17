@@ -1892,14 +1892,11 @@
         /* Month filter pills */
         .month-filter {
             display: flex;
-            gap: 6px;
-            overflow-x: auto;
-            padding-bottom: 4px;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
             margin-bottom: 16px;
-            scrollbar-width: none;
         }
-
-        .month-filter::-webkit-scrollbar { display: none; }
 
         .month-pill {
             flex-shrink: 0;
@@ -1922,8 +1919,6 @@
             border-color: var(--primary);
             color: white;
         }
-
-        .month-pill.past-month { color: #aaa; }
 
         .date-intro {
             text-align: center;
@@ -4017,8 +4012,16 @@
                 return;
             }
 
-            // Build sorted unique month keys
-            const monthKeys = [...new Set(allForDir.map(d => d.departure_date.slice(0, 7)))].sort();
+            // Build sorted unique month keys — only months with at least one upcoming date
+            const monthKeys = [...new Set(allForDir
+                .filter(d => new Date(d.departure_date) >= today)
+                .map(d => d.departure_date.slice(0, 7)))].sort();
+
+            if (monthKeys.length === 0) {
+                filterWrap.innerHTML = '';
+                grid.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">No upcoming dates for this direction yet. Please <a href="contact.html">contact us</a> directly.</p>';
+                return;
+            }
 
             // Default to earliest month that has an available upcoming date; fallback to first month
             if (!_selectedMonth || !monthKeys.includes(_selectedMonth)) {
@@ -4034,8 +4037,7 @@
             filterWrap.innerHTML = monthKeys.map(mk => {
                 const [y, m] = mk.split('-');
                 const label  = new Date(Number(y), Number(m) - 1, 1).toLocaleString('en-GB', { month: 'short', year: '2-digit' });
-                const isPast = new Date(Number(y), Number(m), 0) < today; // last day of month < today
-                return `<button class="month-pill${mk === _selectedMonth ? ' active' : ''}${isPast ? ' past-month' : ''}" onclick="selectMonth('${mk}')">${label}</button>`;
+                return `<button class="month-pill${mk === _selectedMonth ? ' active' : ''}" onclick="selectMonth('${mk}')">${label}</button>`;
             }).join('');
 
             // Dates for selected month
