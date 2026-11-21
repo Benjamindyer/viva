@@ -402,11 +402,17 @@
         button.hd-chip:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
 
         .hd-chip.full {
-            background: transparent;
-            color: rgba(255,255,255,0.55);
-            text-decoration: line-through;
+            background: #d63b2f;
+            color: white;
             cursor: default;
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25);
+            box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.85);
+        }
+
+        .hd-full-tag {
+            font-size: 10.5px;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            opacity: 0.9;
         }
 
         .hd-none { font-size: 13px; color: rgba(255,255,255,0.8); }
@@ -4089,7 +4095,7 @@
                     const left  = dateSpotsLeft(d);
                     const full  = d.manually_closed || left === 0;
                     return full
-                        ? `<span class="hd-chip full" title="${label} — full">${short}</span>`
+                        ? `<span class="hd-chip full" title="${label} — fully booked">${short} <span class="hd-full-tag">FULL</span></span>`
                         : `<button type="button" class="hd-chip" onclick="pickDate('${d.id}','${dir}','${label}')" title="${label} — ${left} ${left === 1 ? 'space' : 'spaces'} left">${short}</button>`;
                 }).join('');
                 el.innerHTML = chips || '<span class="hd-none">No dates yet</span>';
