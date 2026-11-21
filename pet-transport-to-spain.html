@@ -383,69 +383,42 @@
             white-space: nowrap;
         }
 
-        .qb-toggle {
-            display: flex;
-            gap: 4px;
+        .qb-select-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 0;
         }
 
-        .qb-toggle-btn {
-            padding: 8px 16px;
+        .qb-select-wrap::after {
+            content: '';
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            border-right: 2px solid var(--primary);
+            border-bottom: 2px solid var(--primary);
+            transform: translateY(-70%) rotate(45deg);
+            pointer-events: none;
+        }
+
+        .qb-select {
+            width: 100%;
+            appearance: none;
+            -webkit-appearance: none;
+            background: white;
+            color: var(--dark);
             border: none;
-            border-radius: 8px;
-            font-size: 13px;
+            border-radius: 10px;
+            padding: 13px 44px 13px 16px;
+            font: inherit;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            background: transparent;
-            color: rgba(255,255,255,0.75);
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-
-        .qb-toggle-btn.active {
-            background: white;
-            color: var(--primary);
             box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
 
-        .qb-divider {
-            width: 1px;
-            height: 32px;
-            background: rgba(255,255,255,0.25);
-            flex-shrink: 0;
-        }
-
-        .qb-counter {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .qb-counter-btn {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.5);
-            background: transparent;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
-            transition: border-color 0.2s, background 0.2s;
-        }
-
-        .qb-counter-btn:hover { border-color: white; background: rgba(255,255,255,0.15); }
-
-        .qb-counter-val {
-            font-size: 18px;
-            font-weight: 700;
-            color: white;
-            min-width: 18px;
-            text-align: center;
-        }
+        .qb-select:focus-visible { outline: 3px solid var(--secondary); outline-offset: 2px; }
 
         .qb-cta {
             background: var(--primary);
@@ -467,8 +440,7 @@
         @media (max-width: 700px) {
             .quick-book-bar { padding: 12px 16px; }
             .qb-inner { flex-direction: column; align-items: stretch; padding: 10px; gap: 4px; }
-            .qb-field { padding: 6px 8px; justify-content: space-between; }
-            .qb-divider { display: none; }
+            .qb-field { padding: 6px 4px; flex-direction: column; align-items: stretch; gap: 8px; }
             .qb-cta { width: 100%; text-align: center; padding: 14px; border-radius: 10px; margin-left: 0; margin-top: 4px; }
         }
 
@@ -3181,23 +3153,15 @@
         <!-- Quick Book Bar -->
         <div class="quick-book-bar">
             <div class="qb-inner">
-                <div class="qb-field">
-                    <span class="qb-label">Direction</span>
-                    <div class="qb-toggle">
-                        <button class="qb-toggle-btn active" id="qbBtnUkSpain" onclick="qbSetDir('uk-to-spain')">🇬🇧 UK → Spain</button>
-                        <button class="qb-toggle-btn" id="qbBtnSpainUk" onclick="qbSetDir('spain-to-uk')">🇪🇸 Spain → UK</button>
-                    </div>
-                </div>
-                <div class="qb-divider"></div>
-                <div class="qb-field">
-                    <span class="qb-label">Dogs</span>
-                    <div class="qb-counter">
-                        <button class="qb-counter-btn" onclick="qbChangeDogs(-1)" aria-label="Remove a dog">−</button>
-                        <span class="qb-counter-val" id="qbDogCount">1</span>
-                        <button class="qb-counter-btn" onclick="qbChangeDogs(1)" aria-label="Add a dog">+</button>
-                    </div>
-                </div>
-                <button class="qb-cta" onclick="qbSearch()">Check Dates →</button>
+                <label class="qb-field" for="qbDate">
+                    <span class="qb-label">Travel date</span>
+                    <span class="qb-select-wrap">
+                        <select id="qbDate" class="qb-select">
+                            <option value="">Loading dates…</option>
+                        </select>
+                    </span>
+                </label>
+                <button class="qb-cta" onclick="qbSearch()">Book This Date →</button>
             </div>
         </div>
     </section>
@@ -4073,6 +4037,8 @@
                 .filter(d => new Date(d.departure_date) >= today)
                 .sort((a, b) => a.departure_date.localeCompare(b.departure_date));
 
+            renderQbDates(upcoming);
+
             const columns = [
                 { dir: 'uk-to-spain', db: 'uk_to_spain', from: '🇬🇧', to: '🇪🇸', label: 'UK → Spain' },
                 { dir: 'spain-to-uk', db: 'spain_to_uk', from: '🇪🇸', to: '🇬🇧', label: 'Spain → UK' },
@@ -4343,22 +4309,43 @@
 
         // ── Direction toggle ─────────────────────────────────────────────────────
         // ── Quick Book Bar ───────────────────────────────────────────────────────
-        let _qbDir  = 'uk-to-spain';
-        let _qbDogs = 1;
-
-        function qbSetDir(dir) {
-            _qbDir = dir;
-            document.getElementById('qbBtnUkSpain').classList.toggle('active', dir === 'uk-to-spain');
-            document.getElementById('qbBtnSpainUk').classList.toggle('active', dir === 'spain-to-uk');
-        }
-
-        function qbChangeDogs(delta) {
-            _qbDogs = Math.min(4, Math.max(1, _qbDogs + delta));
-            document.getElementById('qbDogCount').textContent = _qbDogs;
+        // Fill the banner's date drop-down with every upcoming date, grouped by direction
+        function renderQbDates(upcoming) {
+            const sel = document.getElementById('qbDate');
+            if (!sel) return;
+            const keep = sel.value;
+            const groups = [
+                { dir: 'uk-to-spain', db: 'uk_to_spain', label: '🇬🇧  UK → Spain' },
+                { dir: 'spain-to-uk', db: 'spain_to_uk', label: '🇪🇸  Spain → UK' },
+            ];
+            const optgroups = groups.map(g => {
+                // Only bookable dates — full ones are still shown on the board below
+                const opts = upcoming
+                    .filter(d => (d.direction === g.db || d.direction === 'both') && !d.manually_closed && dateSpotsLeft(d) > 0)
+                    .map(d => {
+                        const date  = new Date(d.departure_date);
+                        const wd    = date.toLocaleDateString('en-GB', { weekday: 'short' });
+                        const dmy   = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+                        const label = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+                        const left  = dateSpotsLeft(d);
+                        const value = `${d.id}|${g.dir}|${label}`;
+                        return `<option value="${value}">${wd} ${dmy} · ${left} ${left === 1 ? 'space' : 'spaces'} left</option>`;
+                    }).join('');
+                return opts ? `<optgroup label="${g.label}">${opts}</optgroup>` : '';
+            }).join('');
+            sel.innerHTML = optgroups
+                ? `<option value="">Choose a date…</option>${optgroups}`
+                : '<option value="">No upcoming dates — please contact us</option>';
+            if (keep && [...sel.options].some(o => o.value === keep && !o.disabled)) sel.value = keep;
         }
 
         function qbSearch() {
-            setDirection(_qbDir);
+            const sel = document.getElementById('qbDate');
+            if (sel && sel.value) {
+                const [id, dir, label] = sel.value.split('|');
+                pickDate(id, dir, label); // goToStep(2) scrolls to the booking panel
+                return;
+            }
             document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
         }
 
