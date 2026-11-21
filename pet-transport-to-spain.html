@@ -346,102 +346,97 @@
         }
 
         /* Quick Book Bar */
-        .quick-book-bar {
+        /* Compact upcoming dates strip at the top of the hero */
+        .hero-dates {
             position: relative;
-            z-index: 100;
-            background: rgba(0,0,0,0.25);
-            backdrop-filter: blur(6px);
-            padding: 20px;
+            z-index: 1;
+            background: rgba(0,0,0,0.22);
+            padding: 10px 20px;
+            margin-top: -20px; /* sit flush under the price banner */
         }
 
-        .qb-inner {
+        .hd-inner {
             max-width: 1200px;
             margin: 0 auto;
             display: flex;
-            align-items: center;
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 16px;
-            padding: 8px;
-            gap: 0;
+            flex-direction: column;
+            gap: 6px;
         }
 
-        .qb-field {
+        .hd-row {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 8px 20px;
-            flex: 1;
         }
 
-        .qb-label {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            color: rgba(255,255,255,0.7);
+        .hd-dir {
+            flex-shrink: 0;
+            width: 128px;
+            font-size: 13px;
+            font-weight: 800;
+            color: white;
             white-space: nowrap;
         }
 
-        .qb-select-wrap {
-            position: relative;
-            flex: 1;
-            min-width: 0;
+        .hd-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
         }
 
-        .qb-select-wrap::after {
-            content: '';
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            width: 8px;
-            height: 8px;
-            border-right: 2px solid var(--primary);
-            border-bottom: 2px solid var(--primary);
-            transform: translateY(-70%) rotate(45deg);
-            pointer-events: none;
-        }
-
-        .qb-select {
-            width: 100%;
-            appearance: none;
-            -webkit-appearance: none;
+        .hd-chip {
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 0;
             background: white;
             color: var(--dark);
-            border: none;
-            border-radius: 10px;
-            padding: 13px 44px 13px 16px;
             font: inherit;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
-
-        .qb-select:focus-visible { outline: 3px solid var(--secondary); outline-offset: 2px; }
-
-        .qb-cta {
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 14px 28px;
-            font-size: 15px;
+            font-size: 13px;
             font-weight: 700;
-            cursor: pointer;
+            line-height: 1.3;
             white-space: nowrap;
-            transition: background 0.2s, transform 0.15s;
-            flex-shrink: 0;
-            margin-left: 6px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
         }
 
-        .qb-cta:hover { background: var(--primary-dark); transform: scale(1.02); }
+        button.hd-chip:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
 
+        .hd-chip.full {
+            background: transparent;
+            color: rgba(255,255,255,0.55);
+            text-decoration: line-through;
+            cursor: default;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25);
+        }
+
+        .hd-none { font-size: 13px; color: rgba(255,255,255,0.8); }
+
+        .hd-dir-short, .hd-all { display: none; }
+
+        /* Phones: one line per direction — show as many whole chips as fit, then "All ›" */
         @media (max-width: 700px) {
-            .quick-book-bar { padding: 12px 16px; }
-            .qb-inner { flex-direction: column; align-items: stretch; padding: 10px; gap: 4px; }
-            .qb-field { padding: 6px 4px; flex-direction: column; align-items: stretch; gap: 8px; }
-            .qb-cta { width: 100%; text-align: center; padding: 14px; border-radius: 10px; margin-left: 0; margin-top: 4px; }
+            .hero-dates { padding: 8px 12px; }
+            .hd-row { gap: 8px; }
+            .hd-dir { width: auto; font-size: 14px; }
+            .hd-dir-full { display: none; }
+            .hd-dir-short { display: inline; letter-spacing: -1px; }
+            .hd-chips {
+                flex: 1;
+                min-width: 0;
+                gap: 5px;
+                height: 26px;      /* one row; chips that don't fit wrap out of view */
+                overflow: hidden;
+            }
+            .hd-chip { font-size: 12.5px; padding: 0 9px; height: 26px; line-height: 26px; }
+            .hd-all {
+                display: inline-block;
+                flex-shrink: 0;
+                color: white;
+                font-size: 13px;
+                font-weight: 800;
+                text-decoration: none;
+                white-space: nowrap;
+            }
         }
 
         /* Van Status Strip */
@@ -3080,6 +3075,21 @@
 
     <!-- Hero -->
     <section class="hero">
+        <!-- Compact upcoming dates strip -->
+        <div class="hero-dates" id="dates" aria-label="Upcoming transport dates">
+            <div class="hd-inner">
+                <div class="hd-row" data-direction="uk-to-spain">
+                    <span class="hd-dir"><span class="hd-dir-full">🇬🇧 UK → Spain</span><span class="hd-dir-short" aria-label="UK to Spain">🇬🇧→🇪🇸</span></span>
+                    <div class="hd-chips" id="hdUkSpain"></div>
+                    <a class="hd-all" href="#booking" onclick="goToStep(1); return false;">All ›</a>
+                </div>
+                <div class="hd-row" data-direction="spain-to-uk">
+                    <span class="hd-dir"><span class="hd-dir-full">🇪🇸 Spain → UK</span><span class="hd-dir-short" aria-label="Spain to UK">🇪🇸→🇬🇧</span></span>
+                    <div class="hd-chips" id="hdSpainUk"></div>
+                    <a class="hd-all" href="#booking" onclick="goToStep(1); return false;">All ›</a>
+                </div>
+            </div>
+        </div>
         <div class="hero-content">
             <div class="hero-text">
                 <div class="hero-badge" id="heroBadge">🇬🇧 UK ↔ Spain ↔ UK 🇪🇸 British Dog Transport</div>
@@ -3150,20 +3160,6 @@
             </div>
         </div>
 
-        <!-- Quick Book Bar -->
-        <div class="quick-book-bar">
-            <div class="qb-inner">
-                <label class="qb-field" for="qbDate">
-                    <span class="qb-label">Travel date</span>
-                    <span class="qb-select-wrap">
-                        <select id="qbDate" class="qb-select">
-                            <option value="">Loading dates…</option>
-                        </select>
-                    </span>
-                </label>
-                <button class="qb-cta" onclick="qbSearch()">Book This Date →</button>
-            </div>
-        </div>
     </section>
 
     <!-- Trust -->
@@ -4031,20 +4027,20 @@
         }
 
         function renderDateCards() {
-            const board = document.getElementById('dateBoard');
+            const boards = ['dateBoard'].map(id => document.getElementById(id)).filter(Boolean);
             const today = new Date(new Date().toDateString());
             const upcoming = (window._allDates || [])
                 .filter(d => new Date(d.departure_date) >= today)
                 .sort((a, b) => a.departure_date.localeCompare(b.departure_date));
 
-            renderQbDates(upcoming);
+            renderHeroDates(upcoming);
 
             const columns = [
                 { dir: 'uk-to-spain', db: 'uk_to_spain', from: '🇬🇧', to: '🇪🇸', label: 'UK → Spain' },
                 { dir: 'spain-to-uk', db: 'spain_to_uk', from: '🇪🇸', to: '🇬🇧', label: 'Spain → UK' },
             ];
 
-            board.innerHTML = columns.map(col => {
+            const html = columns.map(col => {
                 const dates = upcoming.filter(d => d.direction === col.db || d.direction === 'both');
                 let lastYear = null;
                 const rows = dates.map(d => {
@@ -4071,6 +4067,26 @@
                     ${rows || '<p class="db-empty">No upcoming dates yet — please <a href="contact.html">contact us</a>.</p>'}
                 </div>`;
             }).join('');
+            boards.forEach(b => { b.innerHTML = html; });
+        }
+
+        // Compact date chips in the hero strip — tap one to start booking
+        function renderHeroDates(upcoming) {
+            [['hdUkSpain', 'uk_to_spain', 'uk-to-spain'], ['hdSpainUk', 'spain_to_uk', 'spain-to-uk']].forEach(([elId, db, dir]) => {
+                const el = document.getElementById(elId);
+                if (!el) return;
+                const chips = upcoming.filter(d => d.direction === db || d.direction === 'both').map(d => {
+                    const date  = new Date(d.departure_date);
+                    const short = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+                    const label = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+                    const left  = dateSpotsLeft(d);
+                    const full  = d.manually_closed || left === 0;
+                    return full
+                        ? `<span class="hd-chip full" title="${label} — full">${short}</span>`
+                        : `<button type="button" class="hd-chip" onclick="pickDate('${d.id}','${dir}','${label}')" title="${label} — ${left} ${left === 1 ? 'space' : 'spaces'} left">${short}</button>`;
+                }).join('');
+                el.innerHTML = chips || '<span class="hd-none">No dates yet</span>';
+            });
         }
 
         // Click a date on the board: set direction + date, go straight to the route step
@@ -4309,46 +4325,6 @@
 
         // ── Direction toggle ─────────────────────────────────────────────────────
         // ── Quick Book Bar ───────────────────────────────────────────────────────
-        // Fill the banner's date drop-down with every upcoming date, grouped by direction
-        function renderQbDates(upcoming) {
-            const sel = document.getElementById('qbDate');
-            if (!sel) return;
-            const keep = sel.value;
-            const groups = [
-                { dir: 'uk-to-spain', db: 'uk_to_spain', label: '🇬🇧  UK → Spain' },
-                { dir: 'spain-to-uk', db: 'spain_to_uk', label: '🇪🇸  Spain → UK' },
-            ];
-            const optgroups = groups.map(g => {
-                // Only bookable dates — full ones are still shown on the board below
-                const opts = upcoming
-                    .filter(d => (d.direction === g.db || d.direction === 'both') && !d.manually_closed && dateSpotsLeft(d) > 0)
-                    .map(d => {
-                        const date  = new Date(d.departure_date);
-                        const wd    = date.toLocaleDateString('en-GB', { weekday: 'short' });
-                        const dmy   = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-                        const label = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-                        const left  = dateSpotsLeft(d);
-                        const value = `${d.id}|${g.dir}|${label}`;
-                        return `<option value="${value}">${wd} ${dmy} · ${left} ${left === 1 ? 'space' : 'spaces'} left</option>`;
-                    }).join('');
-                return opts ? `<optgroup label="${g.label}">${opts}</optgroup>` : '';
-            }).join('');
-            sel.innerHTML = optgroups
-                ? `<option value="">Choose a date…</option>${optgroups}`
-                : '<option value="">No upcoming dates — please contact us</option>';
-            if (keep && [...sel.options].some(o => o.value === keep && !o.disabled)) sel.value = keep;
-        }
-
-        function qbSearch() {
-            const sel = document.getElementById('qbDate');
-            if (sel && sel.value) {
-                const [id, dir, label] = sel.value.split('|');
-                pickDate(id, dir, label); // goToStep(2) scrolls to the booking panel
-                return;
-            }
-            document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
-        }
-
         function setDirection(dir) {
             currentDirection = dir;
             document.getElementById('addressLabel').textContent = 'Your UK Postcode / Town (for Pick up / Drop off)';
