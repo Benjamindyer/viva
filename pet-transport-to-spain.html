@@ -1495,34 +1495,6 @@
             display: contents; /* inline on desktop — items just flow in the flex row */
         }
 
-        /* Direction Toggle */
-        .direction-toggle {
-            display: flex;
-            background: #e0e0e0;
-            border-radius: 10px;
-            padding: 4px;
-            margin-bottom: 20px;
-        }
-
-        .direction-btn {
-            flex: 1;
-            padding: 12px 8px;
-            border: none;
-            background: transparent;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: #666;
-        }
-
-        .direction-btn.active {
-            background: white;
-            color: var(--primary);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
         /* Step Indicator */
         .step-indicator {
             display: flex;
@@ -1828,141 +1800,101 @@
             margin-bottom: 4px;
         }
 
-        /* Date Selection */
-        .date-grid {
+        /* Date board (step 1) — all upcoming dates, both directions */
+        .booking-container.board-mode { max-width: 960px; }
+
+        .date-board {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 15px;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: start;
         }
 
-        .date-card {
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
+        .db-col {
+            background: #fafafa;
+            border-radius: 16px;
+            padding: 0 0 8px;
+            overflow: hidden;
+            border: 1px solid #eee;
         }
 
-        .date-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(200, 75, 49, 0.15);
-        }
-
-        .date-card.selected {
-            border-color: var(--primary);
-            background: linear-gradient(135deg, rgba(200, 75, 49, 0.1), rgba(170, 21, 27, 0.1));
-        }
-
-        .date-card.selected::before {
-            content: '✓';
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: var(--primary);
-            color: white;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            font-size: 12px;
+        .db-head {
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .date-card {
-            position: relative;
-        }
-
-        .date-month {
-            font-size: 12px;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-        }
-
-        .date-range {
-            font-size: 18px;
-            font-weight: 700;
+            gap: 10px;
+            background: var(--secondary);
             color: var(--dark);
-            margin-bottom: 5px;
+            font-size: 20px;
+            font-weight: 800;
+            padding: 14px 12px;
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
         }
 
-        .date-year {
-            font-size: 13px;
-            color: #999;
-        }
+        .db-flags { font-size: 22px; }
 
-        .date-spots {
-            margin-top: 8px;
-            font-size: 11px;
-            padding: 4px 8px;
-            background: #e8f5e9;
-            color: var(--accent);
-            border-radius: 10px;
-            display: inline-block;
-        }
-
-        .date-spots.limited {
-            background: #fff3e0;
-            color: #e65100;
-        }
-
-        .date-spots.full {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-
-        .date-spots.past {
-            background: #f3f4f6;
-            color: #9ca3af;
-        }
-
-        .date-card.unavailable {
-            opacity: 0.55;
-            cursor: default;
-            pointer-events: none;
-        }
-
-        .date-card.unavailable:hover {
-            border-color: #e0e0e0;
-            transform: none;
-            box-shadow: none;
-        }
-
-        /* Month filter pills */
-        .month-filter {
+        .db-row {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .month-pill {
-            flex-shrink: 0;
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 1.5px solid #e0e0e0;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            width: calc(100% - 16px);
+            margin: 0 8px 6px;
+            padding: 10px 12px;
             background: white;
-            font-size: 13px;
-            font-weight: 600;
-            color: #666;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font: inherit;
+            font-size: 16px;
+            color: var(--dark);
+            text-align: left;
             cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
+            transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
         }
 
-        .month-pill:hover { border-color: var(--primary); color: var(--primary); }
+        button.db-row:hover {
+            border-color: var(--accent);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
 
-        .month-pill.active {
-            background: var(--primary);
-            border-color: var(--primary);
+        .db-row.selected { border-color: var(--accent); background: #eef7f1; }
+
+        .db-row.full { cursor: default; color: #999; background: #f4f4f4; }
+
+        .db-date { font-weight: 700; white-space: nowrap; }
+        .db-day { display: inline-block; min-width: 2.4em; font-weight: 500; color: #777; }
+        .db-row.full .db-day { color: #aaa; }
+
+        .db-badge {
+            flex-shrink: 0;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
             color: white;
+        }
+
+        .db-badge.spaces { background: #2e9e4f; }
+        .db-badge.full   { background: #d63b2f; }
+
+        .db-year {
+            margin: 10px 8px 6px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #888;
+            text-align: center;
+        }
+
+        .db-empty { padding: 12px 16px; font-size: 14px; color: #666; text-align: center; }
+
+        .date-board-hint { font-size: 14px !important; }
+
+        @media (max-width: 700px) {
+            .date-board { grid-template-columns: 1fr; gap: 16px; }
         }
 
         .date-intro {
@@ -3352,7 +3284,7 @@
             <h2>🎫 Book Your Pets Journey</h2>
             <p>Get an instant quote and book in minutes</p>
         </div>
-        <div class="booking-container">
+        <div class="booking-container map-hidden board-mode">
             <div class="booking-panel">
                 <div class="step-indicator">
                     <div class="step active" data-step="1"><div class="step-num">1</div><div class="step-label">Date</div></div>
@@ -3374,18 +3306,13 @@
 
                 <!-- Step 1: Date Selection -->
                 <div class="booking-step active" id="step1">
-                    <div class="direction-toggle">
-                        <button class="direction-btn active" data-direction="uk-to-spain" onclick="setDirection('uk-to-spain')">🇬🇧 UK → Spain 🇪🇸</button>
-                        <button class="direction-btn" data-direction="spain-to-uk" onclick="setDirection('spain-to-uk')">🇪🇸 Spain → UK 🇬🇧</button>
-                    </div>
                     <div class="date-intro">
-                        <h3>🚐 When should we travel?</h3>
+                        <h3>🚐 Upcoming transport dates</h3>
+                        <p class="date-board-hint">Tap a date with spaces to book</p>
                     </div>
-                    <div class="month-filter" id="monthFilter"></div>
-                    <div class="date-grid" id="dateGrid">
+                    <div class="date-board" id="dateBoard">
                         <!-- Dates populated by JS -->
                     </div>
-                    <button class="btn btn-primary" id="dateNextBtn" onclick="goToStep(2)" disabled>Select a Travel Date</button>
                 </div>
 
                 <!-- Step 2: Route -->
@@ -3507,7 +3434,7 @@
                     </div>
                 </div>
             </div>
-            <div class="map-panel" id="mapPanel">
+            <div class="map-panel" id="mapPanel" style="display:none">
                 <div id="map"></div>
                 <div class="loading" id="loading"><div class="spinner"></div><span>Calculating...</span></div>
                 <div style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.55);color:white;font-size:11px;padding:4px 10px;border-radius:20px;pointer-events:none;white-space:nowrap;">Route shown for illustrative purposes only</div>
@@ -4127,119 +4054,62 @@
             }
         }
 
-        let _selectedMonth = null; // 'YYYY-MM'
+        // ── Date board (step 1): every upcoming date, both directions ──
+        function dateSpotsLeft(d) {
+            return Math.max(0, (d.large_crates ?? 2) - (d.large_taken ?? 0)) + Math.max(0, (d.small_crates ?? 2) - (d.small_taken ?? 0));
+        }
 
         function renderDateCards() {
-            const grid        = document.getElementById('dateGrid');
-            const filterWrap  = document.getElementById('monthFilter');
-            const dbDirection = currentDirection.replace(/-/g, '_');
-            const today       = new Date(new Date().toDateString());
-
-            // All dates matching direction (including full/past)
-            const allForDir = (window._allDates || []).filter(d =>
-                d.direction === dbDirection || d.direction === 'both'
-            );
-
-            if (allForDir.length === 0) {
-                filterWrap.innerHTML = '';
-                grid.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">No dates available for this direction yet. Please <a href="contact.html">contact us</a> directly.</p>';
-                return;
-            }
-
-            // Build sorted unique month keys — only months with at least one upcoming date
-            const monthKeys = [...new Set(allForDir
+            const board = document.getElementById('dateBoard');
+            const today = new Date(new Date().toDateString());
+            const upcoming = (window._allDates || [])
                 .filter(d => new Date(d.departure_date) >= today)
-                .map(d => d.departure_date.slice(0, 7)))].sort();
+                .sort((a, b) => a.departure_date.localeCompare(b.departure_date));
 
-            if (monthKeys.length === 0) {
-                filterWrap.innerHTML = '';
-                grid.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">No upcoming dates for this direction yet. Please <a href="contact.html">contact us</a> directly.</p>';
-                return;
-            }
+            const columns = [
+                { dir: 'uk-to-spain', db: 'uk_to_spain', flags: '🇬🇧 → 🇪🇸', label: 'UK → Spain' },
+                { dir: 'spain-to-uk', db: 'spain_to_uk', flags: '🇪🇸 → 🇬🇧', label: 'Spain → UK' },
+            ];
 
-            // Default to earliest month that has an available upcoming date; fallback to first month
-            if (!_selectedMonth || !monthKeys.includes(_selectedMonth)) {
-                const firstAvailMonth = monthKeys.find(mk => allForDir.some(d => {
-                    const dt = new Date(d.departure_date);
-                    const spotsLeft = (d.large_crates ?? 2) - (d.large_taken ?? 0) + (d.small_crates ?? 2) - (d.small_taken ?? 0);
-                    return d.departure_date.slice(0, 7) === mk && dt >= today && !d.manually_closed && spotsLeft > 0;
-                }));
-                _selectedMonth = firstAvailMonth || monthKeys[0];
-            }
-
-            // Render month pills
-            filterWrap.innerHTML = monthKeys.map(mk => {
-                const [y, m] = mk.split('-');
-                const label  = new Date(Number(y), Number(m) - 1, 1).toLocaleString('en-GB', { month: 'short', year: '2-digit' });
-                return `<button class="month-pill${mk === _selectedMonth ? ' active' : ''}" onclick="selectMonth('${mk}')">${label}</button>`;
-            }).join('');
-
-            // Dates for selected month
-            const monthDates = allForDir.filter(d => d.departure_date.slice(0, 7) === _selectedMonth);
-
-            if (monthDates.length === 0) {
-                grid.innerHTML = '<p style="text-align:center;color:#666;padding:16px;">No dates this month.</p>';
-                return;
-            }
-
-            grid.innerHTML = monthDates.map(d => {
-                const date     = new Date(d.departure_date);
-                const mon      = date.toLocaleString('en-GB', { month: 'short' }).toUpperCase();
-                const day      = date.getDate();
-                const year     = date.getFullYear();
-                const label    = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-                const spotsLeft = Math.max(0, (d.large_crates ?? 2) - (d.large_taken ?? 0)) + Math.max(0, (d.small_crates ?? 2) - (d.small_taken ?? 0));
-                const isPast   = date < today;
-                const isFull   = d.manually_closed || spotsLeft === 0;
-
-                let spotsBadge, cardClass = '';
-                if (isPast) {
-                    spotsBadge = '<div class="date-spots past">Past</div>';
-                    cardClass  = 'unavailable';
-                } else if (isFull) {
-                    spotsBadge = '<div class="date-spots full">Full</div>';
-                    cardClass  = 'unavailable';
-                } else if (spotsLeft <= 2) {
-                    spotsBadge = `<div class="date-spots limited">${spotsLeft} spot${spotsLeft !== 1 ? 's' : ''} left</div>`;
-                } else {
-                    spotsBadge = `<div class="date-spots">${spotsLeft} spot${spotsLeft !== 1 ? 's' : ''} left</div>`;
-                }
-
-                const clickHandler = (isPast || isFull) ? '' : `onclick="selectDate(this,'${d.id}','${label}')"`;
-                return `<div class="date-card ${cardClass}" data-date-id="${d.id}" ${clickHandler}>
-                    <div class="date-month">${mon}</div>
-                    <div class="date-range">${day}</div>
-                    <div class="date-year">${year}</div>
-                    ${spotsBadge}
+            board.innerHTML = columns.map(col => {
+                const dates = upcoming.filter(d => d.direction === col.db || d.direction === 'both');
+                let lastYear = null;
+                const rows = dates.map(d => {
+                    const date  = new Date(d.departure_date);
+                    const year  = date.getFullYear();
+                    const yearRow = year !== lastYear && lastYear !== null ? `<div class="db-year">${year}</div>` : '';
+                    lastYear = year;
+                    const day   = date.toLocaleDateString('en-GB', { weekday: 'short' });
+                    const dm    = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+                    const label = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+                    const left  = dateSpotsLeft(d);
+                    const full  = d.manually_closed || left === 0;
+                    const selected = routeData.travelDateId === d.id && currentDirection === col.dir;
+                    const badge = full
+                        ? '<span class="db-badge full">FULL</span>'
+                        : `<span class="db-badge spaces">${left} ${left === 1 ? 'SPACE' : 'SPACES'}</span>`;
+                    const inner = `<span class="db-date"><span class="db-day">${day}</span> ${dm}</span>${badge}`;
+                    return yearRow + (full
+                        ? `<div class="db-row full" aria-disabled="true">${inner}</div>`
+                        : `<button type="button" class="db-row${selected ? ' selected' : ''}" onclick="pickDate('${d.id}','${col.dir}','${label}')" aria-label="Book ${col.label}, ${label}, ${left} ${left === 1 ? 'space' : 'spaces'} left">${inner}</button>`);
+                }).join('');
+                return `<div class="db-col" data-direction="${col.dir}">
+                    <div class="db-head"><span class="db-flags">${col.flags}</span>${col.label}</div>
+                    ${rows || '<p class="db-empty">No upcoming dates yet — please <a href="contact.html">contact us</a>.</p>'}
                 </div>`;
             }).join('');
         }
 
-        function selectMonth(mk) {
-            _selectedMonth = mk;
-            // Clear any previously selected date if it's not in this month
-            if (routeData.travelDateId) {
-                const d = (window._allDates || []).find(x => x.id === routeData.travelDateId);
-                if (d && d.departure_date.slice(0, 7) !== mk) {
-                    routeData.travelDate   = null;
-                    routeData.travelDateId = null;
-                    document.getElementById('dateNextBtn').disabled    = true;
-                    document.getElementById('dateNextBtn').textContent = 'Select a Travel Date';
-                }
-            }
-            renderDateCards();
-        }
-
-        function selectDate(el, id, display) {
-            document.querySelectorAll('.date-card').forEach(c => c.classList.remove('selected'));
-            el.classList.add('selected');
+        // Click a date on the board: set direction + date, go straight to the route step
+        function pickDate(id, dir, display) {
+            if (dir !== currentDirection) setDirection(dir);
             routeData.travelDate   = display;
             routeData.travelDateId = id;
             const dateObj = (window._allDates || []).find(d => d.id === id);
             routeData.availableLarge = dateObj ? Math.max(0, (dateObj.large_crates ?? 2) - (dateObj.large_taken ?? 0)) : 2;
             routeData.availableSmall = dateObj ? Math.max(0, (dateObj.small_crates ?? 2) - (dateObj.small_taken ?? 0)) : 2;
-            document.getElementById('dateNextBtn').disabled     = false;
-            document.getElementById('dateNextBtn').textContent  = 'Continue →';
+            renderDateCards();
+            goToStep(2);
         }
 
         // ── Map ──────────────────────────────────────────────────────────────────
@@ -4487,8 +4357,6 @@
 
         function setDirection(dir) {
             currentDirection = dir;
-            _selectedMonth   = null; // reset so default recalculates for new direction
-            document.querySelectorAll('.direction-btn').forEach(b => b.classList.toggle('active', b.dataset.direction === dir));
             document.getElementById('addressLabel').textContent = 'Your UK Postcode / Town (for Pick up / Drop off)';
             document.getElementById('priceBreakdown').style.display = 'none';
             renderDateCards();
@@ -4781,9 +4649,11 @@
                 const top = bookingEl.getBoundingClientRect().top + window.scrollY - navHeight - 8;
                 window.scrollTo({ top, behavior: 'smooth' });
             }
-            const hideMap = step >= 3;
+            const hideMap = step === 1 || step >= 3;
             document.getElementById('mapPanel').style.display = hideMap ? 'none' : '';
             document.querySelector('.booking-container').classList.toggle('map-hidden', hideMap);
+            document.querySelector('.booking-container').classList.toggle('board-mode', step === 1);
+            if (!hideMap && typeof map !== 'undefined' && map) setTimeout(() => map.resize(), 50);
             // Route summary bar
             const rsb = document.getElementById('routeSummaryBar');
             if (hideMap && routeData.travelDate) {
@@ -4862,10 +4732,8 @@
                 const el = document.getElementById(id); if (el) el.value = '';
             });
             document.getElementById('priceBreakdown').style.display = 'none';
-            document.querySelectorAll('.date-card').forEach(c => c.classList.remove('selected'));
-            document.getElementById('dateNextBtn').disabled    = true;
-            document.getElementById('dateNextBtn').textContent = 'Select a Travel Date';
             routeData = { destination: null, miles: 0, total: 0, deposit: 0, balance: 0, travelDate: null, travelDateId: null };
+            renderDateCards();
             const btn = document.getElementById('submitBtn');
             if (btn) { btn.disabled = false; btn.textContent = 'Request to Book 🐾'; }
             initMap();
